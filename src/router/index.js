@@ -1,19 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import DictionaryView from '../Dictionary/DictionaryView.vue'
+import PhraseView from '../views/PhraseView.vue'
+import PhoneticsView from '../views/PhoneticsView.vue'
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
+   { 
+    path: '/', 
+    redirect: '/dictionary' // Redirects base URL to /dashboard on load
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/dictionary',
+    name: 'dictionary',
+    component: DictionaryView
+  },
+  {
+    path: '/phrases',
+    name: 'phrases',
+
+    component: PhraseView
+  },
+  {
+    path: '/phonetics',
+    name: 'phonetics',
+
+    component: PhoneticsView
   }
 ]
 
