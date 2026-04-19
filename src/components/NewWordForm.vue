@@ -4,15 +4,25 @@ export default {
   setup() {
     const newWordData = reactive({ spelling: '', definition: '', pron: ''})
     const modal = useTemplateRef('modal')
-    const openForm = from => {
+    let destination = ref('')
+    const openForm = _destination => {
       modal.value.showModal()
+      destination.value = _destination
+    }
+
+    const clearForm = () => {
+      newWordData.spelling = ''
+      newWordData.definition = ''
+      newWordData.pron = ''
     }
 
 
     return {
       modal,
       newWordData,
-      openForm
+      destination,
+      openForm,
+      clearForm
     }
   }
 }

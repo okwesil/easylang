@@ -6,25 +6,86 @@ export default {
   name: 'DictionaryView',
   components: { NewWordForm },
   setup() {
+    // 
+    let timeout;
+    let lastDeleted;
+    const justDeleted = ref(false)
+
+    const deleteWord = (index, list) => {
+
+      switch (list) {
+        case 'noun':
+          lastDeleted = [nouns.value.splice(index, 1), 'noun']
+          break
+        case 'adjective':
+          lastDeleted = [adjectives.value.splice(index, 1), 'adjective']
+          break
+        case 'verb':
+          lastDeleted = [verbs.value.splice(index, 1), 'verb']
+          break
+      }
+      justDeleted.value = true
+
+      if (!timeout) {
+        timeout = setTimeout(() => justDeleted.value = false, 3000)
+      } else {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => justDeleted.value = false, 3000)
+      }
+    }
+
+    const undoDelete = () => {
+      console.log(lastDeleted[0][0])
+      switch (lastDeleted[1]) {
+        case 'noun':
+          nouns.value.push(lastDeleted[0][0])
+          break
+        case 'adjective':
+          adjectives.value.push(lastDeleted[0][0])
+          break
+        case 'verb':
+          verbs.value.push(lastDeleted[0][0])
+          break
+      }
+      justDeleted.value = false
+    }
+
     const form = ref(null)
-    const addNewWord = () => {
-      console.log('value: ', form.value)
-      form.value.openForm('noun')
+    const addNewWord = (destination) => {
+      form.value.openForm(destination)
     }
     const handleSubmit = (event) => {
       event.preventDefault()
       const { spelling, definition, pron } = form.value.newWordData
+      form.value.clearForm()
       form.value.modal.close()
-      nouns.value.push({ spelling, definition, pronounciation: pron})
-    }
+      
+      switch (form.value.destination) {
+        case 'noun':
+          nouns.value.push({ spelling, definition, pronounciation: pron})
+          break
+        case 'adjective':
+          adjectives.value.push({ spelling, definition, pronounciation: pron})
+          break
+        case 'verb':
+          verbs.value.push({ spelling, definition, pronounciation: pron})
+          break
+      }
 
-    return { nouns, verbs, adjectives, modal: form, addNewWord, handleSubmit }
+    }
+    
+
+    return { nouns, verbs, adjectives, modal: form, justDeleted, addNewWord, handleSubmit, deleteWord, undoDelete }
   }
 }
 </script>
 
 <template>
-  <h1 class="header">Dictionary</h1>
+  <h1 class="main-header">Dictionary</h1>
+  <transition name="undo-trans">
+    <h3 v-if="justDeleted" @click="undoDelete" class="undo active">undo delete</h3>
+  </transition>
+
   <div class="dictionary">
     <ul class="list noun-list">
 
@@ -33,7 +94,7 @@ export default {
         <h3 class="new-word" @click="addNewWord('noun')">+</h3>
       </div>
 
-      <li v-for="(noun, index) in nouns" :key="index">
+      <li v-for="(noun, index) in nouns" :key="index" @dblclick="deleteWord(index, 'noun')">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ noun.spelling }}
@@ -54,7 +115,7 @@ export default {
         <h3 class="new-word" @click="addNewWord('adjective')">+</h3>
       </div>
 
-      <li v-for="(adjective, index) in adjectives" :key="index">
+      <li v-for="(adjective, index) in adjectives" :key="index" @dblclick="deleteWord(index, 'adjective')">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ adjective.spelling }}
@@ -64,7 +125,7 @@ export default {
           </span>
         </div>
         <span class="word-def">
-          {{ adjective.definiton }}
+          {{ adjective.definition }}
         </span>
       </li>
     </ul>
@@ -75,7 +136,7 @@ export default {
         <h3 class="new-word" @click="addNewWord('verb')">+</h3>
       </div>
 
-      <li v-for="(verb, index) in verbs" :key="index">
+      <li v-for="(verb, index) in verbs" :key="index" @dblclick="deleteWord(index, 'verb')">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ verb.spelling }}
@@ -85,7 +146,7 @@ export default {
           </span>
         </div>
         <span class="word-def">
-          {{ verb.definiton }}
+          {{ verb.definition }}
         </span>
       </li>
     </ul>
@@ -94,7 +155,33 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
+.main-header {
+  margin-bottom: 0;
+  text-align: left;
+  margin-left: 2rem;
+}
+
+.undo {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+
+  cursor: pointer;
+}
+
+.undo-trans-enter-active, 
+.undo-trans-leave-active {
+    transition: opacity 0.5s;
+}
+
+.undo-trans-enter-from,
+.undo-trans-leave-to {
+    opacity: 0;
+}
+
+
 .header {
   margin-bottom: 0;
 } 
@@ -150,6 +237,7 @@ export default {
   padding: 0 0 0 20px;
   gap: 10px;
 }
+
 
 li {
   text-align: left;
