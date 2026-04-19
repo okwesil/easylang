@@ -4,9 +4,18 @@ export default {
   setup() {
     const newWordData = reactive({ spelling: '', definition: '', pron: ''})
     const modal = useTemplateRef('modal')
+    const header = useTemplateRef('header')
+
     let destination = ref('')
-    const openForm = _destination => {
+    const openForm = (_destination, startSpelling, startDef, startPron) => {
       modal.value.showModal()
+      if (startSpelling != '') {
+        header.value.textContent = `Edit '${startSpelling}'`
+      }
+
+      newWordData.spelling = startSpelling
+      newWordData.definition = startDef
+      newWordData.pron = startPron
       destination.value = _destination
     }
 
@@ -32,7 +41,7 @@ export default {
 <template>
   <dialog ref="modal">
     <form>
-      <h2>Create New Word</h2>
+      <h2 ref="header">Create New Word</h2>
       <label>Spelling:</label>
       <input type="text" required v-model="newWordData.spelling">
       <label>Definition:</label>

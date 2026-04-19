@@ -12,8 +12,11 @@ export default {
     const justDeleted = ref(false)
     console.log(nouns.value)
 
-    const deleteWord = (id) => {
-      lastDeleted = structuredClone(dictionary.value[id])
+    const deleteWord = (id, save = true) => {
+      if (save) {
+        lastDeleted = structuredClone(dictionary.value[id])
+      }
+
       delete dictionary.value[id]
       
       justDeleted.value = true
@@ -33,8 +36,8 @@ export default {
     }
 
     const form = ref(null)
-    const openNewWordForm = (destination) => {
-      form.value.openForm(destination)
+    const openNewWordForm = (destination, startSpelling = '', startDef = '', startPron = '') => {
+      form.value.openForm(destination, startSpelling, startDef, startPron)
     }
 
     const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id) => {
@@ -47,6 +50,14 @@ export default {
       dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation}
     }
 
+    const editWord = (e, id) => {
+      e.preventDefault()
+      let word = dictionary.value[id];
+      console.log(word);
+      deleteWord(id)
+      openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation)
+    }
+
     const handleSubmit = (event) => {
       event.preventDefault()
       const { spelling, definition, pron } = form.value.newWordData
@@ -56,15 +67,22 @@ export default {
     }
     
 
-    return { nouns, verbs, adjectives, modal: form, justDeleted, openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord }
+    return { 
+      nouns, verbs, adjectives, modal: form, justDeleted, 
+      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord
+    }
   }
 }
 </script>
 
 <template>
-  <h1 class="main-header">Dictionary</h1>
+  <div class="main-header-wrapper">
+    <h1 class="main-header">Dictionary</h1>
+    <p class="info">double click to delete, right click to edit</p>
+  </div> 
+
   <transition name="undo-trans">
-    <h3 v-if="justDeleted" @click="undoDelete" class="undo active">undo delete</h3>
+    <h3 v-if="justDeleted" @click="undoDelete" class="undo active">Undo</h3>
   </transition>
 
   <div class="dictionary">
@@ -75,7 +93,7 @@ export default {
         <h3 class="new-word" @click="openNewWordForm('noun')">+</h3>
       </div>
 
-      <li v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')">
+      <li v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')" @contextmenu="editWord($event, noun.id)">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ noun.spelling }}
@@ -96,7 +114,7 @@ export default {
         <h3 class="new-word" @click="openNewWordForm('adjective')">+</h3>
       </div>
 
-      <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')">
+      <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')" @contextmenu="editWord($event, adjective.id)">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ adjective.spelling }}
@@ -117,7 +135,7 @@ export default {
         <h3 class="new-word" @click="openNewWordForm('verb')">+</h3>
       </div>
 
-      <li v-for="verb in verbs" :key="verb.id" @dblclick="deleteWord(verb.id, 'verb')">
+      <li v-for="verb in verbs" :key="verb.id" @dblclick="deleteWord(verb.id, 'verb')" @contextmenu="editWord($event, verb.id)">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ verb.spelling }}
@@ -137,10 +155,23 @@ export default {
 </template>
 
 <style scoped>
-.main-header {
+.main-header-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.main-header-wrapper > * {
   margin-bottom: 0;
   text-align: left;
+}
+
+.main-header {
   margin-left: 2rem;
+}
+
+.info {
+  margin-top: 1.7rem;
+  margin-left: 1rem;
 }
 
 .undo {
