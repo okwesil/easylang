@@ -1,6 +1,6 @@
 <script>
 import { ref } from 'vue';
-import { nouns, verbs, adjectives } from './dictionary';
+import { nouns, verbs, adjectives, generateID, dictionary } from './dictionary';
 import NewWordForm from '@/components/NewWordForm.vue';
 export default {
   name: 'DictionaryView',
@@ -10,20 +10,12 @@ export default {
     let timeout;
     let lastDeleted;
     const justDeleted = ref(false)
+    console.log(nouns.value)
 
-    const deleteWord = (index, list) => {
-
-      switch (list) {
-        case 'noun':
-          lastDeleted = [nouns.value.splice(index, 1), 'noun']
-          break
-        case 'adjective':
-          lastDeleted = [adjectives.value.splice(index, 1), 'adjective']
-          break
-        case 'verb':
-          lastDeleted = [verbs.value.splice(index, 1), 'verb']
-          break
-      }
+    const deleteWord = (id) => {
+      lastDeleted = structuredClone(dictionary.value[id])
+      delete dictionary.value[id]
+      
       justDeleted.value = true
 
       if (!timeout) {
@@ -35,47 +27,36 @@ export default {
     }
 
     const undoDelete = () => {
-      console.log(lastDeleted[0][0])
-      switch (lastDeleted[1]) {
-        case 'noun':
-          nouns.value.push(lastDeleted[0][0])
-          break
-        case 'adjective':
-          adjectives.value.push(lastDeleted[0][0])
-          break
-        case 'verb':
-          verbs.value.push(lastDeleted[0][0])
-          break
-      }
+      console.log(lastDeleted)
+      addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id)
       justDeleted.value = false
     }
 
     const form = ref(null)
-    const addNewWord = (destination) => {
+    const openNewWordForm = (destination) => {
       form.value.openForm(destination)
     }
+
+    const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id) => {
+      let id;
+      if (!_id) {
+        id = generateID()
+      } else {
+        id = _id
+      }
+      dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation}
+    }
+
     const handleSubmit = (event) => {
       event.preventDefault()
       const { spelling, definition, pron } = form.value.newWordData
       form.value.clearForm()
       form.value.modal.close()
-      
-      switch (form.value.destination) {
-        case 'noun':
-          nouns.value.push({ spelling, definition, pronounciation: pron})
-          break
-        case 'adjective':
-          adjectives.value.push({ spelling, definition, pronounciation: pron})
-          break
-        case 'verb':
-          verbs.value.push({ spelling, definition, pronounciation: pron})
-          break
-      }
-
+      addNewWord(form.value.destination, spelling, definition, pron)
     }
     
 
-    return { nouns, verbs, adjectives, modal: form, justDeleted, addNewWord, handleSubmit, deleteWord, undoDelete }
+    return { nouns, verbs, adjectives, modal: form, justDeleted, openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord }
   }
 }
 </script>
@@ -91,10 +72,10 @@ export default {
 
       <div class="list-header"> 
         <h2 class="section-name header">nouns</h2>
-        <h3 class="new-word" @click="addNewWord('noun')">+</h3>
+        <h3 class="new-word" @click="openNewWordForm('noun')">+</h3>
       </div>
 
-      <li v-for="(noun, index) in nouns" :key="index" @dblclick="deleteWord(index, 'noun')">
+      <li v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ noun.spelling }}
@@ -112,10 +93,10 @@ export default {
     <ul class="list adjective-list">
       <div class="list-header">
         <h2 class="section-name header">adjective</h2>
-        <h3 class="new-word" @click="addNewWord('adjective')">+</h3>
+        <h3 class="new-word" @click="openNewWordForm('adjective')">+</h3>
       </div>
 
-      <li v-for="(adjective, index) in adjectives" :key="index" @dblclick="deleteWord(index, 'adjective')">
+      <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ adjective.spelling }}
@@ -133,10 +114,10 @@ export default {
     <ul class="list verb-list">
       <div class="list-header">
         <h2 class="section-name header">verbs</h2>
-        <h3 class="new-word" @click="addNewWord('verb')">+</h3>
+        <h3 class="new-word" @click="openNewWordForm('verb')">+</h3>
       </div>
 
-      <li v-for="(verb, index) in verbs" :key="index" @dblclick="deleteWord(index, 'verb')">
+      <li v-for="verb in verbs" :key="verb.id" @dblclick="deleteWord(verb.id, 'verb')">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ verb.spelling }}
