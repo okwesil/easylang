@@ -10,7 +10,6 @@ export default {
     let timeout;
     let lastDeleted;
     const justDeleted = ref(false)
-    console.log(nouns.value)
 
     const deleteWord = (id, save = true) => {
       if (save) {
@@ -30,7 +29,6 @@ export default {
     }
 
     const undoDelete = () => {
-      console.log(lastDeleted)
       addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id)
       justDeleted.value = false
     }
@@ -53,7 +51,6 @@ export default {
     const editWord = (e, id) => {
       e.preventDefault()
       let word = dictionary.value[id];
-      console.log(word);
       deleteWord(id)
       openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation)
     }
@@ -195,6 +192,8 @@ export default {
   padding-left: 10px;
   padding-right: 10px;
   height: 100%;
+  font-size: 2cqi;
+  color: rgba(255, 255, 255, 0.831);
 }
 .word-pron {
   color: #a8a2a2dd;
