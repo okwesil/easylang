@@ -77,11 +77,11 @@ export default {
 
 <template>
   <div class="main-header-wrapper">
-    <h1 class="main-header">Dictionary</h1>
+    <h1 class="header">Dictionary</h1>
     <p class="info">double click to delete, right click to edit</p>
   </div> 
 
-  <transition name="undo-trans">
+  <transition name="fade">
     <h3 v-if="justDeleted" @click="undoDelete" class="undo active">Undo</h3>
   </transition>
 
@@ -155,24 +155,7 @@ export default {
 </template>
 
 <style scoped>
-.main-header-wrapper {
-  display: flex;
-  align-items: center;
-}
 
-.main-header-wrapper > * {
-  margin-bottom: 0;
-  text-align: left;
-}
-
-.main-header {
-  margin-left: 2rem;
-}
-
-.info {
-  margin-top: 1.7rem;
-  margin-left: 1rem;
-}
 
 .undo {
   position: fixed;
@@ -183,15 +166,7 @@ export default {
   cursor: pointer;
 }
 
-.undo-trans-enter-active, 
-.undo-trans-leave-active {
-    transition: opacity 0.5s;
-}
 
-.undo-trans-enter-from,
-.undo-trans-leave-to {
-    opacity: 0;
-}
 
 
 .header {

@@ -47,4 +47,33 @@ body {
   transition: 0.3s ease;
 }
 
+.main-header-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.main-header-wrapper > * {
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.header {
+  margin-left: 2rem;
+}
+
+.info {
+  margin-top: 1.7rem;
+  margin-left: 1rem;
+}
+
+.fade-enter-active, 
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
 </style>

@@ -5,8 +5,8 @@
         </span>
         <span v-else class="sidebar-title">easyLang</span>
         <sidebar-link to="/dictionary" icon="fa-solid fa-book">Dictionary</sidebar-link>
-        <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
         <sidebar-link to="/phonetics" icon="fa-solid fa-volume">Phonetics</sidebar-link>
+        <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
   </div>
 </template>
 
@@ -29,9 +29,9 @@
 
 <style>
 :root {
-    --sidebar-bg-color: #239e93;
-    --sidebar-item-hover: #0c897f;
-    --sidebar-item-active: #108d82;
+    --sidebar-bg-color: #9e2323;
+    --sidebar-item-hover: #890c0c;
+    --sidebar-item-active: #8d1010;
 }
 .sidebar {
     color: white;

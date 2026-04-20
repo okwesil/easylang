@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DictionaryView from '../Dictionary/DictionaryView.vue'
 import PhraseView from '../views/PhraseView.vue'
-import PhoneticsView from '../views/PhoneticsView.vue'
+import PhoneticsView from '../Phonetics/PhoneticsView.vue'
 
 const routes = [
    { 
