@@ -10,7 +10,7 @@
         <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
         <div class="save-and-load">
 
-            <div class="save-load" @click="save">
+            <div class="save-load" @click="save" @contextmenu="(e) => { e.preventDefault(); download() }">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span v-if="!collapsed">
                     Save
@@ -31,7 +31,7 @@
 
 <script>
     import { collapsed, setCollapsed, sidebarWidth } from './state';
-    import { save, load } from '@/save';
+    import { save, load, downloadSaveFile } from '@/save';
     import SidebarLink from './SidebarLink.vue';
     export default {
         name: "Sidebar",
@@ -40,7 +40,7 @@
         },
         setup() {
             
-            return { collapsed,  sidebarWidth, setCollapsed, save, load }
+            return { collapsed,  sidebarWidth, setCollapsed, save, load, download: downloadSaveFile }
         }
     }
 

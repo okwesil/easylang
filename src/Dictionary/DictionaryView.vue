@@ -1,7 +1,7 @@
 <script>
 import { ref } from 'vue';
-import { nouns, verbs, adjectives, generateID, dictionary } from './dictionary';
-import NewWordForm from '@/components/NewWordForm.vue';
+import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary } from './dictionary';
+import NewWordForm from '@/Dictionary/NewWordForm.vue';
 export default {
   name: 'DictionaryView',
   components: { NewWordForm },
@@ -34,8 +34,8 @@ export default {
     }
 
     const form = ref(null)
-    const openNewWordForm = (destination, startSpelling = '', startDef = '', startPron = '') => {
-      form.value.openForm(destination, startSpelling, startDef, startPron)
+    const openNewWordForm = (destination, startSpelling = null, startDef, startPron, editing = false) => {
+      form.value.openForm(destination, startSpelling, startDef, startPron, editing)
     }
 
     const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id) => {
@@ -52,7 +52,7 @@ export default {
       e.preventDefault()
       let word = dictionary.value[id];
       deleteWord(id)
-      openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation)
+      form.value.openForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, true)
     }
 
     const handleSubmit = (event) => {
@@ -65,7 +65,7 @@ export default {
     
 
     return { 
-      nouns, verbs, adjectives, modal: form, justDeleted, 
+      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, 
       openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord
     }
   }
@@ -83,6 +83,7 @@ export default {
   </transition>
 
   <div class="dictionary">
+
     <ul class="list noun-list">
 
       <div class="list-header"> 
@@ -104,27 +105,6 @@ export default {
         </span>
       </li>
     </ul>
-    
-    <ul class="list adjective-list">
-      <div class="list-header">
-        <h2 class="section-name header">adjective</h2>
-        <h3 class="new-word" @click="openNewWordForm('adjective')">+</h3>
-      </div>
-
-      <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')" @contextmenu="editWord($event, adjective.id)">
-        <div class="word-info">
-          <h3 class="word-spelling">
-            {{ adjective.spelling }}
-          </h3>
-          <span class="word-pron"> 
-            {{ adjective.pronounciation }}
-          </span>
-        </div>
-        <span class="word-def">
-          {{ adjective.definition }}
-        </span>
-      </li>
-    </ul>
 
     <ul class="list verb-list">
       <div class="list-header">
@@ -143,6 +123,71 @@ export default {
         </div>
         <span class="word-def">
           {{ verb.definition }}
+        </span>
+      </li>
+    </ul>
+
+    <ul class="list adjective-list">
+      <div class="list-header">
+        <h2 class="section-name header">adjectives</h2>
+        <h3 class="new-word" @click="openNewWordForm('adjective')">+</h3>
+      </div>
+
+      <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')" @contextmenu="editWord($event, adjective.id)">
+        <div class="word-info">
+          <h3 class="word-spelling">
+            {{ adjective.spelling }}
+          </h3>
+          <span class="word-pron"> 
+            {{ adjective.pronounciation }}
+          </span>
+        </div>
+        <span class="word-def">
+          {{ adjective.definition }}
+        </span>
+      </li>
+    </ul>
+
+    <ul class="list pronoun-list">
+
+      <div class="list-header"> 
+        <h2 class="section-name header">pronouns</h2>
+        <h3 class="new-word" @click="openNewWordForm('pronoun')">+</h3>
+      </div>
+
+      <li v-for="pronoun in pronouns" :key="pronoun.id" @dblclick="deleteWord(pronoun.id, 'pronoun')" @contextmenu="editWord($event, pronoun.id)">
+        <div class="word-info">
+          <h3 class="word-spelling">
+            {{ pronoun.spelling }}
+          </h3>
+          <span class="word-pron"> 
+            {{ pronoun.pronounciation }}
+          </span>
+        </div>
+        <span class="word-def">
+          {{ pronoun.definition }}
+        </span>
+      </li>
+    </ul>
+
+    <ul class="list particle-list">
+
+      <div class="list-header"> 
+        <h2 class="section-name header">particles</h2>
+        <h3 class="new-word" @click="openNewWordForm('particle')">+</h3>
+      </div>
+
+      <li v-for="particle in particles" :key="particle.id" @dblclick="deleteWord(particle.id, 'particle')" @contextmenu="editWord($event, pronoun.id)">
+        <div class="word-info">
+          <h3 class="word-spelling">
+            {{ particle.spelling }}
+          </h3>
+          <span class="word-pron"> 
+            {{ particle.pronounciation }}
+          </span>
+        </div>
+        <span class="word-def">
+          {{ particle.definition }}
         </span>
       </li>
     </ul>
@@ -222,6 +267,10 @@ export default {
   flex-direction: column;
   padding: 0 0 0 20px;
   gap: 10px;
+}
+
+.noun-list {
+  flex: 1.5;
 }
 
 

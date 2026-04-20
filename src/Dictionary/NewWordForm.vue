@@ -7,11 +7,8 @@ export default {
     const header = useTemplateRef('header')
 
     let destination = ref('')
-    const openForm = (_destination, startSpelling, startDef, startPron) => {
+    const openForm = (_destination, startSpelling, startDef, startPron, editing) => {
       modal.value.showModal()
-      if (startSpelling != '') {
-        header.value.textContent = `Edit '${startSpelling}'`
-      }
 
       newWordData.spelling = startSpelling
       newWordData.definition = startDef
@@ -20,9 +17,9 @@ export default {
     }
 
     const clearForm = () => {
-      newWordData.spelling = ''
-      newWordData.definition = ''
-      newWordData.pron = ''
+      newWordData.spelling = null
+      newWordData.definition = null
+      newWordData.pron = null
     }
 
 
@@ -41,7 +38,7 @@ export default {
 <template>
   <dialog ref="modal">
     <form>
-      <h2 ref="header">Create New Word</h2>
+      <h2 ref="header">Enter Word Info</h2>
       <label>Spelling:</label>
       <input type="text" required v-model="newWordData.spelling">
       <label>Definition:</label>

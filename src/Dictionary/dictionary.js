@@ -16,8 +16,14 @@ export const generateID = () => {
 export const nouns =  computed(
     () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'noun')
 )
+export const pronouns = computed(
+    () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'pronoun')
+)
 export const verbs = computed(
     () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'verb')
+)
+export const particles = computed(
+    () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'particle')
 )
 export const adjectives = computed(
     () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'adjective')
