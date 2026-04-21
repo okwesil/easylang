@@ -48,24 +48,26 @@ export default {
       dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation}
     }
 
+    const editing = ref(null)
+
     const editWord = (e, id) => {
       e.preventDefault()
       let word = dictionary.value[id];
       deleteWord(id)
-      form.value.openForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, true)
+      editing.value = id
+      form.value.openForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation)
     }
 
     const handleSubmit = (event) => {
-      event.preventDefault()
       const { spelling, definition, pron } = form.value.newWordData
       form.value.clearForm()
       form.value.modal.close()
-      addNewWord(form.value.destination, spelling, definition, pron)
+      addNewWord(form.value.destination, spelling, definition, pron, editing.value != null ? editing.value : undefined)
+      editing.value = null
     }
-    
-
+  
     return { 
-      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, 
+      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, editing,
       openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord
     }
   }
@@ -76,6 +78,7 @@ export default {
   <div class="main-header-wrapper">
     <h1 class="header">Dictionary</h1>
     <p class="info">double click to delete, right click to edit</p>
+    <p v-if="debugMode" class="debug info">debug mode</p>
   </div> 
 
   <transition name="fade">
@@ -192,7 +195,7 @@ export default {
       </li>
     </ul>
 
-    <new-word-form ref="modal" @submit="handleSubmit"></new-word-form>
+    <new-word-form ref="modal" @submit.prevent="handleSubmit"></new-word-form>
   </div>
 </template>
 
@@ -237,7 +240,8 @@ export default {
   padding-left: 10px;
   padding-right: 10px;
   height: 100%;
-  font-size: 2cqi;
+  container-type: inline-size;
+  font-size: 1.2cqi;
   color: rgba(255, 255, 255, 0.831);
 }
 .word-pron {

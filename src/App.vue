@@ -9,13 +9,15 @@
 <script>
   import Sidebar from './Sidebar/Sidebar.vue';
   import { sidebarWidth } from './Sidebar/state.js';
+  import { load } from './save';
 
   export default {
     name: 'App',
     components: {
-      Sidebar,
+      Sidebar, 
     },
     setup() {
+      load()
       return { sidebarWidth }
     }
   }

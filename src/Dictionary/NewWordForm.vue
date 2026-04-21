@@ -7,7 +7,7 @@ export default {
     const header = useTemplateRef('header')
 
     let destination = ref('')
-    const openForm = (_destination, startSpelling, startDef, startPron, editing) => {
+    const openForm = (_destination, startSpelling, startDef, startPron) => {
       modal.value.showModal()
 
       newWordData.spelling = startSpelling
@@ -42,7 +42,7 @@ export default {
       <label>Spelling:</label>
       <input type="text" required v-model="newWordData.spelling">
       <label>Definition:</label>
-      <input type="text" required v-model="newWordData.definition">
+      <input type="text" maxlength="30" required v-model="newWordData.definition">
       <label>Pronounciation:</label>
       <input type="text" required v-model="newWordData.pron">
       <button type="submit">Create!</button>
