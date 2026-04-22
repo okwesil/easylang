@@ -50,7 +50,7 @@ export default {
     <div class="phrase-list" @mousemove="handleMouseMove">
 
 
-      <div v-for="(phrase, index) in phrases" :key="index" class="phrase">
+      <div v-for="(phrase, index) in phrases" :key="index" class="phrase" @dblclick="phrases.splice(index, 1)">
         <div class="words">
           <span class="word" v-for="(id, index) in phrase.ids" :key="index" @mouseenter="hovering = id" @mouseleave="hovering = null">
             {{ spellingOf(id) }}

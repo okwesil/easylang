@@ -94,7 +94,7 @@ export default {
         <h3 class="new-word" @click="openNewWordForm('noun')">+</h3>
       </div>
 
-      <li v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')" @contextmenu="editWord($event, noun.id)">
+      <li class="word-container" v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')" @contextmenu="editWord($event, noun.id)">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ noun.spelling }}
@@ -103,7 +103,7 @@ export default {
             {{ noun.pronounciation }}
           </span>
         </div>
-        <span class="word-def">
+        <span class="word-def" :title="noun.definition">
           {{ noun.definition }}
         </span>
       </li>
@@ -124,7 +124,7 @@ export default {
             {{ verb.pronounciation }}
           </span>
         </div>
-        <span class="word-def">
+        <span class="word-def" :title="verb.definition">
           {{ verb.definition }}
         </span>
       </li>
@@ -145,7 +145,7 @@ export default {
             {{ adjective.pronounciation }}
           </span>
         </div>
-        <span class="word-def">
+        <span class="word-def" :title="adjective.definition">
           {{ adjective.definition }}
         </span>
       </li>
@@ -167,7 +167,7 @@ export default {
             {{ pronoun.pronounciation }}
           </span>
         </div>
-        <span class="word-def">
+        <span class="word-def" :title="pronoun.definition">
           {{ pronoun.definition }}
         </span>
       </li>
@@ -189,7 +189,7 @@ export default {
             {{ particle.pronounciation }}
           </span>
         </div>
-        <span class="word-def">
+        <span class="word-def" :title="particle.definition">
           {{ particle.definition }}
         </span>
       </li>
@@ -210,9 +210,6 @@ export default {
 
   cursor: pointer;
 }
-
-
-
 
 .header {
   margin-bottom: 0;
@@ -239,11 +236,14 @@ export default {
   flex: 1;
   padding-left: 10px;
   padding-right: 10px;
-  height: 100%;
+  /* height: 100%; */
   container-type: inline-size;
   font-size: 1.2cqi;
   color: rgba(255, 255, 255, 0.831);
+  overflow: hidden;
 }
+
+
 .word-pron {
   color: #a8a2a2dd;
 }
@@ -254,6 +254,9 @@ export default {
   flex-shrink: 0;
   min-width: fit-content;
   padding-left: 10px;
+}
+.word-container {
+  overflow: hidden;
 }
 
 .dictionary {

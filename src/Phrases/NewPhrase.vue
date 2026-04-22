@@ -2,10 +2,14 @@
     <dialog ref="modal">
         <form @submit.prevent="handleSubmit">
             <label>Select Words to make a phrase</label>
-
-            <h3 class="words-added">{{ wordsAdded.reduce((string, id) => string + dictionary[id].spelling + ' ', '' ) }}</h3>
+            
+            <div class="words-added-container">
+                <h3 class="words-added">{{ wordsAdded.reduce((string, id) => string + dictionary[id].spelling + ' ', '' ) }}</h3>
+                <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
+            </div>
+            <h4 class="hovered-word">{{ dictionary[hovering]?.definition ?? '--' }}</h4>
             <div class="word-container">
-                <div v-for="(word, id) in dictionary" :key="id" class="word" @click="wordsAdded.push(id)">
+                <div v-for="(word, id) in dictionary" :key="id" class="word" @click="wordsAdded.push(id)" @mouseenter="hovering = id" @mouseleave="hovering = null">
                     {{ word.spelling }}
                 </div>
             </div>
@@ -43,9 +47,11 @@ export default {
             input.value.value = ''
             wordsAdded.value.length = 0
         }
+        
+        const hovering = ref(null)
 
         return {
-            modal, dictionary, wordsAdded, input,
+            modal, dictionary, wordsAdded, input, hovering,
             openForm, handleSubmit, clearForm
         }
     }
@@ -72,14 +78,29 @@ dialog {
     border-bottom: 2px solid var(--sidebar-bg-color);
 }
 
+.words-added-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.backspace {
+    margin-left: 20px;
+    cursor: pointer;
+}
+
 .word {
     text-align: center;
     border-radius: 0.5rem;
     transition: 0.3s ease;
+    padding: 5px;
 }
 
 .word:hover {
     background-color: var(--sidebar-bg-color);
+}
+
+.hovered-word {
+    margin: 0;
 }
 
 

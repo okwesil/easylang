@@ -17,7 +17,7 @@
       Sidebar, 
     },
     setup() {
-      load()
+      load(undefined, true)
       return { sidebarWidth }
     }
   }
