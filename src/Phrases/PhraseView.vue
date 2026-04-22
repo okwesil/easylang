@@ -10,8 +10,11 @@ export default {
   setup() {
     const hovering = ref(null);
     const wordDef = useTemplateRef('word-definition')
-      
+    const lastDeleted = ref(null)
+    const justDeleted = ref(false)
     const form = useTemplateRef('form')
+    
+      
     const handleMouseMove = e => {
       const [ x, y ] = [e.clientX, e.clientY]
       wordDef.value.style.left = `${x + 20}px`
@@ -24,15 +27,41 @@ export default {
     const createNewPhrase = () => {
       form.value.openForm()
     }
+
+    let timeout; 
+    const deletePhrase = index => {
+      lastDeleted.value = phrases.value.splice(index, 1)[0]
+      
+      justDeleted.value = true
+
+      if (!timeout) {
+        timeout = setTimeout(() => justDeleted.value = false, 3000)
+      } else {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => justDeleted.value = false, 3000)
+      }
+      
+    }
+
+    const undoDelete = () => {
+      phrases.value.push(lastDeleted.value)
+      justDeleted.value = false
+    }
+
+    const editPhrase = index => {
+      const {ids, meaning} = phrases.value[index]
+      deletePhrase(index)
+      form.value.openForm(ids, meaning)
+    }
+
     const handleSubmit = e => {
       phrases.value.push({ids: structuredClone(form.value.wordsAdded), meaning: form.value.input.value})
-      console.log(phrases)
       form.value.clearForm()
     }
 
     return {
-      phrases, dictionary, hovering,
-      handleMouseMove, generateMeaning, spellingOf, createNewPhrase, handleSubmit
+      phrases, dictionary, hovering, justDeleted,
+      handleMouseMove, generateMeaning, spellingOf, createNewPhrase, handleSubmit, editPhrase, deletePhrase, undoDelete
     }
   }
 }
@@ -44,13 +73,16 @@ export default {
       <h1 class="header">Phrases</h1>
       <h1 class="new-phrase" @click="createNewPhrase">+</h1>
     </div>
+    <transition name="fade">
+      <h3 v-if="justDeleted" @click="undoDelete" class="undo">Undo</h3>
+    </transition>
 
     <div ref="word-definition" class="word-def" v-show="hovering">hovering</div>
 
     <div class="phrase-list" @mousemove="handleMouseMove">
 
 
-      <div v-for="(phrase, index) in phrases" :key="index" class="phrase" @dblclick="phrases.splice(index, 1)">
+      <div v-for="(phrase, index) in phrases" :key="index" class="phrase" @dblclick="deletePhrase(index)" @contextmenu.prevent="editPhrase(index)">
         <div class="words">
           <span class="word" v-for="(id, index) in phrase.ids" :key="index" @mouseenter="hovering = id" @mouseleave="hovering = null">
             {{ spellingOf(id) }}
@@ -135,6 +167,15 @@ export default {
   align-items: center;
 
   user-select: none;
+  cursor: pointer;
+}
+
+.undo {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+
   cursor: pointer;
 }
 

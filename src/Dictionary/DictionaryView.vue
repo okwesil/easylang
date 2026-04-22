@@ -78,7 +78,6 @@ export default {
   <div class="main-header-wrapper">
     <h1 class="header">Dictionary</h1>
     <p class="info">double click to delete, right click to edit</p>
-    <p v-if="debugMode" class="debug info">debug mode</p>
   </div> 
 
   <transition name="fade">
@@ -180,7 +179,7 @@ export default {
         <h3 class="new-word" @click="openNewWordForm('particle')">+</h3>
       </div>
 
-      <li v-for="particle in particles" :key="particle.id" @dblclick="deleteWord(particle.id, 'particle')" @contextmenu="editWord($event, pronoun.id)">
+      <li v-for="particle in particles" :key="particle.id" @dblclick="deleteWord(particle.id, 'particle')" @contextmenu="editWord($event, particle.id)">
         <div class="word-info">
           <h3 class="word-spelling">
             {{ particle.spelling }}

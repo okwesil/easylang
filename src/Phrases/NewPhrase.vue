@@ -2,7 +2,7 @@
     <dialog ref="modal">
         <form @submit.prevent="handleSubmit">
             <label>Select Words to make a phrase</label>
-            
+
             <div class="words-added-container">
                 <h3 class="words-added">{{ wordsAdded.reduce((string, id) => string + dictionary[id].spelling + ' ', '' ) }}</h3>
                 <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
@@ -29,12 +29,18 @@ export default {
     name: 'NewPhrase',
     setup() {
         const modal = useTemplateRef('modal')
-        const openForm = () => {
+        const input = useTemplateRef('input')
+        const wordsAdded = ref([])
+
+        const openForm = (startingWords = null, startingDefinition = null) => {
+            if (startingWords != null) {
+                console.log(startingWords)
+                wordsAdded.value = startingWords
+                input.value.value = startingDefinition
+            }
             modal.value.showModal()
         }
 
-        const input = useTemplateRef('input')
-        const wordsAdded = ref([])
         const handleSubmit = e => {
             if (wordsAdded.value.length == 0) {
                 alert('add some words to your phrase')
@@ -102,6 +108,7 @@ dialog {
 .hovered-word {
     margin: 0;
 }
+
 
 
 </style>
