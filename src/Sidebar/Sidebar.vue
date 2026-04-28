@@ -10,14 +10,14 @@
         <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
         <div class="save-and-load">
 
-            <div class="save-load" @click="save">
+            <div class="save-load" @click="save()">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span v-if="!collapsed">
                     Save
                 </span>
             </div>
 
-            <div class="save-load" @click="load">
+            <div class="save-load" @click="load()">
                 <i class="fa-solid fa-download"></i>
                 <span v-if="!collapsed">
                     Load

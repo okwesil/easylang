@@ -145,7 +145,7 @@ export default {
 }
 
 .word-def {
-  position: absolute;
+  position: fixed;
   pointer-events: none;
   transform: translateY(-50%);
   background-color: var(--sidebar-bg-color);

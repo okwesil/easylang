@@ -9,7 +9,7 @@
             </div>
             <h4 class="hovered-word">{{ dictionary[hovering]?.definition ?? '--' }}</h4>
             <div class="word-container">
-                <div v-for="(word, id) in dictionary" :key="id" class="word" @click="wordsAdded.push(id)" @mouseenter="hovering = id" @mouseleave="hovering = null">
+                <div v-for="word in sortedDictionary" :key="word.id" class="word" @click="wordsAdded.push(word.id)" @mouseenter="hovering = word.id" @mouseleave="hovering = null">
                     {{ word.spelling }}
                 </div>
             </div>
@@ -22,7 +22,7 @@
 
 <script>
 import { useTemplateRef, ref } from 'vue';
-import { dictionary } from '@/Dictionary/dictionary';
+import { dictionary, sortedDictionary } from '@/Dictionary/dictionary';
 
 
 export default {
@@ -32,11 +32,10 @@ export default {
         const input = useTemplateRef('input')
         const wordsAdded = ref([])
 
-        const openForm = (startingWords = null, startingDefinition = null) => {
+        const openForm = (startingWords = null, startingMeaning = null) => {
             if (startingWords != null) {
-                console.log(startingWords)
-                wordsAdded.value = startingWords
-                input.value.value = startingDefinition
+                wordsAdded.value = startingWords.filter(id => id in dictionary.value)
+                input.value.value = startingMeaning
             }
             modal.value.showModal()
         }
@@ -57,7 +56,7 @@ export default {
         const hovering = ref(null)
 
         return {
-            modal, dictionary, wordsAdded, input, hovering,
+            modal, dictionary, sortedDictionary, wordsAdded, input, hovering,
             openForm, handleSubmit, clearForm
         }
     }

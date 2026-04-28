@@ -48,13 +48,13 @@ export default {
       dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation}
     }
 
-    const editing = ref(null)
+    const existingId = ref(null)
 
     const editWord = (e, id) => {
       e.preventDefault()
       let word = dictionary.value[id];
       deleteWord(id)
-      editing.value = id
+      existingId.value = id
       form.value.openForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation)
     }
 
@@ -62,12 +62,12 @@ export default {
       const { spelling, definition, pron } = form.value.newWordData
       form.value.clearForm()
       form.value.modal.close()
-      addNewWord(form.value.destination, spelling, definition, pron, editing.value != null ? editing.value : undefined)
-      editing.value = null
+      addNewWord(form.value.destination, spelling, definition, pron, existingId.value)
+      existingId.value = null
     }
   
     return { 
-      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, editing,
+      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, editing: existingId,
       openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord
     }
   }
