@@ -12,7 +12,7 @@ export default {
       newWordData.spelling = startSpelling
       newWordData.definition = startDef
       newWordData.pron = startPron
-      newWordData.typeOfAffix = startTypeOfAffix
+      newWordData.typeOfAffix = startTypeOfAffix ?? 'standalone'
       destination.value = _destination
     }
 

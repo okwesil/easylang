@@ -40,9 +40,29 @@ export default {
             modal.value.showModal()
         }
 
-        const handleSubmit = e => {
+        const validation = () => {
             if (wordsAdded.value.length == 0) {
-                alert('add some words to your phrase')
+                return "Add some words to your phrase first"
+            }
+
+            const firstWord = wordsAdded.value[0]
+            const lastWord = wordsAdded.value[wordsAdded.value.length - 1]
+            
+            if (dictionary.value[firstWord].typeOfAffix == 'suffix') {
+                return "Phrases can't start with suffixes"
+            }
+
+            if (dictionary.value[lastWord].typeOfAffix == 'prefix' ) {
+                return "Phrases can't end with prefixes"
+            }
+
+            return null
+        }
+
+        const handleSubmit = e => {
+            const errorMsg = validation()
+            if (errorMsg) {
+                alert(errorMsg)
                 e.stopPropagation()
                 return
             }

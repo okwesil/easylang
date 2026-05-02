@@ -1,5 +1,5 @@
 <script>
-import { phrases, generateMeaning, spellingOf } from './phrases';
+import { phrases, generateMeaning, spellingOf, meaningOf, sentenceFrom } from './phrases';
 import { dictionary } from '@/Dictionary/dictionary';
 import { ref, useTemplateRef } from 'vue';
 import NewPhrase from './NewPhrase.vue';
@@ -20,7 +20,7 @@ export default {
       wordDef.value.style.left = `${x + 20}px`
       wordDef.value.style.top = `${y}px`
       if (hovering.value != null) {
-        wordDef.value.innerHTML = dictionary.value[hovering.value]?.definition ?? '[deleted]'
+        wordDef.value.innerHTML = meaningOf(hovering.value)
       }
     }
 
@@ -61,7 +61,7 @@ export default {
 
     return {
       phrases, dictionary, hovering, justDeleted,
-      handleMouseMove, generateMeaning, spellingOf, createNewPhrase, handleSubmit, editPhrase, deletePhrase, undoDelete
+      handleMouseMove, generateMeaning, spellingOf, createNewPhrase, handleSubmit, editPhrase, deletePhrase, undoDelete, sentenceFrom
     }
   }
 }
@@ -84,12 +84,12 @@ export default {
 
       <div v-for="(phrase, index) in phrases" :key="index" class="phrase" @dblclick="deletePhrase(index)" @contextmenu.prevent="editPhrase(index)">
         <div class="words">
-          <span class="word" v-for="(id, index) in phrase.ids" :key="index" @mouseenter="hovering = id" @mouseleave="hovering = null">
-            {{ spellingOf(id) }}
+          <span class="word" v-for="(word, index) in sentenceFrom(phrase.ids)" :key="index" @mouseenter="hovering = word" @mouseleave="hovering = null">
+            {{ spellingOf(word) }}
           </span>
         </div>
         <span class="phrase-meaning literal-meaning">
-        LITERAL -> {{ generateMeaning(phrase.ids) }}
+        LITERAL -> {{ generateMeaning(sentenceFrom(phrase.ids)) }}
         </span>
         <span class="phrase-meaning">
           {{ phrase.meaning }}

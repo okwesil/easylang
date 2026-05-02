@@ -1,6 +1,6 @@
 <script>
 import { ref } from 'vue';
-import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpelling } from './dictionary';
+import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 export default {
   name: 'DictionaryView',
@@ -70,7 +70,7 @@ export default {
   
     return { 
       nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted,
-      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpelling
+      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpellingWithDashes
     }
   }
 }
@@ -98,7 +98,7 @@ export default {
       <li class="word-container" v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')" @contextmenu="editWord($event, noun.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ getSpelling(noun.id) }}
+            {{ getSpellingWithDashes(noun.id) }}
           </h3>
           <span class="word-pron"> 
             {{ noun.pronounciation }}
@@ -119,7 +119,7 @@ export default {
       <li v-for="verb in verbs" :key="verb.id" @dblclick="deleteWord(verb.id, 'verb')" @contextmenu="editWord($event, verb.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ getSpelling(verb.id) }}
+            {{ getSpellingWithDashes(verb.id) }}
           </h3>
           <span class="word-pron"> 
             {{ verb.pronounciation }}
@@ -140,7 +140,7 @@ export default {
       <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')" @contextmenu="editWord($event, adjective.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ getSpelling(adjective.id) }}
+            {{ getSpellingWithDashes(adjective.id) }}
           </h3>
           <span class="word-pron"> 
             {{ adjective.pronounciation }}
@@ -162,7 +162,7 @@ export default {
       <li v-for="pronoun in pronouns" :key="pronoun.id" @dblclick="deleteWord(pronoun.id, 'pronoun')" @contextmenu="editWord($event, pronoun.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ getSpelling(pronoun.id) }}
+            {{ getSpellingWithDashes(pronoun.id) }}
           </h3>
           <span class="word-pron"> 
             {{ pronoun.pronounciation }}
@@ -184,7 +184,7 @@ export default {
       <li v-for="particle in particles" :key="particle.id" @dblclick="deleteWord(particle.id, 'particle')" @contextmenu="editWord($event, particle.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ getSpelling(particle.id) }}
+            {{ getSpellingWithDashes(particle.id) }}
           </h3>
           <span class="word-pron"> 
             {{ particle.pronounciation }}

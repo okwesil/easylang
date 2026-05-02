@@ -15,7 +15,7 @@ export const dictionary = ref(
     {}
 )
 
-export const getSpelling = id => {
+export const getSpellingWithDashes = id => {
     const word = dictionary.value[id]
     return (word.typeOfAffix == 'suffix' ? '-' : '') + word.spelling + (word.typeOfAffix == 'prefix' ? '-' : '')
 }
