@@ -9,17 +9,25 @@
     </div>
     <br>
     <h2 class="header">Available Sounds </h2>
-    <div class="sound-grid all-sounds">
-        <div v-for="(sound, symbol) in availableSounds" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)">
-            {{ symbol }}
+    <div class="all-sounds">
+        <div class="consonant-wrapper cons-grid">
+            <div v-for="(sound, symbol) in consonantsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)">
+                {{ symbol }}
+            </div>
         </div>
+        <div class="vowel-wrapper vowel-grid">
+            <div v-for="(sound, symbol) in vowelsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)">
+                {{ symbol }}
+            </div>
+        </div>
+        
     </div>
 </template>
 
 <script>
 
 import { ref } from 'vue';
-import { sounds, availableSounds, mySounds } from './sounds';
+import { sounds, availableSounds, keysOfUserSounds, vowelsFrom, consonantsFrom } from './sounds';
 export default {
   name: 'PhoneticsView',
   setup() {
@@ -28,6 +36,7 @@ export default {
     let timeout;
     const handleClick = (e, audio, symbol) => {
         if (audio && e.shiftKey) {
+            audio.volume = 0.5 
             audio.play()
         }
         copyToClipboard(symbol)
@@ -47,8 +56,8 @@ export default {
     }
 
     return {
-        sounds, availableSounds, mySounds, recentlyCopied,
-        handleClick,
+        sounds, availableSounds, keysOfUserSounds, recentlyCopied,
+        handleClick, consonantsFrom, vowelsFrom
     }
   }
 }
@@ -65,12 +74,25 @@ export default {
     user-select: none;
 }
 
-.sound-grid {
-    --columns: 15;
-    display: grid;
+.all-sounds {
+    display: flex;
     margin-left: 1rem;
-    grid-template-columns: repeat(var(--columns), 1fr);
+}
+
+.cons-grid {
+    --columns: 11;
+    display: grid;
     gap: 10px;
+    grid-template-columns: repeat(var(--columns), calc(50vw / var(--columns)));
+}
+
+.vowel-grid {
+    --columns: 7;
+    display: grid;
+    grid-template-columns: repeat(var(--columns), calc(29vw / var(--columns)));
+    gap: 10px;
+    margin-left: 1rem;
+
 }
 
 .sound {
@@ -80,12 +102,17 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: calc((var(--columns)) / 100 * 20vw);
+    font-size: clamp(0.5rem, calc(var(--columns) * 3cqw), 2rem);
+    margin: 0;
     padding: 0;
     border-radius: 1rem;
     transition: 0.2s ease;
     user-select: none;
     cursor: pointer;
+}
+
+.vowel-wrapper > * {
+    border: 2px dotted var(--sidebar-bg-color);
 
 }
 
