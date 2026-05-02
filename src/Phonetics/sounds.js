@@ -30,6 +30,11 @@ export const sounds = ref({
     'ɹ': { vowel: false, audio: new Audio('./assets/sounds/Alveolar_approximant.ogg')},
     'j': { vowel: false, audio: new Audio('./assets/sounds/Palatal_approximant.ogg')},
     'ɰ': { vowel: false, audio: new Audio('./assets/sounds/Voiced_velar_approximant.ogg')},
+    'l': { vowel: false, audio: new Audio('./assets/sounds/Alveolar_lateral_approximant.ogg')},
+    'r': { vowel: false, audio: new Audio('./assets/sounds/Alveolar_trill.ogg')},
+    'ɾ': { vowel: false, audio: new Audio('./assets/sounds/Alveolar_tap.ogg')},
+    'ʀ': { vowel: false, audio: new Audio('./assets/sounds/Uvular_trill.ogg')},
+
     
 
 })
