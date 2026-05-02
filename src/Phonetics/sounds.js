@@ -26,7 +26,12 @@ export const sounds = ref({
     'ð': { vowel: false, audio: new Audio('./assets/sounds/Voiced_dental_fricative.ogg')},
     'x': { vowel: false, audio: new Audio('./assets/sounds/Voiceless_velar_fricative.ogg')},
     'ɣ': { vowel: false, audio: new Audio('./assets/sounds/Voiced_velar_fricative.ogg')},
-    'h': { vowel: false, audio: new Audio('./assets/sounds/Voiceless_glottal_fricative.ogg')},
+    'ʋ': { vowel: false, audio: new Audio('./assets/sounds/Labiodental_approximant.ogg')},
+    'ɹ': { vowel: false, audio: new Audio('./assets/sounds/Alveolar_approximant.ogg')},
+    'j': { vowel: false, audio: new Audio('./assets/sounds/Palatal_approximant.ogg')},
+    'ɰ': { vowel: false, audio: new Audio('./assets/sounds/Voiced_velar_approximant.ogg')},
+    
+
 })
 
 export const myKeys = ref([])

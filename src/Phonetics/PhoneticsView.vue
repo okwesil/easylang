@@ -61,6 +61,10 @@ export default {
     text-align: left;
 }
 
+.phonetics {
+    user-select: none;
+}
+
 .sound-grid {
     --columns: 15;
     display: grid;
@@ -80,6 +84,9 @@ export default {
     padding: 0;
     border-radius: 1rem;
     transition: 0.2s ease;
+    user-select: none;
+    cursor: pointer;
+
 }
 
 .sound:hover {
