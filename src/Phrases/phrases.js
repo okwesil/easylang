@@ -62,14 +62,15 @@ export const sentenceFrom = (ids) => {
 export const spellingOf = word => {
     const prefixString = word.prefixes.map(id => dictionary.value[id].spelling).join('')
     const suffixString = word.suffixes.map(id => dictionary.value[id].spelling).join('')
-    return prefixString + dictionary.value[word.id].spelling + suffixString
+    const spelling = dictionary.value[word.id]?.spelling ?? '#'
+    return prefixString + spelling + suffixString
 }
 
 export const meaningOf = word => {
     const prefixString = word.prefixes.map(id => dictionary.value[id].definition).join(' ')
     const suffixString = word.suffixes.map(id => dictionary.value[id].definition).join('')
-
-    return `${prefixString} ${dictionary.value[word.id].definition} ${suffixString}`
+    const definition = dictionary.value[word.id]?.definition ?? '[deleted]'
+    return `${prefixString} ${definition} ${suffixString}`
 }
 
 // this is only called using the sentence from 'sentenceFrom' ^^^
