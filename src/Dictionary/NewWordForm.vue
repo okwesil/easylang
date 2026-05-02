@@ -2,23 +2,25 @@
 import { reactive, ref, useTemplateRef } from 'vue';
 export default {
   setup() {
-    const newWordData = reactive({ spelling: '', definition: '', pron: ''})
+    const newWordData = reactive({ spelling: '', definition: '', pron: '', typeOfAffix: 'standalone'})
     const modal = useTemplateRef('modal')
 
     let destination = ref('')
-    const openForm = (_destination, startSpelling, startDef, startPron) => {
+    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix) => {
       modal.value.showModal()
 
       newWordData.spelling = startSpelling
       newWordData.definition = startDef
       newWordData.pron = startPron
+      newWordData.typeOfAffix = startTypeOfAffix
       destination.value = _destination
     }
 
     const clearForm = () => {
-      newWordData.spelling = null
-      newWordData.definition = null
-      newWordData.pron = null
+      newWordData.spelling = ''
+      newWordData.definition = ''
+      newWordData.pron = ''
+      newWordData.typeOfAffix = 'standalone'
     }
 
 
@@ -38,12 +40,25 @@ export default {
   <dialog ref="modal">
     <form>
       <h2 ref="header">Enter Word Info</h2>
+
       <label>Spelling:</label>
       <input type="text" required v-model="newWordData.spelling">
+
+
       <label>Definition:</label>
       <input type="text" maxlength="90" required v-model="newWordData.definition">
+
       <label>Pronounciation:</label>
       <input type="text" required v-model="newWordData.pron">
+
+      
+      <label>Is this an affix?</label>
+      <select required v-model="newWordData.typeOfAffix">
+        <option value="standalone">no, it's just a word</option>
+        <option value="prefix">prefix</option>
+        <option value="suffix">suffix</option>
+      </select>
+
       <button type="submit">Create!</button>
     </form>
   </dialog>
@@ -82,6 +97,13 @@ button {
   border: 3px solid var(--sidebar-bg-color);
   padding-top: 10px;
   padding-bottom: 10px;
+  color: white;
+}
+
+select {
+  background-color: var(--bg-color);
+  border: none;
+  border-bottom: 2px solid var(--sidebar-bg-color);
   color: white;
 }
 </style>

@@ -1,6 +1,6 @@
 <script>
 import { ref } from 'vue';
-import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary } from './dictionary';
+import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpelling } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 export default {
   name: 'DictionaryView',
@@ -29,7 +29,7 @@ export default {
     }
 
     const undoDelete = () => {
-      addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id)
+      addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone')
       justDeleted.value = false
     }
 
@@ -38,16 +38,18 @@ export default {
       form.value.openForm(destination, startSpelling, startDef, startPron, editing)
     }
 
-    const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id) => {
+    const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typeOfAffix) => {
       let id;
       if (!_id) {
         id = generateID()
       } else {
         id = _id
       }
-      dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation}
+      dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix}
     }
 
+
+    // stores the id of the last 
     const existingId = ref(null)
 
     const editWord = (e, id) => {
@@ -55,20 +57,20 @@ export default {
       let word = dictionary.value[id];
       deleteWord(id)
       existingId.value = id
-      form.value.openForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation)
+      form.value.openForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix)
     }
 
-    const handleSubmit = (event) => {
-      const { spelling, definition, pron } = form.value.newWordData
+    const handleSubmit = () => {
+      const { spelling, definition, pron, typeOfAffix } = form.value.newWordData
       form.value.clearForm()
       form.value.modal.close()
-      addNewWord(form.value.destination, spelling, definition, pron, existingId.value)
+      addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix)
       existingId.value = null
     }
   
     return { 
-      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, editing: existingId,
-      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord
+      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted,
+      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpelling
     }
   }
 }
@@ -96,7 +98,7 @@ export default {
       <li class="word-container" v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')" @contextmenu="editWord($event, noun.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ noun.spelling }}
+            {{ getSpelling(noun.id) }}
           </h3>
           <span class="word-pron"> 
             {{ noun.pronounciation }}
@@ -117,7 +119,7 @@ export default {
       <li v-for="verb in verbs" :key="verb.id" @dblclick="deleteWord(verb.id, 'verb')" @contextmenu="editWord($event, verb.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ verb.spelling }}
+            {{ getSpelling(verb.id) }}
           </h3>
           <span class="word-pron"> 
             {{ verb.pronounciation }}
@@ -138,7 +140,7 @@ export default {
       <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')" @contextmenu="editWord($event, adjective.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ adjective.spelling }}
+            {{ getSpelling(adjective.id) }}
           </h3>
           <span class="word-pron"> 
             {{ adjective.pronounciation }}
@@ -160,7 +162,7 @@ export default {
       <li v-for="pronoun in pronouns" :key="pronoun.id" @dblclick="deleteWord(pronoun.id, 'pronoun')" @contextmenu="editWord($event, pronoun.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ pronoun.spelling }}
+            {{ getSpelling(pronoun.id) }}
           </h3>
           <span class="word-pron"> 
             {{ pronoun.pronounciation }}
@@ -182,7 +184,7 @@ export default {
       <li v-for="particle in particles" :key="particle.id" @dblclick="deleteWord(particle.id, 'particle')" @contextmenu="editWord($event, particle.id)">
         <div class="word-info">
           <h3 class="word-spelling">
-            {{ particle.spelling }}
+            {{ getSpelling(particle.id) }}
           </h3>
           <span class="word-pron"> 
             {{ particle.pronounciation }}

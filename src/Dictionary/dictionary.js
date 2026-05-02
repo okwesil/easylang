@@ -15,6 +15,11 @@ export const dictionary = ref(
     {}
 )
 
+export const getSpelling = id => {
+    const word = dictionary.value[id]
+    return (word.typeOfAffix == 'suffix' ? '-' : '') + word.spelling + (word.typeOfAffix == 'prefix' ? '-' : '')
+}
+
 export const sortedDictionary = computed(
     () => Object.values(dictionary.value).sort((a, b) => a.spelling.localeCompare(b.spelling))
 )
