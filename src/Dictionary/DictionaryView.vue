@@ -285,7 +285,7 @@ export default {
 li {
   text-align: left;
   width: 100%;
-  border: 2px solid var(--sidebar-bg-color);
+  border: 2px outset var(--sidebar-bg-color);
   display: flex;
   height: 5rem;
   border-radius: 0.5rem;

@@ -1,45 +1,71 @@
 <template>
-    <div class="phonetics">
-        <div class="main-header-wrapper">
-            <h1 class="header">Phonetics</h1>
-            <transition name="fade">
-                <p class="info" v-if="recentlyCopied">copied</p>
-            </transition>
-        </div>
+    <div class="main-header-wrapper">
+        <h1 class="header">Phonetics</h1>
+        <transition name="fade">
+            <p class="info" v-if="recentlyCopied">copied</p>
+        </transition>
+        <transition name="fade">
+            <p class="info symbol-name" v-if="hovering">{{ sounds[hovering].name  }}</p>
+        </transition>
     </div>
-    <br>
-    <h2 class="header">Available Sounds </h2>
-    <div class="all-sounds">
-        <div class="consonant-wrapper cons-grid">
-            <div v-for="(sound, symbol) in consonantsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)">
-                {{ symbol }}
+    <div class="phonetics">
+
+        <h2 class="header">Sounds In This Language</h2>
+        <div class="my-sounds sound-grid-wrapper">
+            <div class="consonant-wrapper cons-grid">
+                <div v-for="(sound, symbol) in consonantsFrom(userSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
+            </div>
+
+            <div class="vowel-wrapper vowel-grid">
+                <div v-for="(sound, symbol) in vowelsFrom(userSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
             </div>
         </div>
-        <div class="vowel-wrapper vowel-grid">
-            <div v-for="(sound, symbol) in vowelsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)">
-                {{ symbol }}
+
+        <h2 class="header">Available Sounds </h2>
+        <div class="sound-grid-wrapper">
+            <div class="consonant-wrapper cons-grid">
+                <div v-for="(sound, symbol) in consonantsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
             </div>
+            <div class="vowel-wrapper vowel-grid">
+                <div v-for="(sound, symbol) in vowelsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
+            </div>
+            
         </div>
-        
     </div>
 </template>
 
 <script>
 
 import { ref } from 'vue';
-import { sounds, availableSounds, keysOfUserSounds, vowelsFrom, consonantsFrom } from './sounds';
+import { sounds, availableSounds, keysOfUserSounds, vowelsFrom, consonantsFrom, userSounds } from './sounds';
 export default {
   name: 'PhoneticsView',
   setup() {
     
     let recentlyCopied = ref(false)
     let timeout;
+    const hovering = ref(false)
     const handleClick = (e, audio, symbol) => {
         if (audio && e.shiftKey) {
             audio.volume = 0.5 
             audio.play()
+            return
         }
         copyToClipboard(symbol)
+        const i = keysOfUserSounds.value.indexOf(symbol)
+        if (i == -1) {
+            keysOfUserSounds.value.push(symbol)
+        } else {
+            keysOfUserSounds.value.splice(i, 1)
+        }
     }
 
     const copyToClipboard = async (text) => {
@@ -56,7 +82,7 @@ export default {
     }
 
     return {
-        sounds, availableSounds, keysOfUserSounds, recentlyCopied,
+        sounds, availableSounds, userSounds, keysOfUserSounds, recentlyCopied, hovering,
         handleClick, consonantsFrom, vowelsFrom
     }
   }
@@ -74,29 +100,32 @@ export default {
     user-select: none;
 }
 
-.all-sounds {
+.sound-grid-wrapper {
     display: flex;
-    margin-left: 1rem;
+    margin-left: 2rem;
 }
 
 .cons-grid {
-    --columns: 11;
+    --columns: 10;
     display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(var(--columns), calc(50vw / var(--columns)));
+    grid-template-columns: repeat(var(--columns), calc(90% / var(--columns)));
+    align-content: start;
+    justify-content: space-between;
+    flex: 2;
 }
 
 .vowel-grid {
     --columns: 7;
     display: grid;
-    grid-template-columns: repeat(var(--columns), calc(29vw / var(--columns)));
-    gap: 10px;
+    grid-template-columns: repeat(var(--columns), calc(90% / var(--columns)));
     margin-left: 1rem;
-
+    justify-content: space-between;
+    align-content: start;
+    flex: 1;
 }
 
 .sound {
-    border: 2px solid var(--sidebar-bg-color);
+    border: 2px outset var(--sidebar-bg-color);
     /* width: 100%; */
     aspect-ratio: 1;
     display: flex;
@@ -111,17 +140,18 @@ export default {
     cursor: pointer;
 }
 
-.vowel-wrapper > * {
-    border: 2px dotted var(--sidebar-bg-color);
-
-}
 
 .sound:hover {
     background-color: var(--sidebar-bg-color);
+    
 }
 
 .info {
     font-weight: bold;
 }
 
+.border {
+    margin-left: 2rem;
+    border-bottom: 2px solid var(--sidebar-bg-color);
+}
 </style>
