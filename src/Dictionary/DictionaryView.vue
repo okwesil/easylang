@@ -67,6 +67,10 @@ export default {
       addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix)
       existingId.value = null
     }
+
+    const makeFavorite = id => {
+      dictionary.value[id].favorite = true;
+    }
   
     return { 
       nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted,
@@ -256,9 +260,6 @@ export default {
   min-width: fit-content;
   padding-left: 10px;
 }
-.word-container {
-  overflow: hidden;
-}
 
 .dictionary {
   display: flex;
@@ -291,6 +292,7 @@ li {
   border-radius: 0.5rem;
   background-color: #191c1c;
   gap: 1rem;
+  overflow: hidden;
   /* align-items: flex-start; */
 }
 
