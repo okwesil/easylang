@@ -21,5 +21,5 @@ export const load = (json = localStorage.getItem('language')) => {
     const parsed = JSON.parse(unparsed)
     dictionary.value = parsed.dictionary
     phrases.value = parsed.phrases
-    keysOfUserSounds.value = parsed.sounds
+    keysOfUserSounds.value = parsed.sounds ?? []
 }
