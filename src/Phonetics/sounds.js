@@ -87,6 +87,9 @@ export const consonantsFrom = (sounds) => {
 
 export const userSounds = computed(
     () => {
+        if (!keysOfUserSounds.value) {
+            keysOfUserSounds.value = []
+        }
         const keys = Object.keys(sounds.value).filter(key => keysOfUserSounds.value.includes(key));
         return Object.fromEntries(keys.map(key => [key, sounds.value[key]]))
     }
