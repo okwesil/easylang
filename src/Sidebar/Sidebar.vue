@@ -10,7 +10,7 @@
         <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
         <div class="save-and-load">
 
-            <div class="save-load" @click="save()">
+            <div class="save-load" @click="save($event)">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span v-if="!collapsed">
                     Save

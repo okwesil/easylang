@@ -1,5 +1,9 @@
 <template>
     <dialog ref="modal">
+        <div class="exit">
+            <i class="fa-solid fa-x" @click="modal.close()"></i>
+        </div>
+
         <form @submit.prevent="handleSubmit">
             <label>Select Words to make a phrase</label>
 
@@ -14,7 +18,6 @@
                 </div>
             </div>
             <input type="text" ref="input" required placeholder="what is the meaning of this phrase?">
-
         </form>
     </dialog>
 </template>
@@ -128,7 +131,15 @@ dialog {
     margin: 0;
 }
 
-
+.exit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: fit-content;
+  height: fit-content;
+  color: white;
+  cursor: pointer;
+}
 
 </style>
 

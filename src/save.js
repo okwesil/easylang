@@ -2,12 +2,21 @@ import { dictionary } from './Dictionary/dictionary';
 import { phrases } from './Phrases/phrases';
 import { keysOfUserSounds } from './Phonetics/sounds';
 
-export const save = () => {
-    const language = {
+export const save = async e => {   
+    const language = JSON.stringify({
         dictionary: dictionary.value, phrases: phrases.value,
         sounds: keysOfUserSounds.value
+    })
+    localStorage.setItem('language', language)    
+
+    if (e.ctrlKey) {
+        e.preventDefault()
+        try {
+            await navigator.clipboard.writeText(language)
+        } catch (err) {
+            console.error('failed to copy save data')
+        }
     }
-    localStorage.setItem('language', JSON.stringify(language))    
 }
 export const load = (json = localStorage.getItem('language')) => {
     const unparsed = json

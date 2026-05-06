@@ -5,8 +5,9 @@ export default {
     const newWordData = reactive({ spelling: '', definition: '', pron: '', typeOfAffix: 'standalone'})
     const modal = useTemplateRef('modal')
 
-    let destination = ref('')
-    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix) => {
+    const destination = ref('')
+    const onClose = ref(() => {})
+    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix, _onClose) => {
       modal.value.showModal()
 
       newWordData.spelling = startSpelling
@@ -14,6 +15,7 @@ export default {
       newWordData.pron = startPron
       newWordData.typeOfAffix = startTypeOfAffix ?? 'standalone'
       destination.value = _destination
+      onClose.value = _onClose
     }
 
     const clearForm = () => {
@@ -23,13 +25,9 @@ export default {
       newWordData.typeOfAffix = 'standalone'
     }
 
-
     return {
-      modal,
-      newWordData,
-      destination,
-      openForm,
-      clearForm
+      modal, newWordData, destination,
+      openForm, clearForm, onClose
     }
   }
 }
@@ -37,9 +35,14 @@ export default {
 </script>
 
 <template>
-  <dialog ref="modal">
+  <dialog ref="modal" @close="onClose">
+    <div class="exit">
+      <i class="fa-solid fa-x" @click="modal.close()"></i>
+    </div>
+
     <form>
       <h2 ref="header">Enter Word Info</h2>
+
 
       <label>Spelling:</label>
       <input type="text" required v-model="newWordData.spelling">
@@ -105,5 +108,15 @@ select {
   border: none;
   border-bottom: 2px solid var(--sidebar-bg-color);
   color: white;
+}
+
+.exit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: fit-content;
+  height: fit-content;
+  color: white;
+  cursor: pointer;
 }
 </style>

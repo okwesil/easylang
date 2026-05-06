@@ -1,6 +1,7 @@
 <script>
 import { ref } from 'vue';
 import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes } from './dictionary';
+import { save } from '@/save'
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 export default {
   name: 'DictionaryView',
@@ -34,8 +35,8 @@ export default {
     }
 
     const form = ref(null)
-    const openNewWordForm = (destination, startSpelling = null, startDef, startPron, editing = false) => {
-      form.value.openForm(destination, startSpelling, startDef, startPron, editing)
+    const openNewWordForm = (destination, startSpelling = null, startDef, startPron, startTypeOfAffix) => {
+      form.value.openForm(destination, startSpelling, startDef, startPron, startTypeOfAffix)
     }
 
     const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typeOfAffix) => {
@@ -57,7 +58,8 @@ export default {
       let word = dictionary.value[id];
       deleteWord(id)
       existingId.value = id
-      form.value.openForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix)
+
+    openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix)
     }
 
     const handleSubmit = () => {
@@ -66,10 +68,6 @@ export default {
       form.value.modal.close()
       addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix)
       existingId.value = null
-    }
-
-    const makeFavorite = id => {
-      dictionary.value[id].favorite = true;
     }
   
     return { 
