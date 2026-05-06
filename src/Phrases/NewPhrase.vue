@@ -5,40 +5,57 @@
         </div>
 
         <form @submit.prevent="handleSubmit">
-            <label>Select Words to make a phrase</label>
-
+            <h4>Make a new phrase</h4>
             <div class="words-added-container">
                 <h3 class="words-added">{{ wordsAdded.reduce((string, id) => string + dictionary[id].spelling + ' ', '' ) }}</h3>
                 <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
             </div>
-            <h4 class="hovered-word">{{ dictionary[hovering]?.definition ?? '--' }}</h4>
-            <div class="word-container">
-                <div v-for="word in sortedDictionary" :key="word.id" class="word" @click="wordsAdded.push(word.id)" @mouseenter="hovering = word.id" @mouseleave="hovering = null">
-                    {{ word.spelling }}
-                </div>
+
+            <!-- word autocomplete -->
+            <form @submit.prevent="(e) => {e.stopPropagation(); wordsAdded.push(topWords[0]); currentlyTyped = ''}">
+                <input class="autocomplete-input" type="text" v-model="currentlyTyped" required placeholder="type the word that you want to add...">
+            </form>
+
+            <div class="spelling-or-definition">
+                <p class="sort-by">sort by -> </p>
+                <p class="definition toggle" :class="{'on': !sortBySpelling }" @click="sortBySpelling = false">definition </p>
+                <p class="spelling toggle" :class="{'on': sortBySpelling}" @click="sortBySpelling = true">spelling</p>
             </div>
-            <input type="text" ref="input" required placeholder="what is the meaning of this phrase?">
+
+            <p>hit <b>ENTER</b> to add the underlined word to your phrase</p>
+
+            <div class="top-word">
+                <div v-for="(id, index) in topWords" :class="{'best-word': index === 0}" :key="index" @click="wordsAdded.push(id)">{{ dictionary[id].spelling + ' -> ' + dictionary[id].definition}}</div>
+            </div>
+            
+            <input type="text" v-model="meaning" required placeholder="what is the meaning of this phrase?">
         </form>
     </dialog>
 </template>
 
 
 <script>
-import { useTemplateRef, ref } from 'vue';
+import { ref, computed } from 'vue';
 import { dictionary, sortedDictionary } from '@/Dictionary/dictionary';
+import { wordsSimilarTo } from './phrases';
 
 
 export default {
     name: 'NewPhrase',
     setup() {
-        const modal = useTemplateRef('modal')
-        const input = useTemplateRef('input')
+        const modal = ref(null)
         const wordsAdded = ref([])
+        let currentlyTyped = ref('')
+        let meaning = ref('')
+        const sortBySpelling = ref(true)
+        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value, sortBySpelling.value))
 
         const openForm = (startingWords = null, startingMeaning = null) => {
             if (startingWords != null) {
                 wordsAdded.value = startingWords.filter(id => id in dictionary.value)
-                input.value.value = startingMeaning
+            }
+            if (startingMeaning != null) {
+                meaning = startingMeaning
             }
             modal.value.showModal()
         }
@@ -72,15 +89,16 @@ export default {
             modal.value.close()
         }
         const clearForm = () => {
-            input.value.value = ''
+            meaning = ''
             wordsAdded.value.length = 0
+            currentlyTyped = ''
         }
         
         const hovering = ref(null)
 
         return {
-            modal, dictionary, sortedDictionary, wordsAdded, input, hovering,
-            openForm, handleSubmit, clearForm
+            modal, dictionary, sortedDictionary, wordsAdded, meaning, hovering, currentlyTyped, topWords, sortBySpelling,
+            openForm, handleSubmit, clearForm, wordsSimilarTo
         }
     }
 }
@@ -139,6 +157,43 @@ dialog {
   height: fit-content;
   color: white;
   cursor: pointer;
+}
+
+p {
+    margin: 0;
+    font-size: 0.7rem;
+}
+
+form > form {
+    margin: 0;
+}
+
+.autocomplete-input {
+    width: 100%;
+}
+
+.spelling-or-definition {
+    display: flex;
+}
+
+.spelling, .definition {
+    margin-left: 1rem;
+}
+
+.on {
+    border-bottom: 3px solid var(--sidebar-bg-color);
+}
+
+.best-word {
+    text-decoration: underline;
+}
+
+b {
+    color: var(--sidebar-bg-color);
+}
+
+dialog {
+    min-width: 20rem;
 }
 
 </style>

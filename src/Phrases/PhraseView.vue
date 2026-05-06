@@ -55,7 +55,7 @@ export default {
     }
 
     const handleSubmit = e => {
-      phrases.value.push({ids: structuredClone(form.value.wordsAdded), meaning: form.value.input.value})
+      phrases.value.push({ids: structuredClone(form.value.wordsAdded), meaning: form.value.meaning})
       form.value.clearForm()
     }
 
