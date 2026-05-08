@@ -28,6 +28,7 @@ export default {
       form.value.openForm()
     }
 
+    const UNDO_WAIT_TIME = 5000;
     let timeout; 
     const deletePhrase = index => {
       lastDeleted.value = phrases.value.splice(index, 1)[0]
@@ -35,10 +36,10 @@ export default {
       justDeleted.value = true
 
       if (!timeout) {
-        timeout = setTimeout(() => justDeleted.value = false, 3000)
+        timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
       } else {
         clearTimeout(timeout)
-        timeout = setTimeout(() => justDeleted.value = false, 3000)
+        timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
       }
       
     }

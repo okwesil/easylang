@@ -89,9 +89,9 @@ export default {
             modal.value.close()
         }
         const clearForm = () => {
-            meaning = ''
+            meaning.value = ''
             wordsAdded.value.length = 0
-            currentlyTyped = ''
+            currentlyTyped.value = ''
         }
         
         const hovering = ref(null)

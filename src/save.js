@@ -1,6 +1,7 @@
 import { dictionary } from './Dictionary/dictionary';
 import { phrases } from './Phrases/phrases';
 import { keysOfUserSounds } from './Phonetics/sounds';
+import { watch } from 'vue'
 
 export const save = async e => {   
     const language = JSON.stringify({
@@ -9,7 +10,7 @@ export const save = async e => {
     })
     localStorage.setItem('language', language)    
 
-    if (e.ctrlKey) {
+    if (e && e.ctrlKey) {
         e.preventDefault()
         try {
             await navigator.clipboard.writeText(language)
@@ -18,7 +19,14 @@ export const save = async e => {
         }
     }
 }
+
+    // autosave
+watch(dictionary, () => save(), { deep: true })
+watch(phrases, () => save(), { deep: true })
+watch(keysOfUserSounds, () => save(), { deep: true })
+
 export const load = (json = localStorage.getItem('language')) => {
+    
     const unparsed = json
     if (!unparsed) {
         alert('Save something first :(')

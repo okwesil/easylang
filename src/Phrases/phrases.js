@@ -74,41 +74,47 @@ export const meaningOf = word => {
 // this is only called using the sentence from 'sentenceFrom' ^^^
 export const generateMeaning = sentence => sentence.map(word => meaningOf(word)).join(' . ')
 
-const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+const removeSpecials = string => string.replace(/\P{L}/gu, "")
+
 export const wordsSimilarTo = (testString, checkforSpelling) => {
     if (testString == '') {
         return Object.keys(dictionary.value).slice(0, 4)
     }
     let values = [] // either an array of [id, spelling] or [id, definition]
     if (checkforSpelling) {
-        
         values = Object.values(dictionary.value).map(entry => [entry.id, removeAccents(entry.spelling)])
     } else {
-        values = Object.values(dictionary.value).map(entry => [entry.id, entry.definition])
+        values = Object.values(dictionary.value).map(entry => [entry.id, removeSpecials(entry.definition)])
     }
     const distances = values.map(([ id, string ]) => [id, getLevenshteinDistance(testString, string)]).sort((a, b) => a[1] - b[1])
+    console.log(distances)
     return distances.slice(0, 4).map(entry => entry[0]) // return the id of the top 4 words
 } 
 
+// this makes the algorithm prioritze matching characters over having the same length
+const SUB_COST = 1
+const INS_DEL_COST = 0.2
 // courtesy of gemini
 function getLevenshteinDistance(a, b) {
-  const matrix = [];
+    console.log(a, b)
+    const matrix = [];
 
-  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
 
-  for (let i = 1; i <= b.length; i++) {
+    for (let i = 1; i <= b.length; i++) {
     for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        if (b.charAt(i - 1) === a.charAt(j - 1)) {
         matrix[i][j] = matrix[i - 1][j - 1];
-      } else {
+        } else {
         matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1, // substitution
-          matrix[i][j - 1] + 1,     // insertion
-          matrix[i - 1][j] + 1      // deletion
+            matrix[i - 1][j - 1] + SUB_COST, // substitution
+            matrix[i][j - 1] + INS_DEL_COST,     // insertion
+            matrix[i - 1][j] + INS_DEL_COST      // deletion
         );
-      }
+        }
     }
-  }
-  return matrix[b.length][a.length];
+    }
+    return matrix[b.length][a.length];
 }

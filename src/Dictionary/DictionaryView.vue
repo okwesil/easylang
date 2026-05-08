@@ -1,7 +1,6 @@
 <script>
 import { ref } from 'vue';
 import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes } from './dictionary';
-import { save } from '@/save'
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 export default {
   name: 'DictionaryView',
@@ -12,6 +11,7 @@ export default {
     let lastDeleted;
     const justDeleted = ref(false)
 
+    const UNDO_WAIT_TIME = 5000;
     const deleteWord = (id, save = true) => {
       if (save) {
         lastDeleted = structuredClone(dictionary.value[id])
@@ -22,10 +22,10 @@ export default {
       justDeleted.value = true
 
       if (!timeout) {
-        timeout = setTimeout(() => justDeleted.value = false, 3000)
+        timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
       } else {
         clearTimeout(timeout)
-        timeout = setTimeout(() => justDeleted.value = false, 3000)
+        timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
       }
     }
 
