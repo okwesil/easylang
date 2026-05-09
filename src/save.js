@@ -1,7 +1,7 @@
 import { dictionary } from './Dictionary/dictionary';
 import { phrases } from './Phrases/phrases';
 import { keysOfUserSounds } from './Phonetics/sounds';
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
 
 export const save = async e => {   
     const language = JSON.stringify({
@@ -40,3 +40,19 @@ export const load = (json = localStorage.getItem('language')) => {
     phrases.value = parsed.phrases
     keysOfUserSounds.value = parsed.sounds ?? []
 }
+
+
+const undo = ref(() => null)
+
+export const setUndoFunction = func => {
+    undo.value = func
+}
+export const onKeypress = (e) => {
+    if (e.ctrlKey) {
+        if (e.key == 'z') {
+            undo.value()
+        }
+    }
+};
+
+

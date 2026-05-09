@@ -7,7 +7,7 @@ export default {
 
     const destination = ref('')
     const onClose = ref(() => {})
-    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix, _onClose) => {
+    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix) => {
       modal.value.showModal()
 
       newWordData.spelling = startSpelling
@@ -15,7 +15,6 @@ export default {
       newWordData.pron = startPron
       newWordData.typeOfAffix = startTypeOfAffix ?? 'standalone'
       destination.value = _destination
-      onClose.value = _onClose
     }
 
     const clearForm = () => {
@@ -27,7 +26,7 @@ export default {
 
     return {
       modal, newWordData, destination,
-      openForm, clearForm, onClose
+      openForm, clearForm
     }
   }
 }
@@ -35,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <dialog ref="modal" @close="onClose">
+  <dialog ref="modal">
     <div class="exit">
       <i class="fa-solid fa-x" @click="modal.close()"></i>
     </div>

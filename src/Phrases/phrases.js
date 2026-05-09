@@ -88,7 +88,6 @@ export const wordsSimilarTo = (testString, checkforSpelling) => {
         values = Object.values(dictionary.value).map(entry => [entry.id, removeSpecials(entry.definition)])
     }
     const distances = values.map(([ id, string ]) => [id, getLevenshteinDistance(testString, string)]).sort((a, b) => a[1] - b[1])
-    console.log(distances)
     return distances.slice(0, 4).map(entry => entry[0]) // return the id of the top 4 words
 } 
 
@@ -97,7 +96,6 @@ const SUB_COST = 1
 const INS_DEL_COST = 0.2
 // courtesy of gemini
 function getLevenshteinDistance(a, b) {
-    console.log(a, b)
     const matrix = [];
 
     for (let i = 0; i <= b.length; i++) matrix[i] = [i];

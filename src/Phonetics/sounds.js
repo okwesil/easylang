@@ -13,6 +13,7 @@ export const sounds = ref({
     'q': { vowel: false, name:'Voiceless uvular plosive', audio: new Audio('./assets/sounds/consonants/Voiceless_uvular_plosive.ogg')},
     'ɢ': { vowel: false, audio: null},
     'ʔ': { vowel: false, name:'Glottal stop', audio: new Audio('./assets/sounds/consonants/Glottal_stop.ogg')},
+    'h': { vowel: false, name:'Voiceless Glottal Fricative', audio: new Audio('./assets/sounds/consonants/Voiceless_glottal_fricative.ogg')},
     'ts': { vowel: false, name:'Voiceless alveolar affricate', audio: null},
     'dz': { vowel: false, name:'Voiced alveolar affricate', audio: null},
     'tʃ': { vowel: false, name:'Voiceless palato-alveolar affricate', audio: new Audio('./assets/sounds/consonants/Voiceless_palato-alveolar_affricate.ogg')},

@@ -9,7 +9,8 @@
 <script>
   import Sidebar from './Sidebar/Sidebar.vue';
   import { sidebarWidth } from './Sidebar/state.js';
-  import { load } from './save';
+  import { load, onKeypress } from './save';
+  import { onMounted, onUnmounted } from 'vue';
 
   export default {
     name: 'App',
@@ -18,6 +19,8 @@
     },
     setup() {
       load(undefined, true)
+      onMounted(() => window.addEventListener('keyup', onKeypress));
+      onUnmounted(() => window.removeEventListener('keyup', onKeypress));
       return { sidebarWidth }
     }
   }

@@ -3,6 +3,7 @@ import { phrases, generateMeaning, spellingOf, meaningOf, sentenceFrom } from '.
 import { dictionary } from '@/Dictionary/dictionary';
 import { ref, useTemplateRef } from 'vue';
 import NewPhrase from './NewPhrase.vue';
+import { setUndoFunction } from '@/save';
 
 export default {
   name: 'PhraseView',
@@ -45,9 +46,14 @@ export default {
     }
 
     const undoDelete = () => {
+      if (!lastDeleted.value) {
+        return
+      } 
       phrases.value.push(lastDeleted.value)
+      lastDeleted.value = null
       justDeleted.value = false
     }
+    setUndoFunction(undoDelete)
 
     const editPhrase = index => {
       const {ids, meaning} = phrases.value[index]

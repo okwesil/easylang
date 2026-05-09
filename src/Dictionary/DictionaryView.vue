@@ -1,7 +1,8 @@
 <script>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
+import { setUndoFunction } from '@/save';
 export default {
   name: 'DictionaryView',
   components: { NewWordForm },
@@ -10,6 +11,22 @@ export default {
     let timeout;
     let lastDeleted;
     const justDeleted = ref(false)
+    const currentView = ref('noun')
+
+    const getWords = () => {
+      switch (currentView.value) {
+        case 'pronoun':
+          return pronouns();
+        case 'noun':
+          return nouns();
+        case 'verb':
+          return verbs();
+        case 'modifier':
+          return adjectives();
+        case 'particle':
+          return particles();
+      }
+    }
 
     const UNDO_WAIT_TIME = 5000;
     const deleteWord = (id, save = true) => {
@@ -30,12 +47,18 @@ export default {
     }
 
     const undoDelete = () => {
+      if (!lastDeleted) {
+        return
+      }
       addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone')
       justDeleted.value = false
+      lastDeleted = null
     }
+    setUndoFunction(undoDelete)
 
     const form = ref(null)
     const openNewWordForm = (destination, startSpelling = null, startDef, startPron, startTypeOfAffix) => {
+      if (destination == 'modifier') destination = "adjective"
       form.value.openForm(destination, startSpelling, startDef, startPron, startTypeOfAffix)
     }
 
@@ -53,13 +76,12 @@ export default {
     // stores the id of the last 
     const existingId = ref(null)
 
-    const editWord = (e, id) => {
-      e.preventDefault()
+    const editWord = (id) => {
       let word = dictionary.value[id];
       deleteWord(id)
       existingId.value = id
 
-    openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix)
+      openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix)
     }
 
     const handleSubmit = () => {
@@ -69,10 +91,28 @@ export default {
       addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix)
       existingId.value = null
     }
+
+    const handleClose = () => {
+      if (!existingId.value) {
+        return
+      }
+      undoDelete()
+    }
+
+    const onKeypress = (e) => {
+      if (e.ctrlKey) {
+        if (e.key == 'z') {
+          
+        }
+      }
+    };
+
+    onMounted(() => window.addEventListener('keydown', onKeypress));
+    onUnmounted(() => window.removeEventListener('keydown', onKeypress));
   
     return { 
-      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted,
-      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpellingWithDashes
+      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, currentView,
+      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpellingWithDashes, getWords, handleClose
     }
   }
 }
@@ -90,120 +130,40 @@ export default {
 
   <div class="dictionary">
 
-    <ul class="list noun-list">
+    <div class="list-select-wrapper">
+      <span class="list-select" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>
+      <span class="list-select" :class="{'selected': currentView == 'noun' }" @click="currentView = 'noun'">nouns</span>
+      <span class="list-select" :class="{'selected': currentView == 'verb' }" @click="currentView = 'verb'">verbs</span>
+      <span class="list-select" :class="{'selected': currentView == 'modifier' }" @click="currentView = 'modifier'">modifiers</span>
+      <span class="list-select" :class="{'selected': currentView == 'particle' }" @click="currentView = 'particle'">particles</span>
+    </div>
 
-      <div class="list-header"> 
-        <h2 class="section-name header">nouns</h2>
-        <h3 class="new-word" @click="openNewWordForm('noun')">+</h3>
-      </div>
+    <ul class="list">
+        <li class="add-word word-container" @click="openNewWordForm(currentView)">
+          <span class="new-word-text"> + </span>
+        </li>
 
-      <li class="word-container" v-for="noun in nouns" :key="noun.id" @dblclick="deleteWord(noun.id, 'noun')" @contextmenu="editWord($event, noun.id)">
-        <div class="word-info">
-          <h3 class="word-spelling">
-            {{ getSpellingWithDashes(noun.id) }}
-          </h3>
-          <span class="word-pron"> 
-            {{ noun.pronounciation }}
-          </span>
-        </div>
-        <span class="word-def" :title="noun.definition">
-          {{ noun.definition }}
+      <li class="word-container" v-for="word in getWords()" :key="word.id" @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
+        <span class="word-spelling">
+          {{ getSpellingWithDashes(word.id) }}
+        </span>
+        <span class="word-def"> 
+          {{ word.definition }}
         </span>
       </li>
+      
     </ul>
 
-    <ul class="list verb-list">
-      <div class="list-header">
-        <h2 class="section-name header">verbs</h2>
-        <h3 class="new-word" @click="openNewWordForm('verb')">+</h3>
-      </div>
-
-      <li v-for="verb in verbs" :key="verb.id" @dblclick="deleteWord(verb.id, 'verb')" @contextmenu="editWord($event, verb.id)">
-        <div class="word-info">
-          <h3 class="word-spelling">
-            {{ getSpellingWithDashes(verb.id) }}
-          </h3>
-          <span class="word-pron"> 
-            {{ verb.pronounciation }}
-          </span>
-        </div>
-        <span class="word-def" :title="verb.definition">
-          {{ verb.definition }}
-        </span>
-      </li>
-    </ul>
-
-    <ul class="list adjective-list">
-      <div class="list-header">
-        <h2 class="section-name header">adjectives</h2>
-        <h3 class="new-word" @click="openNewWordForm('adjective')">+</h3>
-      </div>
-
-      <li v-for="adjective in adjectives" :key="adjective.id" @dblclick="deleteWord(adjective.id, 'adjective')" @contextmenu="editWord($event, adjective.id)">
-        <div class="word-info">
-          <h3 class="word-spelling">
-            {{ getSpellingWithDashes(adjective.id) }}
-          </h3>
-          <span class="word-pron"> 
-            {{ adjective.pronounciation }}
-          </span>
-        </div>
-        <span class="word-def" :title="adjective.definition">
-          {{ adjective.definition }}
-        </span>
-      </li>
-    </ul>
-
-    <ul class="list pronoun-list">
-
-      <div class="list-header"> 
-        <h2 class="section-name header">pronouns</h2>
-        <h3 class="new-word" @click="openNewWordForm('pronoun')">+</h3>
-      </div>
-
-      <li v-for="pronoun in pronouns" :key="pronoun.id" @dblclick="deleteWord(pronoun.id, 'pronoun')" @contextmenu="editWord($event, pronoun.id)">
-        <div class="word-info">
-          <h3 class="word-spelling">
-            {{ getSpellingWithDashes(pronoun.id) }}
-          </h3>
-          <span class="word-pron"> 
-            {{ pronoun.pronounciation }}
-          </span>
-        </div>
-        <span class="word-def" :title="pronoun.definition">
-          {{ pronoun.definition }}
-        </span>
-      </li>
-    </ul>
-
-    <ul class="list particle-list">
-
-      <div class="list-header"> 
-        <h2 class="section-name header">particles</h2>
-        <h3 class="new-word" @click="openNewWordForm('particle')">+</h3>
-      </div>
-
-      <li v-for="particle in particles" :key="particle.id" @dblclick="deleteWord(particle.id, 'particle')" @contextmenu="editWord($event, particle.id)">
-        <div class="word-info">
-          <h3 class="word-spelling">
-            {{ getSpellingWithDashes(particle.id) }}
-          </h3>
-          <span class="word-pron"> 
-            {{ particle.pronounciation }}
-          </span>
-        </div>
-        <span class="word-def" :title="particle.definition">
-          {{ particle.definition }}
-        </span>
-      </li>
-    </ul>
-
-    <new-word-form ref="modal" @submit.prevent="handleSubmit"></new-word-form>
+    <new-word-form ref="modal" @close="handleClose()"  @submit.prevent="handleSubmit"></new-word-form>
   </div>
 </template>
 
 <style scoped>
 
+.dictionary {
+  padding-left: 2rem;
+  padding-right: 1rem;
+}
 
 .undo {
   position: fixed;
@@ -218,80 +178,51 @@ export default {
   margin-bottom: 0;
 } 
 
+.main-header-wrapper {
+  margin-bottom: 10px;
+}
+
+.list {
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+}
+
 .section-name {
   text-align: left;
   margin-left: 10px;
 }
 
 .word-spelling {
-  text-align: left;
-  position: relative;
-  font-size: 2rem;
+  font-size: 2.5rem; /* Slighting smaller to balance scale */
   margin: 0;
-  flex-shrink: 0;
-  min-width: fit-content;
-  display: flex;
-  align-items: center;
+  white-space: nowrap;
 }
+
 .word-def {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  padding-left: 10px;
-  padding-right: 10px;
-  /* height: 100%; */
-  container-type: inline-size;
-  font-size: 1.2cqi;
-  color: rgba(255, 255, 255, 0.831);
-  overflow: hidden;
+  display: block;
+  white-space: nowrap; 
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.7);
+  width: auto;
 }
 
-
-.word-pron {
-  color: #a8a2a2dd;
-}
-.word-info {
+li {
+  justify-content: center;
+  /* text-align: left; */
+  /* width: 25%; */
+  border: 2px outset var(--sidebar-bg-color);
+  height: max-content;
+  width: max-content;
   display: flex;
+  border-radius: 0.5rem;
+  background-color: #191c1c;
+  padding: 0.5rem 1.3rem 0.5rem 1.3rem;
   flex-direction: column;
   gap: 0.25rem;
   flex-shrink: 0;
-  min-width: fit-content;
-  padding-left: 10px;
-}
-
-.dictionary {
-  display: flex;
-  justify-content: space-around;
-  gap: 10px;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-.list {
-  list-style-type: none;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 0 0 0 20px;
-  gap: 10px;
-}
-
-.noun-list {
-  flex: 1.5;
-}
-
-
-li {
-  text-align: left;
-  width: 100%;
-  border: 2px outset var(--sidebar-bg-color);
-  display: flex;
-  height: 5rem;
-  border-radius: 0.5rem;
-  background-color: #191c1c;
-  gap: 1rem;
-  overflow: hidden;
-  /* align-items: flex-start; */
 }
 
 .list-header {
@@ -299,20 +230,35 @@ li {
   align-items: center;
 }
 
-.new-word  {
-  margin-bottom: 0;
-  margin-left: 0.5rem;
-  border: 2px solid var(--sidebar-bg-color);
-  border-radius: 0.75rem;
-  width: 1.5rem;
-  height: 1.5rem;
-
+.list-select-wrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: 10px;
+  margin-bottom: 0;
+}
 
-  user-select: none;
+.list-select {
   cursor: pointer;
+  transition: 0.3s ease;
+  padding: 5px;
+  margin-bottom: 0;
+  font-size: 1.3rem;
+}
+
+.list-select:hover, .selected {
+  border-bottom: 3px solid var(--sidebar-bg-color);
+}
+
+.new-word-text {
+  font-size: 4rem;
+}
+
+.add-word {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.add-word:hover {
+  background-color: var(--sidebar-bg-color);
 }
 
 dialog {
