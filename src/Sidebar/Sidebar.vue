@@ -2,7 +2,7 @@
     <div class="sidebar" :class="{expanded: !collapsed, collapsed: collapsed}" :style="{ width: sidebarWidth }" @mouseenter="setCollapsed(false)" @mouseleave="setCollapsed(true)">
         <router-link to="/settings">
             <span class="sidebar-title" v-if="collapsed">
-                <div>{{ settings.name.substring(0, 2) }}</div>
+                <div>{{ settings.name[0] }}</div>
             </span>
             <span v-else class="sidebar-title">{{ settings.name }}</span>
         </router-link>
@@ -25,7 +25,6 @@
             SidebarLink
         },
         setup() {
-            
             return { 
                 collapsed,  sidebarWidth, settings,
                 setCollapsed, save, load
@@ -57,6 +56,7 @@
     display: flex;
     flex-direction: column;
     align-items: left;
+    overflow: hidden;
 }
 
 .sidebar-title {
@@ -65,6 +65,7 @@
     font-size: 30px;
     margin-bottom: 10px;
     border-radius: 0.5rem;
+    white-space: nowrap;
 
     cursor: pointer;
 }
