@@ -8,8 +8,8 @@
         </router-link>
 
         <sidebar-link to="/dictionary" icon="fa-solid fa-book">Dictionary</sidebar-link>
-        <sidebar-link to="/phonetics" icon="fa-solid fa-volume">Phonetics</sidebar-link>
         <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
+        <sidebar-link to="/phonetics" icon="fa-solid fa-volume">Phonetics</sidebar-link>
         <sidebar-link class="bottom" to="/settings" icon="fa-solid fa-gear">Settings</sidebar-link>
   </div>
 </template>
