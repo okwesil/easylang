@@ -6,7 +6,8 @@ import { watch, ref } from 'vue'
 export const save = async e => {   
     const language = JSON.stringify({
         dictionary: dictionary.value, phrases: phrases.value,
-        sounds: keysOfUserSounds.value
+        sounds: keysOfUserSounds.value,
+        settings: settings.value
     })
     localStorage.setItem('language', language)    
 
@@ -20,18 +21,14 @@ export const save = async e => {
     }
 }
 
-    // autosave
-watch(dictionary, () => save(), { deep: true })
-watch(phrases, () => save(), { deep: true })
-watch(keysOfUserSounds, () => save(), { deep: true })
-
 export const load = (json = localStorage.getItem('language')) => {
-    
+    // autosave
+    watch(dictionary, () => save(), { deep: true })
+    watch(phrases, () => save(), { deep: true })
+    watch(keysOfUserSounds, () => save(), { deep: true })
+    watch(settings, () => {save()}, { deep: true })
+
     const unparsed = json
-    if (!unparsed) {
-        alert('Save something first :(')
-        return
-    }
     if (!unparsed) {
         return
     }
@@ -39,6 +36,9 @@ export const load = (json = localStorage.getItem('language')) => {
     dictionary.value = parsed.dictionary
     phrases.value = parsed.phrases
     keysOfUserSounds.value = parsed.sounds ?? []
+    loadSettings(parsed.settings)
+
+
 }
 
 
@@ -47,6 +47,7 @@ const undo = ref(() => null)
 export const setUndoFunction = func => {
     undo.value = func
 }
+
 export const onKeypress = (e) => {
     if (e.ctrlKey) {
         if (e.key == 'z') {
@@ -55,4 +56,29 @@ export const onKeypress = (e) => {
     }
 };
 
+export const updateHue = () => {
+    const hueString = `hsl(${settings.value.hue}, 65%, 28%)`
+    document.documentElement.style.setProperty('--sidebar-bg-color', hueString)
+}
+
+export const updateName = () => {
+    document.title = settings.value.name == '' ? 'easyLang' : settings.value.name 
+}
+
+//default values
+export const settings = ref({
+    hue: 0,
+    name: 'easyLang'
+})
+
+const loadSettings = newSettings => {
+    if (newSettings.hue) {
+        settings.value.hue = newSettings.hue
+        updateHue(settings.value.hue)
+    }
+    if (newSettings.name) {
+        settings.value.name = newSettings.name
+        updateName()
+    }
+}
 

@@ -109,7 +109,7 @@ export default {
     --columns: 10;
     display: grid;
     grid-template-columns: repeat(var(--columns), calc(90% / var(--columns)));
-    align-content: start;
+    align-content: space-between;
     justify-content: space-between;
     flex: 2;
 }
@@ -120,12 +120,12 @@ export default {
     grid-template-columns: repeat(var(--columns), calc(90% / var(--columns)));
     margin-left: 1rem;
     justify-content: space-between;
-    align-content: start;
+    align-content: space-between;
     flex: 1;
 }
 
 .sound {
-    border: 2px outset var(--sidebar-bg-color);
+    border: 2px solid var(--sidebar-bg-color);
     /* width: 100%; */
     aspect-ratio: 1;
     display: flex;

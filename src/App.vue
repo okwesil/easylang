@@ -10,7 +10,7 @@
   import Sidebar from './Sidebar/Sidebar.vue';
   import { sidebarWidth } from './Sidebar/state.js';
   import { load, onKeypress } from './save';
-  import { onMounted, onUnmounted } from 'vue';
+  import { onMounted, onUnmounted, } from 'vue';
 
   export default {
     name: 'App',
@@ -36,6 +36,7 @@
 
 body {
   background-color: var(--bg-color);
+  margin: 0;
 }
 
 #app {

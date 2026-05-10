@@ -2,11 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DictionaryView from '../Dictionary/DictionaryView.vue'
 import PhraseView from '../Phrases/PhraseView.vue'
 import PhoneticsView from '../Phonetics/PhoneticsView.vue'
+import SettingsView from '../Settings/SettingsView.vue'
 
 const routes = [
    { 
     path: '/', 
     redirect: '/dictionary' // Redirects base URL to /dashboard on load
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: SettingsView
   },
   {
     path: '/dictionary',
@@ -16,13 +22,11 @@ const routes = [
   {
     path: '/phrases',
     name: 'phrases',
-
     component: PhraseView
   },
   {
     path: '/phonetics',
     name: 'phonetics',
-
     component: PhoneticsView
   }
 ]

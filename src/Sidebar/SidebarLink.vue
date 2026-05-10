@@ -34,19 +34,6 @@
 
 
 <style scoped>
-.fade-enter-active {
-    transition: opacity ease-in 0.5s;
-}
-
-.fade-leave-active {
-    transition: opacity 0.1s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
 
 .link {
     display: flex;
@@ -66,7 +53,7 @@
     font-size: 20px;
 }
 .link:hover {
-    background-color: var(--sidebar-item-hover);
+    background-color: hsl(from var(--sidebar-bg-color) h calc(s + 20) calc(l - 5));
 }
 
 .link-text {
@@ -74,7 +61,7 @@
 }
 
 .expanded .link.active {
-    background-color: var(--sidebar-item-active);
+    background-color: hsl(from var(--sidebar-bg-color) h calc(s + 20) calc(l - 7));
 }
 
 .link i {

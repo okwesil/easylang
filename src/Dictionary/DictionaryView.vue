@@ -213,7 +213,7 @@ li {
   justify-content: center;
   /* text-align: left; */
   /* width: 25%; */
-  border: 2px outset var(--sidebar-bg-color);
+  border: 2px solid var(--sidebar-bg-color);
   height: max-content;
   width: max-content;
   display: flex;
