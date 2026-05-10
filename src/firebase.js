@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+
+import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
+import { ref } from 'vue'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,5 +19,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const fb = initializeApp(firebaseConfig);
+export const auth = getAuth(fb);
+
+// Persist auth across browser sessions / refreshes
+setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.error('Firebase auth persistence error:', error);
+});
+
+export const currentUser = ref(null);
+onAuthStateChanged(auth, user => {
+  currentUser.value = user;
+});

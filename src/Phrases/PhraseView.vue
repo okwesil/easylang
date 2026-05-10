@@ -125,7 +125,7 @@ export default {
 
 .phrase {
   text-align: left;
-  border-bottom: 3px solid var(--sidebar-bg-color);
+  border-bottom: 3px solid var(--accent-color);
   display: flex;
   flex-direction: column;
   width: fit-content;
@@ -148,14 +148,14 @@ export default {
 }
 
 .word:hover {
-  border: 3px dotted var(--sidebar-bg-color);
+  border: 3px dotted var(--accent-color);
 }
 
 .word-def {
   position: fixed;
   pointer-events: none;
   transform: translateY(-50%);
-  background-color: var(--sidebar-bg-color);
+  background-color: var(--accent-color);
   color: white;
   padding: 10px;
   border-radius: 1rem;
@@ -164,7 +164,7 @@ export default {
 .new-phrase  {
   margin-bottom: 0;
   margin-left: 0.5rem;
-  border: 2px solid var(--sidebar-bg-color);
+  border: 2px solid var(--accent-color);
   border-radius: 0.75rem;
   width: 1.5rem;
   height: 1.5rem;

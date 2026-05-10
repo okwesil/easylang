@@ -53,7 +53,7 @@
     font-size: 20px;
 }
 .link:hover {
-    background-color: hsl(from var(--sidebar-bg-color) h calc(s + 20) calc(l - 5));
+    background-color: var(--sidebar-hover);
 }
 
 .link-text {
@@ -61,7 +61,7 @@
 }
 
 .expanded .link.active {
-    background-color: hsl(from var(--sidebar-bg-color) h calc(s + 20) calc(l - 7));
+    background-color: var(--sidebar-active)
 }
 
 .link i {

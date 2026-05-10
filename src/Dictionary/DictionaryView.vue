@@ -213,7 +213,7 @@ li {
   justify-content: center;
   /* text-align: left; */
   /* width: 25%; */
-  border: 2px solid var(--sidebar-bg-color);
+  border: 2px solid var(--accent-color);
   height: max-content;
   width: max-content;
   display: flex;
@@ -245,7 +245,7 @@ li {
 }
 
 .list-select:hover, .selected {
-  border-bottom: 3px solid var(--sidebar-bg-color);
+  border-bottom: 3px solid var(--accent-color);
 }
 
 .new-word-text {
@@ -258,13 +258,13 @@ li {
 }
 
 .add-word:hover {
-  background-color: var(--sidebar-bg-color);
+  background-color: var(--accent-color);
 }
 
 dialog {
   background-color: var(--bg-color);
   color: white;
-  border: 5px solid var(--sidebar-bg-color);
+  border: 5px solid var(--accent-color);
   border-radius: 1rem;
 }
 

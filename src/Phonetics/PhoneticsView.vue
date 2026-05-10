@@ -125,7 +125,7 @@ export default {
 }
 
 .sound {
-    border: 2px solid var(--sidebar-bg-color);
+    border: 2px solid var(--accent-color);
     /* width: 100%; */
     aspect-ratio: 1;
     display: flex;
@@ -142,7 +142,7 @@ export default {
 
 
 .sound:hover {
-    background-color: var(--sidebar-bg-color);
+    background-color: var(--accent-color);
     
 }
 
@@ -152,6 +152,6 @@ export default {
 
 .border {
     margin-left: 2rem;
-    border-bottom: 2px solid var(--sidebar-bg-color);
+    border-bottom: 2px solid var(--accent-color);
 }
 </style>

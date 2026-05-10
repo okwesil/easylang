@@ -10,7 +10,7 @@
         <sidebar-link to="/dictionary" icon="fa-solid fa-book">Dictionary</sidebar-link>
         <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
         <sidebar-link to="/phonetics" icon="fa-solid fa-volume">Phonetics</sidebar-link>
-        <sidebar-link class="bottom" to="/settings" icon="fa-solid fa-gear">Settings</sidebar-link>
+        <sidebar-link class="bottom" to="/settings" icon="fa-solid fa-gear">{{ currentUser ? currentUser.email.substring(0, 10) + '...' : 'Settings' }}</sidebar-link>
   </div>
 </template>
 
@@ -18,6 +18,7 @@
 <script>
     import { collapsed, setCollapsed, sidebarWidth } from './state';
     import { save, load, settings } from '@/save';
+    import { currentUser } from '@/firebase.js';
     import SidebarLink from './SidebarLink.vue';
     export default {
         name: "Sidebar",
@@ -26,7 +27,7 @@
         },
         setup() {
             return { 
-                collapsed,  sidebarWidth, settings,
+                collapsed,  sidebarWidth, settings, currentUser,
                 setCollapsed, save, load
             }
         }
@@ -37,11 +38,13 @@
 
 <style>
 :root {
-    --sidebar-bg-color: hsl(0, 64%, 38%);
+    --accent-color: hsl(0, 64%, 38%);
+    --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 7));
+    --sidebar-hover: hsl(from var(--accent-color) h calc(s + 20) calc(l - 5));
 }
 .sidebar {
     color: white;
-    background-color: var(--sidebar-bg-color);
+    background-color: var(--accent-color);
     
     float: left;
     position: fixed;
@@ -71,7 +74,7 @@
 }
 
 .sidebar-title:hover {
-    background-color: hsl(from var(--sidebar-bg-color) h calc(s + 20) calc(l - 5));
+    background-color: hsl(from var(--accent-color) h calc(s + 20) calc(l - 5));
 }
 
 .bottom {

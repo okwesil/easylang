@@ -110,7 +110,7 @@ export default {
 dialog {
     background-color: var(--bg-color);
     color: white;
-    border: 5px solid var(--sidebar-bg-color);
+    border: 5px solid var(--accent-color);
     border-radius: 1rem;
 }
 
@@ -121,7 +121,7 @@ dialog {
 }
 
 .words-added {
-    border-bottom: 2px solid var(--sidebar-bg-color);
+    border-bottom: 2px solid var(--accent-color);
 }
 
 .words-added-container {
@@ -142,7 +142,7 @@ dialog {
 }
 
 .word:hover {
-    background-color: var(--sidebar-bg-color);
+    background-color: var(--accent-color);
 }
 
 .hovered-word {
@@ -181,7 +181,7 @@ form > form {
 }
 
 .on {
-    border-bottom: 3px solid var(--sidebar-bg-color);
+    border-bottom: 3px solid var(--accent-color);
 }
 
 .best-word {
@@ -189,7 +189,7 @@ form > form {
 }
 
 b {
-    color: var(--sidebar-bg-color);
+    color: var(--accent-color);
 }
 
 dialog {

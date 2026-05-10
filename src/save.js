@@ -3,6 +3,7 @@ import { phrases } from './Phrases/phrases';
 import { keysOfUserSounds } from './Phonetics/sounds';
 import { watch, ref } from 'vue'
 
+
 export const save = async e => {   
     const language = JSON.stringify({
         dictionary: dictionary.value, phrases: phrases.value,
@@ -58,7 +59,7 @@ export const onKeypress = (e) => {
 
 export const updateHue = () => {
     const hueString = `hsl(${settings.value.hue}, 65%, 28%)`
-    document.documentElement.style.setProperty('--sidebar-bg-color', hueString)
+    document.documentElement.style.setProperty('--accent-color', hueString)
 }
 
 export const updateName = () => {

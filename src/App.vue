@@ -34,6 +34,10 @@
   --bg-color: #1d2020;
 }
 
+button, input {
+  font-family: "Lora", Arial;
+}
+
 body {
   background-color: var(--bg-color);
   margin: 0;

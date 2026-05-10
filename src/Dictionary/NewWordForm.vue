@@ -86,7 +86,7 @@ input {
   box-sizing: border-box;
   border: none;
   background-color: var(--bg-color);
-  border-bottom: 3px solid var(--sidebar-bg-color);
+  border-bottom: 3px solid var(--accent-color);
   color: white;
 }
 
@@ -96,7 +96,7 @@ input:focus {
 
 button {
   background-color: var(--bg-color);
-  border: 3px solid var(--sidebar-bg-color);
+  border: 3px solid var(--accent-color);
   padding-top: 10px;
   padding-bottom: 10px;
   color: white;
@@ -105,7 +105,7 @@ button {
 select {
   background-color: var(--bg-color);
   border: none;
-  border-bottom: 2px solid var(--sidebar-bg-color);
+  border-bottom: 2px solid var(--accent-color);
   color: white;
 }
 
