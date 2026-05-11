@@ -2,7 +2,9 @@
 import { initializeApp } from "firebase/app";
 
 import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import { ref } from 'vue'
+import { load } from "./save";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,6 +23,7 @@ const firebaseConfig = {
 // Initialize Firebase
 export const fb = initializeApp(firebaseConfig);
 export const auth = getAuth(fb);
+export const db = getFirestore(fb);
 
 // Persist auth across browser sessions / refreshes
 setPersistence(auth, browserLocalPersistence).catch((error) => {
@@ -30,4 +33,5 @@ setPersistence(auth, browserLocalPersistence).catch((error) => {
 export const currentUser = ref(null);
 onAuthStateChanged(auth, user => {
   currentUser.value = user;
+  load()
 });

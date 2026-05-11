@@ -2,6 +2,9 @@
   <sidebar />
   <div class="screen" :style="{marginLeft: sidebarWidth}">
     <router-view />
+    <transition name="fade">
+      <span v-if="notificationText.length != 0" class="notification">{{ notificationText }}</span>
+    </transition>
   </div>
 </template>
 
@@ -9,7 +12,7 @@
 <script>
   import Sidebar from './Sidebar/Sidebar.vue';
   import { sidebarWidth } from './Sidebar/state.js';
-  import { load, onKeypress } from './save';
+  import { load, notificationText, onKeypress } from './save';
   import { onMounted, onUnmounted, } from 'vue';
 
   export default {
@@ -18,10 +21,10 @@
       Sidebar, 
     },
     setup() {
-      load(undefined, true)
+      load()
       onMounted(() => window.addEventListener('keyup', onKeypress));
       onUnmounted(() => window.removeEventListener('keyup', onKeypress));
-      return { sidebarWidth }
+      return { sidebarWidth, notificationText }
     }
   }
 
@@ -51,6 +54,12 @@ body {
   color: white;
   margin: 0;
   padding: 0;
+}
+
+.notification {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 
 .screen {

@@ -109,7 +109,6 @@ export default {
     --columns: 10;
     display: grid;
     grid-template-columns: repeat(var(--columns), calc(90% / var(--columns)));
-    align-content: space-between;
     justify-content: space-between;
     flex: 2;
 }
@@ -120,7 +119,6 @@ export default {
     grid-template-columns: repeat(var(--columns), calc(90% / var(--columns)));
     margin-left: 1rem;
     justify-content: space-between;
-    align-content: space-between;
     flex: 1;
 }
 
