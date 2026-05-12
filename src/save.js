@@ -47,17 +47,16 @@ const saveToDb = async () => {
 
 export const load = async () => {
     // autosave
-    watch(dictionary, () => {save(); console.log('dictionary updated')}, { deep: true })
-    watch(phrases, () => {save(); console.log('phrases updated')}, { deep: true })
-    watch(keysOfUserSounds, () => {save(); console.log('sounds updated')}, { deep: true })
-    watch(settings, () => {save(); console.log('settings updated')}, { deep: true })
+    watch(dictionary, () => save(), { deep: true })
+    watch(phrases, () => save(), { deep: true })
+    watch(keysOfUserSounds, () => save(), { deep: true })
+    watch(settings, () => save(), { deep: true })
 
     let parsed = null;
     if (currentUser.value) {
         const snapshot = await getDoc(await languageDoc(true))
         if (snapshot.exists()) {
             parsed = snapshot.data()
-            console.log(parsed)
         }
     }
 

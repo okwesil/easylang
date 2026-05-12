@@ -105,7 +105,6 @@ export default {
     }
 
     const handleDrop = view => {
-      console.log(view)
       dictionary.value[dragging].partOfSpeech = view == 'modifier' ? 'adjective' : view
     }
 

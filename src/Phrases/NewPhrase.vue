@@ -13,7 +13,7 @@
 
             <!-- word autocomplete -->
             <form @submit.prevent="(e) => {e.stopPropagation(); wordsAdded.push(topWords[0]); currentlyTyped = ''}">
-                <input class="autocomplete-input" type="text" v-model="currentlyTyped" required placeholder="type the word that you want to add...">
+                <input class="autocomplete-input" type="text" v-model="currentlyTyped" placeholder="type the word that you want to add...">
             </form>
 
             <div class="spelling-or-definition">
@@ -45,8 +45,8 @@ export default {
     setup() {
         const modal = ref(null)
         const wordsAdded = ref([])
-        let currentlyTyped = ref('')
-        let meaning = ref('')
+        const currentlyTyped = ref('')
+        const meaning = ref('')
         const sortBySpelling = ref(true)
         const topWords = computed(() => wordsSimilarTo(currentlyTyped.value, sortBySpelling.value))
 
@@ -55,7 +55,7 @@ export default {
                 wordsAdded.value = startingWords.filter(id => id in dictionary.value)
             }
             if (startingMeaning != null) {
-                meaning = startingMeaning
+                meaning.value = startingMeaning
             }
             modal.value.showModal()
         }

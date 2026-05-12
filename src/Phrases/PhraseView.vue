@@ -49,7 +49,7 @@ export default {
       if (!lastDeleted.value) {
         return
       } 
-      phrases.value.push(lastDeleted.value)
+      phrases.value.unshift(lastDeleted.value)
       lastDeleted.value = null
       justDeleted.value = false
     }
