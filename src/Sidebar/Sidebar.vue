@@ -38,7 +38,7 @@
 
 <style>
 :root {
-    --accent-color: hsl(0, 64%, 38%);
+    --accent-color: hsl(0, 65%, 20%);
     --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 7));
     --sidebar-hover: hsl(from var(--accent-color) h calc(s + 20) calc(l - 5));
 }

@@ -101,7 +101,7 @@ export const onKeypress = (e) => {
 };
 
 export const updateHue = () => {
-    const hueString = `hsl(${settings.value.hue}, 65%, 28%)`
+    const hueString = `hsl(${settings.value.hue}, 65%, 20%)`
     document.documentElement.style.setProperty('--accent-color', hueString)
 }
 

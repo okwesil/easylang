@@ -88,16 +88,15 @@ export default {
             }
             modal.value.close()
         }
+
         const clearForm = () => {
             meaning.value = ''
             wordsAdded.value.length = 0
             currentlyTyped.value = ''
         }
-        
-        const hovering = ref(null)
 
         return {
-            modal, dictionary, sortedDictionary, wordsAdded, meaning, hovering, currentlyTyped, topWords, sortBySpelling,
+            modal, dictionary, sortedDictionary, wordsAdded, meaning, currentlyTyped, topWords, sortBySpelling,
             openForm, handleSubmit, clearForm, wordsSimilarTo
         }
     }

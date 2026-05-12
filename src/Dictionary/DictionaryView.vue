@@ -217,7 +217,7 @@ li {
   width: max-content;
   display: flex;
   border-radius: 0.5rem;
-  background-color: hsl(from var(--bg-color) h calc(s + 1) calc(l - 3));
+  background-color: var(--darker-bg);
   padding: 0.5rem 1.3rem 0.5rem 1.3rem;
   flex-direction: column;
   gap: 0.25rem;

@@ -35,6 +35,7 @@
 
 :root {
   --bg-color: hsl(180, 5%, 12%);
+  --darker-bg: hsl(from var(--bg-color) h calc(s + 1) calc(l - 3));
 }
 
 button, input {

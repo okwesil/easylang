@@ -77,7 +77,7 @@ export default {
 <template>
   <div class="phrases"  >
     <h1 class="new-phrase" @click="createNewPhrase">+</h1>
-    
+
     <div class="main-header-wrapper">
       <h1 class="header">Phrases</h1>
     </div>
@@ -162,6 +162,7 @@ export default {
 .new-phrase  {
   position: fixed;
   border: 2px solid var(--accent-color);
+  background-color: var(--darker-bg);
   border-radius: 0.75rem;
   
   width: 5rem;
@@ -169,6 +170,7 @@ export default {
   bottom: 10px;
   right: 10px;
   margin: 0;
+  z-index: 2;
   
   display: flex;
   justify-content: center;
