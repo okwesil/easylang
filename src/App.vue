@@ -34,7 +34,7 @@
 <style>
 
 :root {
-  --bg-color: #1d2020;
+  --bg-color: hsl(180, 5%, 12%);
 }
 
 button, input {

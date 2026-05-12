@@ -115,6 +115,7 @@ import { auth, currentUser } from '@/firebase.js';
   height: 100vh;
   margin: 0;
   overflow: hidden;
+  gap: 10px;
 }
 
 span {

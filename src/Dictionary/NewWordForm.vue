@@ -6,7 +6,6 @@ export default {
     const modal = useTemplateRef('modal')
 
     const destination = ref('')
-    const onClose = ref(() => {})
     const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix) => {
       modal.value.showModal()
 

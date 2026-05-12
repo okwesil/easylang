@@ -76,7 +76,7 @@ export default {
     // stores the id of the last 
     const existingId = ref(null)
 
-    const editWord = (id) => {
+    const editWord = id => {
       let word = dictionary.value[id];
       deleteWord(id)
       existingId.value = id
@@ -99,20 +99,19 @@ export default {
       undoDelete()
     }
 
-    const onKeypress = (e) => {
-      if (e.ctrlKey) {
-        if (e.key == 'z') {
-          
-        }
-      }
-    };
+    let dragging = null
+    const handleDragStart = id => {
+      dragging = id
+    }
 
-    onMounted(() => window.addEventListener('keydown', onKeypress));
-    onUnmounted(() => window.removeEventListener('keydown', onKeypress));
-  
+    const handleDrop = view => {
+      console.log(view)
+      dictionary.value[dragging].partOfSpeech = view == 'modifier' ? 'adjective' : view
+    }
+
     return { 
       nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, currentView,
-      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpellingWithDashes, getWords, handleClose
+      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpellingWithDashes, getWords, handleClose, handleDragStart, handleDrop
     }
   }
 }
@@ -131,11 +130,11 @@ export default {
   <div class="dictionary">
 
     <div class="list-select-wrapper">
-      <span class="list-select" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>
-      <span class="list-select" :class="{'selected': currentView == 'noun' }" @click="currentView = 'noun'">nouns</span>
-      <span class="list-select" :class="{'selected': currentView == 'verb' }" @click="currentView = 'verb'">verbs</span>
-      <span class="list-select" :class="{'selected': currentView == 'modifier' }" @click="currentView = 'modifier'">modifiers</span>
-      <span class="list-select" :class="{'selected': currentView == 'particle' }" @click="currentView = 'particle'">particles</span>
+      <span class="list-select" @dragover.prevent @drop="handleDrop('pronoun')" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>
+      <span class="list-select" @dragover.prevent @drop="handleDrop('noun')" :class="{'selected': currentView == 'noun' }" @click="currentView = 'noun'">nouns</span>
+      <span class="list-select" @dragover.prevent @drop="handleDrop('verb')" :class="{'selected': currentView == 'verb' }" @click="currentView = 'verb'">verbs</span>
+      <span class="list-select" @dragover.prevent @drop="handleDrop('modifier')" :class="{'selected': currentView == 'modifier' }" @click="currentView = 'modifier'">modifiers</span>
+      <span class="list-select" @dragover.prevent @drop="handleDrop('particle')" :class="{'selected': currentView == 'particle' }" @click="currentView = 'particle'">particles</span>
     </div>
 
     <ul class="list">
@@ -143,7 +142,7 @@ export default {
           <span class="new-word-text"> + </span>
         </li>
 
-      <li class="word-container" v-for="word in getWords()" :key="word.id" @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
+      <li class="word-container" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
         <span class="word-spelling">
           {{ getSpellingWithDashes(word.id) }}
         </span>
@@ -218,7 +217,7 @@ li {
   width: max-content;
   display: flex;
   border-radius: 0.5rem;
-  background-color: #191c1c;
+  background-color: hsl(from var(--bg-color) h calc(s + 1) calc(l - 3));
   padding: 0.5rem 1.3rem 0.5rem 1.3rem;
   flex-direction: column;
   gap: 0.25rem;

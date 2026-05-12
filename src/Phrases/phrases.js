@@ -82,6 +82,7 @@ export const wordsSimilarTo = (testString, checkforSpelling) => {
     if (testString == '') {
         return Object.keys(dictionary.value).slice(0, 4)
     }
+
     let values = [] // either an array of [id, spelling] or [id, definition]
     if (checkforSpelling) {
         values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
@@ -92,7 +93,7 @@ export const wordsSimilarTo = (testString, checkforSpelling) => {
     return distances.slice(0, 4).map(entry => entry[0]) // return the id of the top 4 words
 } 
 
-// this makes the algorithm prioritze matching characters over having the same length
+// this makes the algorithm prioritze same spelling over having the same length
 const SUB_COST = 1
 const INS_DEL_COST = 0.2
 // courtesy of gemini

@@ -62,7 +62,7 @@ export default {
     }
 
     const handleSubmit = e => {
-      phrases.value.push({ids: structuredClone(form.value.wordsAdded), meaning: form.value.meaning})
+      phrases.value.unshift({ids: structuredClone(form.value.wordsAdded), meaning: form.value.meaning})
       form.value.clearForm()
     }
 
@@ -76,9 +76,10 @@ export default {
 
 <template>
   <div class="phrases"  >
+    <h1 class="new-phrase" @click="createNewPhrase">+</h1>
+    
     <div class="main-header-wrapper">
       <h1 class="header">Phrases</h1>
-      <h1 class="new-phrase" @click="createNewPhrase">+</h1>
     </div>
     <transition name="fade">
       <h3 v-if="justDeleted" @click="undoDelete" class="undo">Undo</h3>
@@ -111,10 +112,6 @@ export default {
 
 <style scoped>
 
-.phrases {
-  overflow: none;
-}
-
 .phrase-list {
   display: flex;
   flex-direction: column;
@@ -132,7 +129,7 @@ export default {
 }
 
 .phrase-meaning {
-  color: rgba(255, 255, 255, 0.685);
+  color: hsla(0, 0%, 100%, 0.685);
 }
 
 .words {
@@ -141,14 +138,15 @@ export default {
 }
 
 .word {
-  font-size: 3.5rem;
+  font-size: 3rem;
   margin-right: 10px;
   transition: background-color 0.3s ease;
   border-radius: .5rem;
+  box-sizing: border-box;
 }
 
 .word:hover {
-  border: 3px dotted var(--accent-color);
+  outline: 3px dotted var(--accent-color);
 }
 
 .word-def {
@@ -162,19 +160,28 @@ export default {
 }
 
 .new-phrase  {
-  margin-bottom: 0;
-  margin-left: 0.5rem;
+  position: fixed;
   border: 2px solid var(--accent-color);
   border-radius: 0.75rem;
-  width: 1.5rem;
-  height: 1.5rem;
-
+  
+  width: 5rem;
+  height: 5rem;
+  bottom: 10px;
+  right: 10px;
+  margin: 0;
+  
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 3rem;
+  transition: 0.3s ease;
 
   user-select: none;
   cursor: pointer;
+}
+
+.new-phrase:hover {
+  background-color: var(--accent-color);
 }
 
 .undo {
