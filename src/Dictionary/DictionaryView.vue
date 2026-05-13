@@ -1,5 +1,5 @@
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref } from 'vue';
 import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import { setUndoFunction } from '@/save';

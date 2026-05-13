@@ -37,11 +37,6 @@
 </script>
 
 <style>
-:root {
-    --accent-color: hsl(0, 65%, 20%);
-    --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 7));
-    --sidebar-hover: hsl(from var(--accent-color) h calc(s + 20) calc(l - 5));
-}
 .sidebar {
     color: white;
     background-color: var(--accent-color);

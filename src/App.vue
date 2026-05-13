@@ -34,8 +34,11 @@
 <style>
 
 :root {
-  --bg-color: hsl(180, 5%, 12%);
+  --bg-color: hsl(180, 5%, 9%);
   --darker-bg: hsl(from var(--bg-color) h calc(s + 1) calc(l - 3));
+  --accent-color: hsl(0, 65%, 20%);
+  --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 7));
+  --sidebar-hover: hsl(from var(--accent-color) h calc(s + 20) calc(l - 5));
 }
 
 button, input {

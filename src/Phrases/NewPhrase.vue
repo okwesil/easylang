@@ -7,7 +7,7 @@
         <form @submit.prevent="handleSubmit">
             <h4>Make a new phrase</h4>
             <div class="words-added-container">
-                <h3 class="words-added">{{ wordsAdded.reduce((string, id) => string + dictionary[id].spelling + ' ', '' ) }}</h3>
+                <h3 class="word" v-for="(id, index) in wordsAdded" :key="id" draggable="true" @dragstart="dragging = index" @dragover.prevent @drop="handleDrop(index)">{{ dictionary[id].spelling }}</h3>
                 <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
             </div>
 
@@ -95,9 +95,16 @@ export default {
             currentlyTyped.value = ''
         }
 
+        const dragging = ref(null)
+        const handleDrop = index => {
+            const id = wordsAdded.value.splice(dragging.value, 1)
+            wordsAdded.value.splice(index, 0, id)
+            dragging.value = null
+        }
+
         return {
-            modal, dictionary, sortedDictionary, wordsAdded, meaning, currentlyTyped, topWords, sortBySpelling,
-            openForm, handleSubmit, clearForm, wordsSimilarTo
+            modal, dictionary, sortedDictionary, wordsAdded, meaning, currentlyTyped, topWords, sortBySpelling, dragging,
+            openForm, handleSubmit, clearForm, wordsSimilarTo, handleDrop
         }
     }
 }
@@ -113,39 +120,24 @@ dialog {
     border-radius: 1rem;
 }
 
-
-.word-container {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-}
-
-.words-added {
-    border-bottom: 2px solid var(--accent-color);
-}
-
 .words-added-container {
     display: flex;
-    justify-content: space-between;
+    height: 1.5rem;
 }
 
 .backspace {
-    margin-left: 20px;
+    margin-left: auto;
     cursor: pointer;
 }
 
 .word {
     text-align: center;
-    border-radius: 0.5rem;
-    transition: 0.3s ease;
-    padding: 5px;
-}
-
-.word:hover {
-    background-color: var(--accent-color);
-}
-
-.hovered-word {
-    margin: 0;
+    margin-right: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: fit-content;
+    height: fit-content;
+    cursor: grab;
 }
 
 .exit {
