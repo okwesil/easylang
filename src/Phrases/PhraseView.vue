@@ -9,7 +9,8 @@ export default {
   name: 'PhraseView',
   components: { NewPhrase },
   setup() {
-    const hovering = ref(null);
+    const wordHovering = ref(null);
+    const phraseHovering = ref(null);
     const wordDef = useTemplateRef('word-definition')
     const lastDeleted = ref(null)
     const justDeleted = ref(false)
@@ -20,8 +21,8 @@ export default {
       const [ x, y ] = [e.clientX, e.clientY]
       wordDef.value.style.left = `${x + 20}px`
       wordDef.value.style.top = `${y}px`
-      if (hovering.value != null) {
-        wordDef.value.innerHTML = meaningOf(hovering.value)
+      if (wordHovering.value != null) {
+        wordDef.value.innerHTML = meaningOf(wordHovering.value)
       }
     }
 
@@ -67,7 +68,7 @@ export default {
     }
 
     return {
-      phrases, dictionary, hovering, justDeleted,
+      phrases, dictionary, wordHovering, phraseHovering, justDeleted,
       handleMouseMove, generateMeaning, spellingOf, createNewPhrase, handleSubmit, editPhrase, deletePhrase, undoDelete, sentenceFrom
     }
   }
@@ -85,16 +86,19 @@ export default {
       <h3 v-if="justDeleted" @click="undoDelete" class="undo">Undo</h3>
     </transition>
 
-    <div ref="word-definition" class="word-def" v-show="hovering">hovering</div>
+    <div ref="word-definition" class="word-def" v-show="wordHovering">hovering</div>
 
     <div class="phrase-list" @mousemove="handleMouseMove">
 
 
-      <div v-for="(phrase, index) in phrases" :key="index" class="phrase" @dblclick="deletePhrase(index)" @contextmenu.prevent="editPhrase(index)">
+      <div v-for="(phrase, phraseIndex) in phrases" :key="phraseIndex" class="phrase" @mouseenter="phraseHovering = phraseIndex" @mouseleave="phraseHovering = null" @contextmenu.prevent="editPhrase(phraseIndex)">
         <div class="words">
-          <span class="word" v-for="(word, index) in sentenceFrom(phrase.ids)" :key="index" @mouseenter="hovering = word" @mouseleave="hovering = null">
+          <span class="word" v-for="(word, index) in sentenceFrom(phrase.ids)" :key="index" @mouseenter="wordHovering = word" @mouseleave="wordHovering = null">
             {{ spellingOf(word) }}
           </span>
+          <transition name="fade">
+            <span class="word delete" v-if="phraseHovering == phraseIndex" @click="deletePhrase(phraseIndex)"><i class="fa-solid fa-xmark"></i></span>
+          </transition>
         </div>
         <span class="phrase-meaning literal-meaning">
         LITERAL -> {{ generateMeaning(sentenceFrom(phrase.ids)) }}
@@ -145,6 +149,11 @@ export default {
   box-sizing: border-box;
 }
 
+.word.delete {
+  display: inline-flex;
+  align-items: center;
+}
+
 .word:hover {
   outline: 3px dotted var(--accent-color);
 }
@@ -157,6 +166,7 @@ export default {
   color: white;
   padding: 10px;
   border-radius: 1rem;
+  z-index: 10;
 }
 
 .new-phrase  {
@@ -193,6 +203,22 @@ export default {
   transform: translateX(-50%);
 
   cursor: pointer;
+}
+
+.delete {
+  color: var(--accent-color);
+  display: inline-flex;
+  align-items: center;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 </style>

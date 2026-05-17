@@ -66,7 +66,7 @@ export const spellingOf = word => {
 
 export const meaningOf = word => {
     const prefixString = word.prefixes.map(id => dictionary.value[id].definition).join(' ')
-    const suffixString = word.suffixes.map(id => dictionary.value[id].definition).join('')
+    const suffixString = word.suffixes.map(id => dictionary.value[id].definition).join(' ')
     const definition = dictionary.value[word.id]?.definition ?? '[deleted]'
     return `${prefixString} ${definition} ${suffixString}`
 }
