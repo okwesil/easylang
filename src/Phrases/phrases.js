@@ -76,7 +76,7 @@ export const generateMeaning = sentence => sentence.map(word => meaningOf(word))
 
 const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 const removeSpecials = string => string.replace(/\P{L}/gu, "")
-const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase()
+const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase().trim()
 
 export const wordsSimilarTo = (testString, checkforSpelling) => {
     if (testString == '') {
@@ -87,7 +87,12 @@ export const wordsSimilarTo = (testString, checkforSpelling) => {
     if (checkforSpelling) {
         values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
     } else {
-        values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.definition)])
+        Object.values(dictionary.value).forEach(entry =>{
+            // if a definition has a '/' it is treated as 2 different definitions
+            for (const def of entry.definition.split('/')) {
+                values.push([entry.id, cleanString(def.trim())]) 
+            }
+        })
     }
     const distances = values.map(([ id, string ]) => [id, getLevenshteinDistance(testString, string)]).sort((a, b) => a[1] - b[1])
     return distances.slice(0, 4).map(entry => entry[0]) // return the id of the top 4 words
