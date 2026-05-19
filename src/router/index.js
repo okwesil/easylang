@@ -3,6 +3,7 @@ import DictionaryView from '../Dictionary/DictionaryView.vue'
 import PhraseView from '../Phrases/PhraseView.vue'
 import PhoneticsView from '../Phonetics/PhoneticsView.vue'
 import SettingsView from '../Settings/SettingsView.vue'
+import GrammarView from '../Grammar/GrammarView.vue'
 
 const routes = [
    { 
@@ -28,6 +29,11 @@ const routes = [
     path: '/phonetics',
     name: 'phonetics',
     component: PhoneticsView
+  },
+  {
+    path: '/grammar',
+    name: 'grammar',
+    component: GrammarView
   }
 ]
 
