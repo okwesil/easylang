@@ -1,47 +1,3 @@
-<template>
-    <div class="main-header-wrapper">
-        <h1 class="header">Phonetics</h1>
-        <transition name="fade">
-            <p class="info" v-if="recentlyCopied">copied</p>
-        </transition>
-        <transition name="fade">
-            <p class="info symbol-name" v-if="hovering">{{ sounds[hovering].name  }}</p>
-        </transition>
-    </div>
-    <div class="phonetics">
-
-        <h2 class="header">Sounds In This Language</h2>
-        <div class="my-sounds sound-grid-wrapper">
-            <div class="consonant-wrapper cons-grid">
-                <div v-for="(sound, symbol) in consonantsFrom(userSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
-                    {{ symbol }}
-                </div>
-            </div>
-
-            <div class="vowel-wrapper vowel-grid">
-                <div v-for="(sound, symbol) in vowelsFrom(userSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
-                    {{ symbol }}
-                </div>
-            </div>
-        </div>
-
-        <h2 class="header">Available Sounds </h2>
-        <div class="sound-grid-wrapper">
-            <div class="consonant-wrapper cons-grid">
-                <div v-for="(sound, symbol) in consonantsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
-                    {{ symbol }}
-                </div>
-            </div>
-            <div class="vowel-wrapper vowel-grid">
-                <div v-for="(sound, symbol) in vowelsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
-                    {{ symbol }}
-                </div>
-            </div>
-            
-        </div>
-    </div>
-</template>
-
 <script>
 
 import { ref } from 'vue';
@@ -87,9 +43,53 @@ export default {
     }
   }
 }
-
-
 </script>
+
+
+<template>
+    <div class="main-header-wrapper">
+        <h1 class="header">Phonetics</h1>
+        <transition name="fade">
+            <p class="info" v-if="recentlyCopied">copied</p>
+        </transition>
+        <transition name="fade">
+            <p class="info symbol-name" v-if="hovering">{{ sounds[hovering].name  }}</p>
+        </transition>
+    </div>
+    <div class="phonetics">
+
+        <h2 class="header">Sounds In This Language</h2>
+        <div class="my-sounds sound-grid-wrapper">
+            <div class="consonant-wrapper cons-grid">
+                <div v-for="(sound, symbol) in consonantsFrom(userSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
+            </div>
+
+            <div class="vowel-wrapper vowel-grid">
+                <div v-for="(sound, symbol) in vowelsFrom(userSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
+            </div>
+        </div>
+
+        <h2 class="header">Available Sounds </h2>
+        <div class="sound-grid-wrapper">
+            <div class="consonant-wrapper cons-grid">
+                <div v-for="(sound, symbol) in consonantsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
+            </div>
+            <div class="vowel-wrapper vowel-grid">
+                <div v-for="(sound, symbol) in vowelsFrom(availableSounds)" :key="symbol" class="sound" @click="handleClick($event, sound.audio, symbol)" @mouseenter="hovering = symbol" @mouseleave="hovering = null">
+                    {{ symbol }}
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</template>
+
 
 <style scoped>
 .header {

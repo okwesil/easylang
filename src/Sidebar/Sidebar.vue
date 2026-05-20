@@ -10,7 +10,7 @@
         <sidebar-link to="/dictionary" icon="fa-solid fa-book">Dictionary</sidebar-link>
         <sidebar-link to="/phrases" icon="fa-solid fa-pen">Phrases</sidebar-link>
         <sidebar-link to="/phonetics" icon="fa-solid fa-volume">Phonetics</sidebar-link>
-        <sidebar-link to="/grammar" icon="fa-solid fa-brain">Grammar</sidebar-link>
+        <!-- <sidebar-link to="/grammar" icon="fa-solid fa-brain">Grammar</sidebar-link> -->
         <sidebar-link class="bottom" icon="fa-solid fa-user" to="/settings">{{ currentUser ? currentUser.email.substring(0, 10) + '...' : 'Settings' }}</sidebar-link>
   </div>
 </template>
@@ -51,6 +51,7 @@
     padding: .5em;
 
     transition: 0.3s ease;
+    text-align: center;
 
     display: flex;
     flex-direction: column;
@@ -62,7 +63,6 @@
     transition: all 0.3s ease; 
     font-weight: bold;
     font-size: 30px;
-    margin-bottom: 10px;
     border-radius: 0.5rem;
     white-space: nowrap;
 

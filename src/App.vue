@@ -22,8 +22,8 @@
     },
     setup() {
       load()
-      onMounted(() => window.addEventListener('keyup', onKeypress));
-      onUnmounted(() => window.removeEventListener('keyup', onKeypress));
+      onMounted(() => window.addEventListener('keydown', onKeypress));
+      onUnmounted(() => window.removeEventListener('keydown', onKeypress));
       return { sidebarWidth, notificationText }
     }
   }
@@ -54,7 +54,6 @@ body {
   font-family: "Lora", Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: white;
   margin: 0;
   padding: 0;

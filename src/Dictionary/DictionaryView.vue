@@ -1,17 +1,18 @@
 <script>
 import { ref } from 'vue';
-import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes } from './dictionary';
+import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import { setUndoFunction } from '@/save';
+import Search from './Search.vue';
+
 export default {
   name: 'DictionaryView',
-  components: { NewWordForm },
+  components: { NewWordForm, Search },
   setup() {
     // 
     let timeout;
     let lastDeleted;
     const justDeleted = ref(false)
-    const currentView = ref('noun')
 
     const getWords = () => {
       switch (currentView.value) {
@@ -109,7 +110,7 @@ export default {
     }
 
     return { 
-      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, currentView,
+      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, currentView, showSearch, highlightedWord,
       openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpellingWithDashes, getWords, handleClose, handleDragStart, handleDrop
     }
   }
@@ -141,7 +142,7 @@ export default {
           <span class="new-word-text"> + </span>
         </li>
 
-      <li class="word-container" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
+      <li class="word-container" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
         <span class="word-spelling">
           {{ getSpellingWithDashes(word.id) }}
         </span>
@@ -152,7 +153,10 @@ export default {
       
     </ul>
 
-    <new-word-form ref="modal" @close="handleClose()"  @submit.prevent="handleSubmit"></new-word-form>
+    <new-word-form ref="modal" @close="handleClose()"  @submit.prevent="handleSubmit" />
+    <transition name="slide">
+      <search v-if="showSearch" />
+    </transition>
   </div>
 </template>
 
@@ -221,6 +225,11 @@ li {
   flex-direction: column;
   gap: 0.25rem;
   flex-shrink: 0;
+  transition: background-color 0.3s ease;
+}
+
+.highlight {
+  background-color: var(--accent-color);
 }
 
 .list-header {
@@ -264,6 +273,16 @@ dialog {
   color: white;
   border: 5px solid var(--accent-color);
   border-radius: 1rem;
+}
+
+.slide-enter-active, 
+.slide-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateY(-200%);
 }
 
 </style>

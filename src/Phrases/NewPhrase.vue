@@ -48,7 +48,7 @@ export default {
         const currentlyTyped = ref('')
         const meaning = ref('')
         const sortBySpelling = ref(true)
-        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value, sortBySpelling.value))
+        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value, sortBySpelling.value, 4))
 
         const openForm = (startingWords = null, startingMeaning = null) => {
             if (startingWords != null) {

@@ -1,4 +1,4 @@
-import { dictionary } from './Dictionary/dictionary';
+import { dictionary, showSearch } from './Dictionary/dictionary';
 import { phrases } from './Phrases/phrases';
 import { keysOfUserSounds } from './Phonetics/sounds';
 import { watch, ref } from 'vue'
@@ -92,9 +92,13 @@ export const setUndoFunction = func => {
 }
 
 export const onKeypress = (e) => {
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.metaKey) {
         if (e.key == 'z') {
             undo.value()
+        }
+        if (e.key == 'f') {
+            e.preventDefault()
+            showSearch.value = !showSearch.value
         }
     }
 };

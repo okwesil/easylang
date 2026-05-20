@@ -78,9 +78,9 @@ const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]
 const removeSpecials = string => string.replace(/\P{L}/gu, "")
 const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase().trim()
 
-export const wordsSimilarTo = (testString, checkforSpelling) => {
+export const wordsSimilarTo = (testString, checkforSpelling, amount) => {
     if (testString == '') {
-        return Object.keys(dictionary.value).slice(0, 4)
+        return Object.keys(dictionary.value).slice(0, amount)
     }
 
     let values = [] // either an array of [id, spelling] or [id, definition]
@@ -95,7 +95,7 @@ export const wordsSimilarTo = (testString, checkforSpelling) => {
         })
     }
     const distances = values.map(([ id, string ]) => [id, getLevenshteinDistance(testString, string)]).sort((a, b) => a[1] - b[1])
-    return distances.slice(0, 4).map(entry => entry[0]) // return the id of the top 4 words
+    return distances.slice(0, amount).map(entry => entry[0]) // return the id of the top 4 words
 } 
 
 // this makes the algorithm prioritze same spelling over having the same length

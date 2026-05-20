@@ -1,4 +1,5 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { wordsSimilarTo } from '@/Phrases/phrases'
 
 /*
     an object where the key of each entry is the id of the word and the values are ...
@@ -42,4 +43,19 @@ export const particles = () => Object.values(dictionary.value).filter(entry => e
 
 export const adjectives = () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'adjective').sort((a, b) => a.spelling.localeCompare(b.spelling))
 
+export const showSearch = ref(false)
+export const searchValue = ref('')
+export const currentView = ref('noun')
+export const highlightedWord = ref(null)
+watch(highlightedWord, (newVal) => {
+    if (newVal != null) {
+        setTimeout(() => highlightedWord.value = null, 800)
+    }
+})
 
+export const findWord = (id = wordsSimilarTo(searchValue.value, true, 1)[0]) => {
+    const pof = dictionary.value[id].partOfSpeech
+    currentView.value = pof == 'adjective' ? 'modifier' : pof
+    showSearch.value = false
+    highlightedWord.value = id
+}
