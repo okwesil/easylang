@@ -53,7 +53,17 @@ watch(highlightedWord, (newVal) => {
     }
 })
 
-export const findWord = (id = wordsSimilarTo(searchValue.value, true, 1)[0]) => {
+export const findWord = (router, id) => {
+    if (typeof id === 'undefined') {
+        id = wordsSimilarTo(searchValue.value, true, 1)[0]
+        searchValue.value = ''
+    }
+    if (!router) {
+        console.warn('findWord requires a router instance from useRouter()')
+        return
+    }
+    router.push('/dictionary')
+
     const pof = dictionary.value[id].partOfSpeech
     currentView.value = pof == 'adjective' ? 'modifier' : pof
     showSearch.value = false

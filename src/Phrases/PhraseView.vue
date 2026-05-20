@@ -1,7 +1,8 @@
 <script>
 import { phrases, generateMeaning, spellingOf, meaningOf, sentenceFrom } from './phrases';
-import { dictionary } from '@/Dictionary/dictionary';
+import { dictionary, findWord } from '@/Dictionary/dictionary';
 import { ref, useTemplateRef } from 'vue';
+import { useRouter } from 'vue-router';
 import NewPhrase from './NewPhrase.vue';
 import { setUndoFunction } from '@/save';
 
@@ -62,6 +63,9 @@ export default {
       form.value.openForm(ids, meaning)
     }
 
+    const router = useRouter()
+    const findWordWithRouter = id => findWord(router, id)
+
     const handleSubmit = e => {
       phrases.value.unshift({ids: structuredClone(form.value.wordsAdded), meaning: form.value.meaning})
       form.value.clearForm()
@@ -69,7 +73,7 @@ export default {
 
     return {
       phrases, dictionary, wordHovering, phraseHovering, justDeleted,
-      handleMouseMove, generateMeaning, spellingOf, createNewPhrase, handleSubmit, editPhrase, deletePhrase, undoDelete, sentenceFrom
+      handleMouseMove, generateMeaning, spellingOf, createNewPhrase, handleSubmit, editPhrase, deletePhrase, undoDelete, sentenceFrom, findWord: findWordWithRouter
     }
   }
 }
@@ -93,7 +97,7 @@ export default {
 
       <div v-for="(phrase, phraseIndex) in phrases" :key="phraseIndex" class="phrase" @mouseenter="phraseHovering = phraseIndex" @mouseleave="phraseHovering = null" @contextmenu.prevent="editPhrase(phraseIndex)">
         <div class="words">
-          <span class="word" v-for="(word, index) in sentenceFrom(phrase.ids)" :key="index" @mouseenter="wordHovering = word" @mouseleave="wordHovering = null">
+          <span class="word" v-for="(word, index) in sentenceFrom(phrase.ids)" :key="index" @mouseenter="wordHovering = word" @mouseleave="wordHovering = null" @click="findWord(word.id)">
             {{ spellingOf(word) }}
           </span>
           <transition name="fade">

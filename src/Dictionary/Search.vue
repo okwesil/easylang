@@ -2,17 +2,22 @@
 import { wordsSimilarTo } from '@/Phrases/phrases';
 import { dictionary, findWord, searchValue  } from './dictionary';
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
     setup() {
         const searchInput = ref(null)
+        const router = useRouter()
+
         onMounted(() => {
             searchInput.value.focus()
         })
 
+        const findWordWithRouter = id => findWord(router, id)
+
         return {
             searchValue, dictionary, searchInput,
-            wordsSimilarTo, findWord
+            wordsSimilarTo, findWord: findWordWithRouter
         }
     }
 }
