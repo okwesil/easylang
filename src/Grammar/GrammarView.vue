@@ -1,5 +1,7 @@
 <script>
-
+export default {
+    name: 'GrammarView'
+}
 </script>
 
 <template>
