@@ -10,6 +10,7 @@ import { wordsSimilarTo } from '@/Phrases/phrases'
     definition
     pronounciation (yes i know I spelled it wrong)
     dateCreated
+    notes?
  
 */
 export const dictionary = ref(
@@ -56,7 +57,7 @@ watch(highlightedWord, (newVal) => {
 export const showWord = (router, id) => {
     console.log(id, dictionary.value[id])
     if (typeof id === 'undefined') {
-        id = wordsSimilarTo(searchValue.value, 'both', 1)[0]
+        id = wordsSimilarTo(searchValue.value, 1)[0]
         searchValue.value = ''
     }
     if (!router) {

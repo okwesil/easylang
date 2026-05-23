@@ -12,7 +12,7 @@ export default {
         const currentlyTyped = ref('')
         const meaning = ref('')
         const sortBySpelling = ref(true)
-        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value, 'both', 8))
+        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
 
         const openForm = (startingWords = null, startingMeaning = null) => {
             if (startingWords != null) {
@@ -116,6 +116,7 @@ dialog {
     color: white;
     border: 5px solid var(--accent-color);
     border-radius: 1rem;
+    min-width: 20rem;
 }
 
 .words-added-container {
@@ -153,6 +154,15 @@ p {
     font-size: 0.7rem;
 }
 
+form {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  margin: 20px;
+  text-align: left;
+}
+
+
 form > form {
     margin: 0;
 }
@@ -189,11 +199,7 @@ form > form {
 }
 
 b {
-    color: var(--accent-color);
-}
-
-dialog {
-    min-width: 20rem;
+    color: hsl(0, 0%, 48%);
 }
 
 </style>

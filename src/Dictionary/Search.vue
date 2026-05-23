@@ -26,9 +26,9 @@ export default {
 <template>
     <div class="search-box-wrapper">
         <form @submit.prevent="findWord()">
-            <input ref="searchInput" type="text" v-model="searchValue">
+            <input ref="searchInput" type="text" placeholder="find..." v-model="searchValue">
             <div class="results">
-                <div class="result" v-for="(id, index) in wordsSimilarTo(searchValue, 'both', 3)" :key="index" @click="findWord(id)" >
+                <div class="result" v-for="(id, index) in wordsSimilarTo(searchValue, 3)" :key="index" @click="findWord(id)" >
                     {{ dictionary[id].spelling }} -> {{ dictionary[id].definition }}
                 </div>
             </div>
@@ -47,15 +47,13 @@ export default {
     width: 40vw;
 }
 
-form {
-    margin: 0;
-}
-
 input {
     font-size: 2rem;
     background-color: var(--darker-bg);
     border-radius: .5rem;
     box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.3);
+    color: white;
+    margin-bottom: 10px;
 }
 
 .results {

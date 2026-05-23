@@ -88,6 +88,21 @@ body {
   margin-left: 1rem;
 }
 
+input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  background-color: var(--bg-color);
+  border-bottom: 3px solid var(--accent-color);
+  color: white;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .fade-enter-active, 
 .fade-leave-active {
     transition: opacity 0.3s ease;

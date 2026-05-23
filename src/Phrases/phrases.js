@@ -79,25 +79,18 @@ const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]
 const removeSpecials = string => string.replace(/\P{L}/gu, "")
 const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase().trim()
 
-export const wordsSimilarTo = (testString, checkforSpelling, amount) => {
+export const wordsSimilarTo = (testString, amount) => {
     if (testString == '') {
         return Object.keys(dictionary.value).slice(0, amount)
     }
 
-    let values = [] // either an array of [id, spelling] or [id, definition]
-    if (checkforSpelling == true) {
-        values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
-    } else if (checkforSpelling == 'both') {
-        values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
-        values = values.concat(Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.definition)]))
-    } else {
-        Object.values(dictionary.value).forEach(entry =>{
-            // if a definition has a '/' it is treated as 2 different definitions
-            for (const def of entry.definition.split('/')) {
-                values.push([entry.id, cleanString(def.trim())]) 
-            }
-        })
+    const values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
+    for (const { id, definition } of Object.values(dictionary.value)) {
+        for (const def of definition.split('/')) {
+            values.push([id, cleanString(def)])
+        }
     }
+
     const distances = values.map(([ id, string ]) => [id, stringSimilarity(testString, string)]).sort((a, b) => b[1] - a[1])
-    return distances.slice(0, amount).map(entry => entry[0]) // return the id of the top 4 words
-} 
+    return distances.slice(0, amount).map(entry => entry[0]) // return the id of the top words
+}

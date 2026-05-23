@@ -1,119 +1,107 @@
-<script>
+<script setup>
 import { ref } from 'vue';
 import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import { setUndoFunction } from '@/save';
 import Search from './Search.vue';
 
-export default {
-  name: 'DictionaryView',
-  components: { NewWordForm, Search },
-  setup() {
-    // 
-    let timeout;
-    let lastDeleted;
-    const justDeleted = ref(false)
+let timeout;
+let lastDeleted;
+const justDeleted = ref(false)
 
-    const getWords = () => {
-      switch (currentView.value) {
-        case 'pronoun':
-          return pronouns();
-        case 'noun':
-          return nouns();
-        case 'verb':
-          return verbs();
-        case 'modifier':
-          return adjectives();
-        case 'particle':
-          return particles();
-      }
-    }
-
-    const UNDO_WAIT_TIME = 5000;
-    const deleteWord = (id, save = true) => {
-      if (save) {
-        lastDeleted = structuredClone(dictionary.value[id])
-      }
-
-      delete dictionary.value[id]
-      
-      justDeleted.value = true
-
-      if (!timeout) {
-        timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
-      } else {
-        clearTimeout(timeout)
-        timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
-      }
-    }
-
-    const undoDelete = () => {
-      if (!lastDeleted) {
-        return
-      }
-      addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone')
-      justDeleted.value = false
-      lastDeleted = null
-    }
-    setUndoFunction(undoDelete)
-
-    const form = ref(null)
-    const openNewWordForm = (destination, startSpelling = null, startDef, startPron, startTypeOfAffix) => {
-      if (destination == 'modifier') destination = "adjective"
-      form.value.openForm(destination, startSpelling, startDef, startPron, startTypeOfAffix)
-    }
-
-    const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typeOfAffix) => {
-      let id;
-      if (!_id) {
-        id = generateID()
-      } else {
-        id = _id
-      }
-      dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix}
-    }
-
-
-    // stores the id of the last 
-    const existingId = ref(null)
-
-    const editWord = id => {
-      let word = dictionary.value[id];
-      deleteWord(id)
-      existingId.value = id
-
-      openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix)
-    }
-
-    const handleSubmit = () => {
-      const { spelling, definition, pron, typeOfAffix } = form.value.newWordData
-      form.value.clearForm()
-      form.value.modal.close()
-      addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix)
-      existingId.value = null
-    }
-
-    const handleClose = () => {
-      if (!existingId.value) {
-        return
-      }
-      undoDelete()
-    }
-
-    let dragging = null
-    const handleDragStart = id => {
-      dragging = id
-    }
-
-    const handleDrop = view => {
-      dictionary.value[dragging].partOfSpeech = view == 'modifier' ? 'adjective' : view
-    }
-
-    return { 
-      nouns, verbs, adjectives, pronouns, particles, modal: form, justDeleted, currentView, showSearch, highlightedWord,
-      openNewWordForm, handleSubmit, deleteWord, undoDelete, addNewWord, editWord, getSpellingWithDashes, getWords, handleClose, handleDragStart, handleDrop
-    }
+const getWords = () => {
+  switch (currentView.value) {
+    case 'pronoun':
+      return pronouns();
+    case 'noun':
+      return nouns();
+    case 'verb':
+      return verbs();
+    case 'modifier':
+      return adjectives();
+    case 'particle':
+      return particles();
   }
+}
+
+const UNDO_WAIT_TIME = 5000;
+const deleteWord = (id, save = true) => {
+  if (save) {
+    lastDeleted = structuredClone(dictionary.value[id])
+  }
+
+  delete dictionary.value[id]
+  
+  justDeleted.value = true
+
+  if (!timeout) {
+    timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
+  } else {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => justDeleted.value = false, UNDO_WAIT_TIME)
+  }
+}
+
+const undoDelete = () => {
+  if (!lastDeleted) {
+    return
+  }
+  addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone', lastDeleted?.notes ?? '')
+  justDeleted.value = false
+  lastDeleted = null
+}
+setUndoFunction(undoDelete)
+
+const form = ref(null)
+const openNewWordForm = (destination, startSpelling = null, startDef, startPron, startTypeOfAffix, startNotes) => {
+  if (destination == 'modifier') destination = "adjective"
+  form.value.openForm(destination, startSpelling, startDef, startPron, startTypeOfAffix, startNotes)
+}
+
+const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typeOfAffix, notes) => {
+  let id;
+  if (!_id) {
+    id = generateID()
+  } else {
+    id = _id
+  }
+  dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix, notes}
+}
+
+
+// stores the id of the last 
+const existingId = ref(null)
+
+const editWord = id => {
+  let word = dictionary.value[id];
+  deleteWord(id)
+  existingId.value = id
+
+  openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix, word?.notes)
+}
+
+const handleSubmit = () => {
+  const { spelling, definition, pron, typeOfAffix, notes } = form.value.newWordData
+  form.value.clearForm()
+  form.value.modal.close()
+  addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix, notes)
+  existingId.value = null
+}
+
+const handleClose = () => {
+  if (!existingId.value) {
+    return
+  }
+  undoDelete()
+}
+
+let dragging = null
+const handleDragStart = id => {
+  dragging = id
+}
+
+const handleDrop = view => {
+  dictionary.value[dragging].partOfSpeech = view == 'modifier' ? 'adjective' : view
 }
 </script>
 
@@ -127,6 +115,11 @@ export default {
     <h3 v-if="justDeleted" @click="undoDelete" class="undo active">Undo</h3>
   </transition>
 
+  <transition name="slide">
+    <search @keydown.esc="showSearch = false" v-if="showSearch" />
+  </transition>
+
+  <new-word-form ref="form" @close="handleClose()"  @submit.prevent="handleSubmit" />   
   <div class="dictionary" @click="showSearch = false">
 
     <div class="list-select-wrapper">
@@ -152,11 +145,6 @@ export default {
       </li>
       
     </ul>
-
-    <new-word-form ref="modal" @close="handleClose()"  @submit.prevent="handleSubmit" />
-    <transition name="slide">
-      <search v-if="showSearch" />
-    </transition>
   </div>
 </template>
 

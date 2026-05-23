@@ -194,6 +194,8 @@ input[type="text"] {
 button {
   transition: all 0.3s ease;
   border: 2px solid var(--accent-color);
+  background-color: var(--bg-color);
+  color: white;
   border-radius: 0.5rem;
   display: flex;
   justify-content: center;

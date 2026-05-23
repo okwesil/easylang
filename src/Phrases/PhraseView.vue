@@ -114,7 +114,7 @@ export default {
 
 
     </div>
-    <NewPhrase ref="form" @close="undoDelete()" @submit="handleSubmit"></NewPhrase>
+    <NewPhrase ref="form" @submit="handleSubmit"></NewPhrase>
   </div>
 </template>
 
