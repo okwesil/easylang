@@ -1,6 +1,6 @@
 <script>
 import { phrases, generateMeaning, spellingOf, meaningOf, sentenceFrom } from './phrases';
-import { dictionary, findWord } from '@/Dictionary/dictionary';
+import { dictionary, showWord } from '@/Dictionary/dictionary';
 import { ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import NewPhrase from './NewPhrase.vue';
@@ -64,7 +64,7 @@ export default {
     }
 
     const router = useRouter()
-    const findWordWithRouter = id => findWord(router, id)
+    const findWordWithRouter = id => showWord(router, id)
 
     const handleSubmit = e => {
       phrases.value.unshift({ids: structuredClone(form.value.wordsAdded), meaning: form.value.meaning})
@@ -80,7 +80,7 @@ export default {
 </script>
 
 <template>
-  <div class="phrases"  >
+  <div class="phrases">
     <h1 class="new-phrase" @click="createNewPhrase">+</h1>
 
     <div class="main-header-wrapper">
@@ -114,7 +114,7 @@ export default {
 
 
     </div>
-    <new-phrase ref="form" @submit="handleSubmit"></new-phrase>
+    <NewPhrase ref="form" @close="undoDelete()" @submit="handleSubmit"></NewPhrase>
   </div>
 </template>
 

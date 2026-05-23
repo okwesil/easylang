@@ -1,39 +1,3 @@
-<template>
-    <dialog ref="modal">
-        <div class="exit">
-            <i class="fa-solid fa-x" @click="modal.close()"></i>
-        </div>
-
-        <form @submit.prevent="handleSubmit">
-            <h4>Make a new phrase</h4>
-            <div class="words-added-container">
-                <h3 class="word" v-for="(id, index) in wordsAdded" :key="id" draggable="true" @dragstart="dragging = index" @dragover.prevent @drop="handleDrop(index)">{{ dictionary[id].spelling }}</h3>
-                <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
-            </div>
-
-            <!-- word autocomplete -->
-            <form @submit.prevent="(e) => {e.stopPropagation(); wordsAdded.push(topWords[0]); currentlyTyped = ''}">
-                <input class="autocomplete-input" type="text" v-model="currentlyTyped" placeholder="type the word that you want to add...">
-            </form>
-
-            <div class="spelling-or-definition">
-                <p class="sort-by">sort by -> </p>
-                <p class="definition toggle" :class="{'on': !sortBySpelling }" @click="sortBySpelling = false">definition </p>
-                <p class="spelling toggle" :class="{'on': sortBySpelling}" @click="sortBySpelling = true">spelling</p>
-            </div>
-
-            <p>hit <b>ENTER</b> to add the underlined word to your phrase</p>
-
-            <div class="top-word">
-                <div v-for="(id, index) in topWords" :class="{'best-word': index === 0}" :key="index" @click="wordsAdded.push(id)">{{ dictionary[id].spelling + ' -> ' + dictionary[id].definition}}</div>
-            </div>
-            
-            <input type="text" v-model="meaning" required placeholder="what is the meaning of this phrase?">
-        </form>
-    </dialog>
-</template>
-
-
 <script>
 import { ref, computed } from 'vue';
 import { dictionary, sortedDictionary } from '@/Dictionary/dictionary';
@@ -48,7 +12,7 @@ export default {
         const currentlyTyped = ref('')
         const meaning = ref('')
         const sortBySpelling = ref(true)
-        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value, sortBySpelling.value, 4))
+        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value, 'both', 8))
 
         const openForm = (startingWords = null, startingMeaning = null) => {
             if (startingWords != null) {
@@ -111,6 +75,40 @@ export default {
 
 </script>
 
+<template>
+    <dialog ref="modal">
+        <div class="exit">
+            <i class="fa-solid fa-x" @click="modal.close()"></i>
+        </div>
+
+        <form @submit.prevent="handleSubmit">
+            <h4>Make a new phrase</h4>
+            <div class="words-added-container">
+                <h3 class="word" v-for="(id, index) in wordsAdded" :key="id" draggable="true" @dragstart="dragging = index" @dragover.prevent @drop="handleDrop(index)">{{ dictionary[id].spelling }}</h3>
+                <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
+            </div>
+
+            <!-- word autocomplete -->
+            <form @submit.prevent="(e) => {e.stopPropagation(); wordsAdded.push(topWords[0]); currentlyTyped = ''}">
+                <input class="autocomplete-input" type="text" v-model="currentlyTyped" placeholder="type the word that you want to add...">
+            </form>
+
+            <!-- <div class="spelling-or-definition">
+                <p class="sort-by">sort by -> </p>
+                <p class="definition toggle" :class="{'on': !sortBySpelling }" @click="sortBySpelling = false">definition </p>
+                <p class="spelling toggle" :class="{'on': sortBySpelling}" @click="sortBySpelling = true">spelling</p>
+            </div> -->
+
+            <p>hit <b>ENTER</b> to add the underlined word to your phrase</p>
+
+            <div class="top-word">
+                <div v-for="(id, index) in topWords" class="autocomplete-word" :class="{'best-word': index === 0}" :key="index" @click="wordsAdded.push(id)">{{ dictionary[id].spelling }} <b>{{ dictionary[id].definition }}</b></div>
+            </div>
+            
+            <input type="text" v-model="meaning" required placeholder="what is the meaning of this phrase?">
+        </form>
+    </dialog>
+</template>
 
 <style scoped>
 dialog {
@@ -171,12 +169,23 @@ form > form {
     margin-left: 1rem;
 }
 
+.top-word {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-auto-flow: column;
+    column-gap: 12px;
+}
+
+.autocomplete-word {
+    overflow: hidden;
+}
+
 .on {
     border-bottom: 3px solid var(--accent-color);
 }
 
 .best-word {
-    text-decoration: underline;
+    text-decoration: underline var(--accent-color);
 }
 
 b {

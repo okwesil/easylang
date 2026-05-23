@@ -1,6 +1,6 @@
 <script>
 import { wordsSimilarTo } from '@/Phrases/phrases';
-import { dictionary, findWord, searchValue  } from './dictionary';
+import { dictionary, showWord, searchValue  } from './dictionary';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -13,7 +13,7 @@ export default {
             searchInput.value.focus()
         })
 
-        const findWordWithRouter = id => findWord(router, id)
+        const findWordWithRouter = id => showWord(router, id)
 
         return {
             searchValue, dictionary, searchInput,
@@ -28,7 +28,7 @@ export default {
         <form @submit.prevent="findWord()">
             <input ref="searchInput" type="text" v-model="searchValue">
             <div class="results">
-                <div class="result" v-for="(id, index) in wordsSimilarTo(searchValue, true, 3)" :key="index" @click="findWord(id)" >
+                <div class="result" v-for="(id, index) in wordsSimilarTo(searchValue, 'both', 3)" :key="index" @click="findWord(id)" >
                     {{ dictionary[id].spelling }} -> {{ dictionary[id].definition }}
                 </div>
             </div>
@@ -44,8 +44,7 @@ export default {
     top: 10px;
     padding: 10px;
     border-radius: 1rem;
-    background-color: var(--bg-color);
-    box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.3);
+    width: 40vw;
 }
 
 form {
@@ -55,19 +54,25 @@ form {
 input {
     font-size: 2rem;
     background-color: var(--darker-bg);
+    border-radius: .5rem;
+    box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.3);
 }
 
 .results {
-    margin-top: 5px;
     display: flex;
+    flex-wrap: nowrap;
     gap: 5px;
+    background-color: var(--bg-color);
 }
+
 .result { 
     padding: 5px;
     border: 2px solid var(--accent-color);
     border-radius: .5rem;
     font-size: 1.5rem;
     overflow: hidden;
+    white-space: nowrap;
+    box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.3);
     transition: background-color 0.3s ease;
 }
 

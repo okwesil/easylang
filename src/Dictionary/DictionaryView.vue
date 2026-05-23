@@ -118,7 +118,7 @@ export default {
 </script>
 
 <template>
-  <div class="main-header-wrapper">
+  <div class="main-header-wrapper" @click="showSearch = false">
     <h1 class="header">Dictionary</h1>
     <p class="info">double click to delete, right click to edit</p>
   </div> 
@@ -127,7 +127,7 @@ export default {
     <h3 v-if="justDeleted" @click="undoDelete" class="undo active">Undo</h3>
   </transition>
 
-  <div class="dictionary">
+  <div class="dictionary" @click="showSearch = false">
 
     <div class="list-select-wrapper">
       <span class="list-select" @dragover.prevent @drop="handleDrop('pronoun')" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>

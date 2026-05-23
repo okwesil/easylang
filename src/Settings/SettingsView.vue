@@ -11,6 +11,11 @@
           <input type="text" v-model="settings.name" @change="updateName"> 
         </div>
 
+        <div class="line">
+          <span class="Word Count">Word Count</span>
+          <span>{{ Object.keys(dictionary).length }}</span>
+        </div>
+
         <form v-if="currentUser == null" class="signin">
 
           <div class="line email">
@@ -42,6 +47,7 @@ import { settings, updateHue, updateName, clearSave } from '../save.js'
 import { ref } from 'vue';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { auth, currentUser } from '@/firebase.js';
+import { dictionary } from '@/Dictionary/dictionary.js';
 
 
   export default {
@@ -98,7 +104,7 @@ import { auth, currentUser } from '@/firebase.js';
       }
 
       return {
-        settings, email, password, currentUser,
+        settings, email, password, currentUser, dictionary,
         updateHue, updateName, signup, signin, signout
       }
     }

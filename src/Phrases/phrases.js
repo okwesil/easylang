@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { dictionary } from '@/Dictionary/dictionary';
+import stringSimilarity from 'jaro-winkler';
 
 // array of objects with the following kv pairs
 // ids is an array of the ids of words in the dictionary
@@ -84,8 +85,11 @@ export const wordsSimilarTo = (testString, checkforSpelling, amount) => {
     }
 
     let values = [] // either an array of [id, spelling] or [id, definition]
-    if (checkforSpelling) {
+    if (checkforSpelling == true) {
         values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
+    } else if (checkforSpelling == 'both') {
+        values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
+        values = values.concat(Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.definition)]))
     } else {
         Object.values(dictionary.value).forEach(entry =>{
             // if a definition has a '/' it is treated as 2 different definitions
@@ -94,32 +98,6 @@ export const wordsSimilarTo = (testString, checkforSpelling, amount) => {
             }
         })
     }
-    const distances = values.map(([ id, string ]) => [id, getLevenshteinDistance(testString, string)]).sort((a, b) => a[1] - b[1])
+    const distances = values.map(([ id, string ]) => [id, stringSimilarity(testString, string)]).sort((a, b) => b[1] - a[1])
     return distances.slice(0, amount).map(entry => entry[0]) // return the id of the top 4 words
 } 
-
-// this makes the algorithm prioritze same spelling over having the same length
-const SUB_COST = 1
-const INS_DEL_COST = 0.2
-// courtesy of gemini
-function getLevenshteinDistance(a, b) {
-    const matrix = [];
-
-    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-
-    for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-        if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-        matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + SUB_COST, // substitution
-            matrix[i][j - 1] + INS_DEL_COST,     // insertion
-            matrix[i - 1][j] + INS_DEL_COST      // deletion
-        );
-        }
-    }
-    }
-    return matrix[b.length][a.length];
-}
