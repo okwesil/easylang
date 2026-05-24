@@ -154,7 +154,7 @@ const handleDrop = view => {
             <span class="word-def"> 
               {{ word.definition }}
             </span>
-            <i v-if="word?.favorite" class="star fa-solid fa-star"></i>
+            <i v-if="word.favorite" class="star fa-solid fa-star"></i>
           </li>
         </transition-group>
       

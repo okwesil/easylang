@@ -26,6 +26,7 @@ const getLanguageData = () => {
 
 export const notificationText = ref('')
 export const save = () => {   
+    fillNonExistentValues()
     const languageString = JSON.stringify(getLanguageData())
     localStorage.setItem('language', languageString)    
     // only save to Firestore when there is a signed-in user and enough time has passed

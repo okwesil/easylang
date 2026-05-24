@@ -14,7 +14,7 @@ export default {
       newWordData.pron = startPron
       newWordData.typeOfAffix = startTypeOfAffix ?? 'standalone'
       newWordData.notes = startNotes ?? ''
-      newWordData.favorite = startFavorite
+      newWordData.favorite = startFavorite ?? false
       destination.value = _destination
     }
 
