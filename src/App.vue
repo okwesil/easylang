@@ -103,7 +103,6 @@ input:focus {
   box-shadow: none;
 }
 
-.fade-move,
 .fade-enter-active, 
 .fade-leave-active {
   transition: opacity 0.3s ease;
@@ -112,10 +111,6 @@ input:focus {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.fade-leave-active {
-  position: absolute;
 }
 
 .slide-enter-active, 

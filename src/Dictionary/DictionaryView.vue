@@ -49,7 +49,7 @@ const undoDelete = () => {
   if (!lastDeleted) {
     return
   }
-  addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone', lastDeleted?.notes ?? '', lastDeleted.favorite)
+  addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone', lastDeleted?.notes ?? '', lastDeleted?.favorite ?? false)
   justDeleted.value = false
   lastDeleted = null
 }
@@ -69,6 +69,7 @@ const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typ
     id = _id
   }
   dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix, notes, favorite}
+  return id
 }
 
 
@@ -87,7 +88,7 @@ const handleSubmit = () => {
   const { spelling, definition, pron, typeOfAffix, notes, favorite } = form.value.newWordData
   form.value.clearForm()
   form.value.modal.close()
-  addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix, notes, favorite)
+  highlightedWord.value = addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix, notes, favorite)
   existingId.value = null
 }
 
