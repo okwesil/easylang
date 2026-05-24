@@ -34,15 +34,32 @@ export const generateID = () => {
     return id
 }
 
-export const nouns = () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'noun').sort((a, b) => a.spelling.localeCompare(b.spelling))
+const favFirstSort = (a, b) => {
+    if (a.favorite === b.favorite) {
+        return a.spelling.localeCompare(b.spelling)
+    }
+    return a.favorite ? -1 : 1
+}
 
-export const pronouns = () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'pronoun').sort((a, b) => a.spelling.localeCompare(b.spelling))
+export const nouns = () => Object.values(dictionary.value)
+    .filter(entry => entry.partOfSpeech == 'noun')
+    .sort(favFirstSort)
 
-export const verbs = () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'verb').sort((a, b) => a.spelling.localeCompare(b.spelling))
+export const pronouns = () => Object.values(dictionary.value)
+    .filter(entry => entry.partOfSpeech == 'pronoun')
+    .sort(favFirstSort)
 
-export const particles = () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'particle').sort((a, b) => a.spelling.localeCompare(b.spelling))
+export const verbs = () => Object.values(dictionary.value)
+    .filter(entry => entry.partOfSpeech == 'verb')
+    .sort(favFirstSort)
 
-export const adjectives = () => Object.values(dictionary.value).filter(entry => entry.partOfSpeech == 'adjective').sort((a, b) => a.spelling.localeCompare(b.spelling))
+export const particles = () => Object.values(dictionary.value)
+    .filter(entry => entry.partOfSpeech == 'particle')
+    .sort(favFirstSort)
+
+export const adjectives = () => Object.values(dictionary.value)
+    .filter(entry => entry.partOfSpeech == 'adjective')
+    .sort(favFirstSort)
 
 export const showSearch = ref(false)
 export const searchValue = ref('')

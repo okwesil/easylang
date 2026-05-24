@@ -135,13 +135,14 @@ const handleDrop = view => {
           <span class="new-word-text"> + </span>
         </li>
 
-      <li class="word-container" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
+      <li class="word-container" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @click="dictionary[word.id].favorite = !dictionary[word.id].favorite"  @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
         <span class="word-spelling">
           {{ getSpellingWithDashes(word.id) }}
         </span>
         <span class="word-def"> 
           {{ word.definition }}
         </span>
+        <i v-if="word?.favorite" class="star fa-solid fa-star"></i>
       </li>
       
     </ul>
@@ -160,6 +161,7 @@ const handleDrop = view => {
   bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 10;
 
   cursor: pointer;
 }
@@ -200,6 +202,7 @@ const handleDrop = view => {
 }
 
 li {
+  position: relative;
   justify-content: center;
   /* text-align: left; */
   /* width: 25%; */
@@ -214,7 +217,16 @@ li {
   gap: 0.25rem;
   flex-shrink: 0;
   transition: background-color 0.3s ease;
+  box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.502);
 }
+
+.star {
+  color: var(--accent-color);
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
 
 .highlight {
   background-color: var(--accent-color);

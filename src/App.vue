@@ -113,4 +113,8 @@ input:focus {
     opacity: 0;
 }
 
+dialog {
+  box-shadow: 10px 10px 10px hsla(0, 0%, 0%, 0.502);
+}
+
 </style>
