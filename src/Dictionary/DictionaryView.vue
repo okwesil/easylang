@@ -1,13 +1,16 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
+import ContextMenu from '@/Components/ContextMenu.vue';
+import ContextMenuLink from '@/Components/ContextMenuLink.vue';
 import { setUndoFunction } from '@/save';
 import Search from './Search.vue';
 
 let timeout;
 let lastDeleted;
 const justDeleted = ref(false)
+const contextMenu = useTemplateRef('contextMenu')
 
 const getWords = () => {
   switch (currentView.value) {
@@ -46,26 +49,26 @@ const undoDelete = () => {
   if (!lastDeleted) {
     return
   }
-  addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone', lastDeleted?.notes ?? '')
+  addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone', lastDeleted?.notes ?? '', lastDeleted.favorite)
   justDeleted.value = false
   lastDeleted = null
 }
 setUndoFunction(undoDelete)
 
 const form = ref(null)
-const openNewWordForm = (destination, startSpelling = null, startDef, startPron, startTypeOfAffix, startNotes) => {
+const openNewWordForm = (destination, startSpelling = null, startDef, startPron, startTypeOfAffix, startNotes, startFavorite) => {
   if (destination == 'modifier') destination = "adjective"
-  form.value.openForm(destination, startSpelling, startDef, startPron, startTypeOfAffix, startNotes)
+  form.value.openForm(destination, startSpelling, startDef, startPron, startTypeOfAffix, startNotes, startFavorite)
 }
 
-const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typeOfAffix, notes) => {
+const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typeOfAffix, notes, favorite) => {
   let id;
   if (!_id) {
     id = generateID()
   } else {
     id = _id
   }
-  dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix, notes}
+  dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix, notes, favorite}
 }
 
 
@@ -77,14 +80,14 @@ const editWord = id => {
   deleteWord(id)
   existingId.value = id
 
-  openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix, word?.notes)
+  openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix, word?.notes, word.favorite)
 }
 
 const handleSubmit = () => {
-  const { spelling, definition, pron, typeOfAffix, notes } = form.value.newWordData
+  const { spelling, definition, pron, typeOfAffix, notes, favorite } = form.value.newWordData
   form.value.clearForm()
   form.value.modal.close()
-  addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix, notes)
+  addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix, notes, favorite)
   existingId.value = null
 }
 
@@ -106,10 +109,16 @@ const handleDrop = view => {
 </script>
 
 <template>
-  <div class="main-header-wrapper" @click="showSearch = false">
+  <div class="main-header-wrapper" @click="showSearch = false; contextMenu.hide()">
     <h1 class="header">Dictionary</h1>
-    <p class="info">double click to delete, right click to edit</p>
+    <p class="info">right click on a word to open its menu</p>
   </div> 
+
+  <ContextMenu ref="contextMenu">
+    <ContextMenuLink icon="fa-regular fa-star" :onClick="(data) => dictionary[data.id].favorite = !dictionary[data.id].favorite"></ContextMenuLink>
+    <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="(data) => editWord(data.id)"></ContextMenuLink>
+    <ContextMenuLink icon="fa-solid fa-trash" :onClick="(data) => deleteWord(data.id)"></ContextMenuLink>
+  </ContextMenu>
 
   <transition name="fade">
     <h3 v-if="justDeleted" @click="undoDelete" class="undo active">Undo</h3>
@@ -118,9 +127,10 @@ const handleDrop = view => {
   <transition name="slide">
     <search @keydown.esc="showSearch = false" v-if="showSearch" />
   </transition>
+  <new-word-form ref="form" @close="handleClose()"  @submit.prevent="handleSubmit" /> 
 
-  <new-word-form ref="form" @close="handleClose()"  @submit.prevent="handleSubmit" />   
-  <div class="dictionary" @click="showSearch = false">
+
+  <div class="dictionary" @click="showSearch = false; contextMenu.hide()">
 
     <div class="list-select-wrapper">
       <span class="list-select" @dragover.prevent @drop="handleDrop('pronoun')" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>
@@ -130,20 +140,22 @@ const handleDrop = view => {
       <span class="list-select" @dragover.prevent @drop="handleDrop('particle')" :class="{'selected': currentView == 'particle' }" @click="currentView = 'particle'">particles</span>
     </div>
 
-    <ul class="list">
+    <ul class="words">
         <li class="add-word word-container" @click="openNewWordForm(currentView)">
           <span class="new-word-text"> + </span>
         </li>
 
-      <li class="word-container" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @click="dictionary[word.id].favorite = !dictionary[word.id].favorite"  @dblclick="deleteWord(word.id, 'word')" @contextmenu.prevent="editWord(word.id)">
-        <span class="word-spelling">
-          {{ getSpellingWithDashes(word.id) }}
-        </span>
-        <span class="word-def"> 
-          {{ word.definition }}
-        </span>
-        <i v-if="word?.favorite" class="star fa-solid fa-star"></i>
-      </li>
+        <transition-group name="fade">
+          <li class="word-container" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, {id: word.id})">
+            <span class="word-spelling">
+              {{ getSpellingWithDashes(word.id) }}
+            </span>
+            <span class="word-def"> 
+              {{ word.definition }}
+            </span>
+            <i v-if="word?.favorite" class="star fa-solid fa-star"></i>
+          </li>
+        </transition-group>
       
     </ul>
   </div>
@@ -174,7 +186,7 @@ const handleDrop = view => {
   margin-bottom: 10px;
 }
 
-.list {
+.words {
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
@@ -275,14 +287,19 @@ dialog {
   border-radius: 1rem;
 }
 
-.slide-enter-active, 
-.slide-leave-active {
-  transition: transform 0.3s ease;
+.fade-move,
+.fade-enter-active, 
+.fade-leave-active {
+  transition: all 0.3s ease;
 }
 
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateY(-200%);
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-leave-active {
+  position: absolute;
 }
 
 </style>

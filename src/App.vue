@@ -103,18 +103,37 @@ input:focus {
   box-shadow: none;
 }
 
+.fade-move,
 .fade-enter-active, 
 .fade-leave-active {
-    transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-    opacity: 0;
+  opacity: 0;
+}
+
+.fade-leave-active {
+  position: absolute;
+}
+
+.slide-enter-active, 
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateY(-100vh);
 }
 
 dialog {
   box-shadow: 10px 10px 10px hsla(0, 0%, 0%, 0.502);
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 </style>

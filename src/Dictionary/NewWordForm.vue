@@ -2,11 +2,11 @@
 import { reactive, ref, useTemplateRef } from 'vue';
 export default {
   setup() {
-    const newWordData = reactive({ spelling: '', definition: '', pron: '', typeOfAffix: 'standalone', notes: ''})
+    const newWordData = reactive({ spelling: '', definition: '', pron: '', typeOfAffix: 'standalone', notes: '', favorite: false})
     const modal = useTemplateRef('modal')
 
     const destination = ref('')
-    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix, startNotes) => {
+    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix, startNotes, startFavorite) => {
       modal.value.showModal()
 
       newWordData.spelling = startSpelling
@@ -14,6 +14,7 @@ export default {
       newWordData.pron = startPron
       newWordData.typeOfAffix = startTypeOfAffix ?? 'standalone'
       newWordData.notes = startNotes ?? ''
+      newWordData.favorite = startFavorite
       destination.value = _destination
     }
 

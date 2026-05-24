@@ -72,7 +72,6 @@ watch(highlightedWord, (newVal) => {
 })
 
 export const showWord = (router, id) => {
-    console.log(id, dictionary.value[id])
     if (typeof id === 'undefined') {
         id = wordsSimilarTo(searchValue.value, 1)[0]
         searchValue.value = ''

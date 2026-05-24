@@ -69,12 +69,28 @@ export const load = async () => {
     } 
 
     dictionary.value = parsed.dictionary
+    fillNonExistentValues()
     phrases.value = parsed.phrases
     keysOfUserSounds.value = parsed.sounds ?? []
     languageId = parsed.id ?? makeLanguageId()
     loadSettings(parsed.settings)
 }
 
+const defaults = {
+    'favorite': false,
+    'notes': ''
+}
+
+const fillNonExistentValues = () => {
+    for (const key in dictionary.value) {
+        for (const field in defaults) {
+            if (!Object.hasOwn(dictionary.value[key], field)) {
+                dictionary.value[key][field] = defaults[field]
+            }
+        }
+    }
+}
+ 
 export const clearSave = () => {
     localStorage.removeItem('language')
     dictionary.value = {}

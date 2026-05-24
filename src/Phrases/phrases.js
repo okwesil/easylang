@@ -91,6 +91,6 @@ export const wordsSimilarTo = (testString, amount) => {
         }
     }
 
-    const distances = values.map(([ id, string ]) => [id, stringSimilarity(testString, string)]).sort((a, b) => b[1] - a[1])
+    const distances = values.map(([ id, string ]) => [id, stringSimilarity(cleanString(testString), string)]).sort((a, b) => b[1] - a[1])
     return distances.slice(0, amount).map(entry => entry[0]) // return the id of the top words
 }
