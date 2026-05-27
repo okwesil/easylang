@@ -1,5 +1,5 @@
 import { computed, ref, watch } from 'vue'
-import { wordsSimilarTo } from '@/Phrases/phrases'
+import { wordsSimilarTo } from '@/Sentences/sentences'
 
 /*
     an object where the key of each entry is the id of the word and the values are ...

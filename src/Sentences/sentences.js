@@ -12,7 +12,7 @@ import stringSimilarity from 'jaro-winkler';
     }
 
 */
-export const phrases = ref([])
+export const sentences = ref([])
 
 export const sentenceFrom = (ids) => {
     /**

@@ -1,5 +1,5 @@
 import { dictionary, showSearch } from './Dictionary/dictionary';
-import { phrases } from './Phrases/phrases';
+import { sentences } from './Sentences/sentences';
 import { keysOfUserSounds } from './Phonetics/sounds';
 import { watch, ref } from 'vue'
 import { currentUser, db } from './firebase.js';
@@ -17,7 +17,7 @@ const languageDoc = async (find = false) => {
 }
 const getLanguageData = () => {
     return {
-        dictionary: dictionary.value, phrases: phrases.value,
+        dictionary: dictionary.value, sentences: sentences.value,
         sounds: keysOfUserSounds.value,
         settings: settings.value,
         id: languageId 
@@ -49,7 +49,7 @@ const saveToDb = async () => {
 export const load = async () => {
     // autosave
     watch(dictionary, () => save(), { deep: true })
-    watch(phrases, () => save(), { deep: true })
+    watch(sentences, () => save(), { deep: true })
     watch(keysOfUserSounds, () => save(), { deep: true })
     watch(settings, () => save(), { deep: true })
 
@@ -71,7 +71,7 @@ export const load = async () => {
 
     dictionary.value = parsed.dictionary
     fillNonExistentValues()
-    phrases.value = parsed.phrases
+    sentences.value = parsed.sentences ?? parsed.phrases
     keysOfUserSounds.value = parsed.sounds ?? []
     languageId = parsed.id ?? makeLanguageId()
     loadSettings(parsed.settings)
@@ -95,7 +95,7 @@ const fillNonExistentValues = () => {
 export const clearSave = () => {
     localStorage.removeItem('language')
     dictionary.value = {}
-    phrases.value = []
+    sentences.value = []
     settings.value.hue = 0
     updateHue()
     settings.value.name = 'easyLang'

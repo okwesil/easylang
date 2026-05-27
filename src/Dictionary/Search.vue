@@ -1,7 +1,7 @@
 <script>
-import { wordsSimilarTo } from '@/Phrases/phrases';
+import { wordsSimilarTo } from '@/Sentences/sentences.js';
 import { dictionary, showWord, searchValue  } from './dictionary';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -11,6 +11,9 @@ export default {
 
         onMounted(() => {
             searchInput.value.focus()
+        })
+        onUnmounted(() => {
+            searchValue.value = ''
         })
 
         const findWordWithRouter = id => showWord(router, id)
@@ -45,6 +48,7 @@ export default {
     padding: 10px;
     border-radius: 1rem;
     width: 40vw;
+    z-index: 10;
 }
 
 input {

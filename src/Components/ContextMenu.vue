@@ -22,9 +22,11 @@ defineExpose({ show, hide })
 </script>
 
 <template>
-    <div class="menu" ref="menu" :style="{top: y.toString() + 'px', left: x.toString() + 'px'}" @click="hide">
-        <slot />
-    </div>
+    <transition name="fade">
+        <div class="menu" ref="menu" :style="{top: y.toString() + 'px', left: x.toString() + 'px'}" @click="hide">
+            <slot />
+        </div>
+    </transition>
 </template>
 
 <style scoped>

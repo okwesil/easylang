@@ -1,78 +1,67 @@
-<script>
+<script setup>
 import { ref, computed } from 'vue';
 import { dictionary, sortedDictionary } from '@/Dictionary/dictionary';
-import { wordsSimilarTo } from './phrases';
+import { wordsSimilarTo } from './sentences.js';
 
 
-export default {
-    name: 'NewPhrase',
-    setup() {
-        const modal = ref(null)
-        const wordsAdded = ref([])
-        const currentlyTyped = ref('')
-        const meaning = ref('')
-        const sortBySpelling = ref(true)
-        const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
+const modal = ref(null)
+const wordsAdded = ref([])
+const currentlyTyped = ref('')
+const meaning = ref('')
+const sortBySpelling = ref(true)
+const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
 
-        const openForm = (startingWords = null, startingMeaning = null) => {
-            if (startingWords != null) {
-                wordsAdded.value = startingWords.filter(id => id in dictionary.value)
-            }
-            if (startingMeaning != null) {
-                meaning.value = startingMeaning
-            }
-            modal.value.showModal()
-        }
-
-        const validation = () => {
-            if (wordsAdded.value.length == 0) {
-                return "Add some words to your phrase first"
-            }
-
-            const firstWord = wordsAdded.value[0]
-            const lastWord = wordsAdded.value[wordsAdded.value.length - 1]
-            
-            if (dictionary.value[firstWord].typeOfAffix == 'suffix') {
-                return "Phrases can't start with suffixes"
-            }
-
-            if (dictionary.value[lastWord].typeOfAffix == 'prefix' ) {
-                return "Phrases can't end with prefixes"
-            }
-
-            return null
-        }
-
-        const handleSubmit = e => {
-            const errorMsg = validation()
-            if (errorMsg) {
-                alert(errorMsg)
-                e.stopPropagation()
-                return
-            }
-            modal.value.close()
-        }
-
-        const clearForm = () => {
-            meaning.value = ''
-            wordsAdded.value.length = 0
-            currentlyTyped.value = ''
-        }
-
-        const dragging = ref(null)
-        const handleDrop = index => {
-            const id = wordsAdded.value.splice(dragging.value, 1)
-            wordsAdded.value.splice(index, 0, id)
-            dragging.value = null
-        }
-
-        return {
-            modal, dictionary, sortedDictionary, wordsAdded, meaning, currentlyTyped, topWords, sortBySpelling, dragging,
-            openForm, handleSubmit, clearForm, wordsSimilarTo, handleDrop
-        }
+const openForm = (startingWords = null, startingMeaning = null) => {
+    if (startingWords != null) {
+        wordsAdded.value = startingWords.filter(id => id in dictionary.value)
     }
+    if (startingMeaning != null) {
+        meaning.value = startingMeaning
+    }
+    modal.value.showModal()
 }
 
+const validation = () => {
+    if (wordsAdded.value.length == 0) {
+        return "Add some words to your sentence first"
+    }
+
+    const firstWord = wordsAdded.value[0]
+    const lastWord = wordsAdded.value[wordsAdded.value.length - 1]
+    
+    if (dictionary.value[firstWord].typeOfAffix == 'suffix') {
+        return "Sentences can't start with suffixes"
+    }
+
+    if (dictionary.value[lastWord].typeOfAffix == 'prefix' ) {
+        return "Sentences can't end with prefixes"
+    }
+
+    return null
+}
+
+const handleSubmit = e => {
+    const errorMsg = validation()
+    if (errorMsg) {
+        alert(errorMsg)
+        e.stopPropagation()
+        return
+    }
+    modal.value.close()
+}
+
+const clearForm = () => {
+    meaning.value = ''
+    wordsAdded.value.length = 0
+    currentlyTyped.value = ''
+}
+
+const dragging = ref(null)
+const handleDrop = index => {
+    const id = wordsAdded.value.splice(dragging.value, 1)
+    wordsAdded.value.splice(index, 0, id)
+    dragging.value = null
+}
 </script>
 
 <template>
@@ -82,7 +71,7 @@ export default {
         </div>
 
         <form @submit.prevent="handleSubmit">
-            <h4>Make a new phrase</h4>
+            <h4>Make a new sentence</h4>
             <div class="words-added-container">
                 <h3 class="word" v-for="(id, index) in wordsAdded" :key="id" draggable="true" @dragstart="dragging = index" @dragover.prevent @drop="handleDrop(index)">{{ dictionary[id].spelling }}</h3>
                 <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
@@ -99,13 +88,13 @@ export default {
                 <p class="spelling toggle" :class="{'on': sortBySpelling}" @click="sortBySpelling = true">spelling</p>
             </div> -->
 
-            <p>hit <b>ENTER</b> to add the underlined word to your phrase</p>
+            <p>hit <b>ENTER</b> to add the underlined word to your sentence</p>
 
             <div class="top-word">
                 <div v-for="(id, index) in topWords" class="autocomplete-word" :class="{'best-word': index === 0}" :key="index" @click="wordsAdded.push(id)">{{ dictionary[id].spelling }} <b>{{ dictionary[id].definition }}</b></div>
             </div>
             
-            <input type="text" v-model="meaning" required placeholder="what is the meaning of this phrase?">
+            <input type="text" v-model="meaning" required placeholder="what is the meaning of this sentence?">
         </form>
     </dialog>
 </template>
