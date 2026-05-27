@@ -15,7 +15,6 @@ const lastDeleted = ref(null)
 const justDeleted = ref(false)
 const form = useTemplateRef('form')
 const contextMenu = useTemplateRef('contextMenu')
-
   
 const handleMouseMove = e => {
   const [ x, y ] = [e.clientX, e.clientY]
@@ -65,14 +64,14 @@ const editSentence = index => {
 const router = useRouter()
 const findWordWithRouter = id => showWord(router, id)
 
-const handleSubmit = e => {
+const handleSubmit = () => {
   sentences.value.unshift({ids: structuredClone(form.value.wordsAdded), meaning: form.value.meaning})
   form.value.clearForm()
 }
 </script>
 
 <template>
-  <div class="sentences" @click="contextMenu.hide()">
+  <div class="sentences" @click="() => { if (contextMenu) contextMenu.hide() }">
     <h1 class="new-sentence" @click="createNewSentence">+</h1>
 
     <div class="main-header-wrapper">
@@ -93,7 +92,7 @@ const handleSubmit = e => {
 
       <div v-for="(sentence, sentenceIndex) in sentences" :key="sentenceIndex" class="sentence" @mouseenter="sentenceHovering = sentenceIndex" @mouseleave="sentenceHovering = null" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, { index: sentenceIndex })">
         <div class="words">
-          <span class="word" v-for="(word, wordIndex) in sentenceFrom(sentence.ids)" :key="wordIndex" @mouseenter="wordHovering = word" @mouseleave="wordHovering = null" @click="findWord(word.id)">
+          <span class="word" v-for="(word, wordIndex) in sentenceFrom(sentence.ids)" :key="wordIndex" @mouseenter="wordHovering = word" @mouseleave="wordHovering = null" @click="findWordWithRouter(word.id)">
             {{ spellingOf(word) }}
           </span>
         </div>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, useTemplateRef } from 'vue';
+import { ref, useTemplateRef, watch } from 'vue';
 import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
@@ -11,6 +11,17 @@ let timeout;
 let lastDeleted;
 const justDeleted = ref(false)
 const contextMenu = useTemplateRef('contextMenu')
+const wordList = useTemplateRef('word-list')
+
+watch(highlightedWord, (newVal) => {
+  if (newVal != null) {
+    setTimeout(() => highlightedWord.value = null, 800)
+
+    setTimeout(() => {
+      wordList.value.find(element => element.id == highlightedWord.value).scrollIntoView({ behavior: 'smooth' })
+    }, 100)
+  }
+})
 
 const getWords = () => {
   switch (currentView.value) {
@@ -146,8 +157,8 @@ const handleDrop = view => {
           <span class="new-word-text"> + </span>
         </li>
 
-        <transition-group name="fade">
-          <li class="word-container" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, {id: word.id})">
+        <!-- <transition-group name="fade"> -->
+          <li class="word-container" ref="word-list" :id="word.id" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, {id: word.id})">
             <span class="word-spelling">
               {{ getSpellingWithDashes(word.id) }}
             </span>
@@ -156,7 +167,7 @@ const handleDrop = view => {
             </span>
             <i v-if="word.favorite" class="star fa-solid fa-star"></i>
           </li>
-        </transition-group>
+        <!-- </transition-group> -->
       
     </ul>
   </div>

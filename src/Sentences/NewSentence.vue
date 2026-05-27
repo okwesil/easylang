@@ -8,7 +8,6 @@ const modal = ref(null)
 const wordsAdded = ref([])
 const currentlyTyped = ref('')
 const meaning = ref('')
-const sortBySpelling = ref(true)
 const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
 
 const openForm = (startingWords = null, startingMeaning = null) => {
@@ -62,6 +61,8 @@ const handleDrop = index => {
     wordsAdded.value.splice(index, 0, id)
     dragging.value = null
 }
+
+defineExpose({ openForm, clearForm, wordsAdded, meaning })
 </script>
 
 <template>

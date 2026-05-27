@@ -18,6 +18,7 @@ const hide = () => {
     menu.value.style.opacity = "0"
 }
 
+
 defineExpose({ show, hide })
 </script>
 
