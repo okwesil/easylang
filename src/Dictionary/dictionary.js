@@ -65,6 +65,11 @@ export const showSearch = ref(false)
 export const searchValue = ref('')
 export const currentView = ref('noun')
 export const highlightedWord = ref(null)
+watch(highlightedWord, (newVal) => {
+  if (newVal != null) {
+       setTimeout(() => highlightedWord.value = null, 800)
+  }
+})
 
 export const showWord = (router, id) => {
     if (typeof id === 'undefined') {

@@ -15,8 +15,6 @@ const wordList = useTemplateRef('word-list')
 
 watch(highlightedWord, (newVal) => {
   if (newVal != null) {
-    setTimeout(() => highlightedWord.value = null, 800)
-
     setTimeout(() => {
       wordList.value.find(element => element.id == highlightedWord.value).scrollIntoView({ behavior: 'smooth' })
     }, 100)
