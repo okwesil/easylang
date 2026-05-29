@@ -117,7 +117,7 @@ const handleSubmit = () => {
   flex-direction: column;
   margin-left: 2rem;
   margin-right: 2rem;
-  gap: 40px;
+  gap: 20px;
 }
 
 .sentence {

@@ -28,7 +28,8 @@ export const sortedDictionary = computed(
 
 export const generateID = () => {
     let id = Math.round(Math.random() * 1000)
-    while (Object.keys(dictionary.value).includes(id)) {
+    const keys = Object.keys(dictionary.value)
+    while (keys.includes(id.toString())) {
         id = Math.round(Math.random() * 1000)
     }
     return id
@@ -76,6 +77,9 @@ export const showWord = (router, id) => {
         id = wordsSimilarTo(searchValue.value, 1)[0]
         searchValue.value = ''
     }
+
+    if (!(id in dictionary.value)) return
+    
     if (!router) {
         console.warn('findWord requires a router instance from useRouter()')
         return
