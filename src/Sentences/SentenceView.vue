@@ -106,7 +106,7 @@ const handleSubmit = () => {
 
 
     </div>
-    <NewSentence ref="form" @submit="handleSubmit"></NewSentence>
+    <NewSentence ref="form" @done="handleSubmit"></NewSentence>
   </div>
 </template>
 

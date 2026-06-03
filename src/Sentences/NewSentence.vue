@@ -9,6 +9,7 @@ const wordsAdded = ref([])
 const currentlyTyped = ref('')
 const meaning = ref('')
 const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
+const emit = defineEmits([ 'done' ])
 
 const openForm = (startingWords = null, startingMeaning = null) => {
     if (startingWords != null) {
@@ -47,6 +48,7 @@ const handleSubmit = e => {
         return
     }
     modal.value.close()
+    emit('done')
 }
 
 const clearForm = () => {
@@ -79,9 +81,7 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
             </div>
 
             <!-- word autocomplete -->
-            <form @submit.prevent="(e) => {e.stopPropagation(); wordsAdded.push(topWords[0]); currentlyTyped = ''}">
-                <input class="autocomplete-input" type="text" v-model="currentlyTyped" placeholder="type the word that you want to add...">
-            </form>
+            <input class="autocomplete-input" @keypress.enter="() => {wordsAdded.push(topWords[0]); currentlyTyped = ''}" type="text" v-model="currentlyTyped" placeholder="type the word that you want to add...">
 
             <!-- <div class="spelling-or-definition">
                 <p class="sort-by">sort by -> </p>
@@ -95,7 +95,7 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
                 <div v-for="(id, index) in topWords" class="autocomplete-word" :class="{'best-word': index === 0}" :key="index" @click="wordsAdded.push(id)">{{ dictionary[id].spelling }} <b>{{ dictionary[id].definition }}</b></div>
             </div>
             
-            <input type="text" v-model="meaning" required placeholder="what is the meaning of this sentence?">
+            <input type="text" v-model="meaning" @keypress.enter="handleSubmit" required placeholder="what is the meaning of this sentence?">
         </form>
     </dialog>
 </template>
