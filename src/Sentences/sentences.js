@@ -76,7 +76,7 @@ export const meaningOf = word => {
 export const generateMeaning = sentence => sentence.map(word => meaningOf(word)).join(' . ')
 
 const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-const removeSpecials = string => string.replace(/\P{L}/gu, "")
+const removeSpecials = string => string.replace(/[^\p{L}0-9]/gu, "")
 const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase().trim()
 
 export const wordsSimilarTo = (testString, amount) => {
