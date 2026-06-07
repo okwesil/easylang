@@ -108,8 +108,18 @@ const handleDragStart = id => {
   dragging = id
 }
 
-const handleDrop = view => {
-  dictionary.value[dragging].group = view
+const handleDrop = dropIndex => {
+  // treat 'dragging' like a word id
+  if (typeof dragging == 'number') {
+    dictionary.value[dragging].group = groups.value[dropIndex]
+    return
+  }
+  console.log(dropIndex)
+  // treat 'dragging' like the name of a group
+  const draggingIndex = groups.value.indexOf(dragging)
+  const groupBeingDragged = groups.value.splice(draggingIndex, 1)[0]
+  groups.value.splice(dropIndex, 0, groupBeingDragged)
+
 }
 </script>
 
@@ -145,7 +155,8 @@ const handleDrop = view => {
   <div class="dictionary" @click="showSearch = false; wordContextMenu.hide(); groupContextMenu.hide(); ask.hide()">
 
     <div class="group-select-wrapper" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
-      <span class="group-select" v-for="(group, index) in groups" :key="index" @dragover.prevent @drop="handleDrop(group)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
+
+      <span class="group-select" v-for="(group, index) in groups" :key="index" draggable="true" @dragstart="dragging = group" @dragover.prevent @drop="handleDrop(index)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
       
       <transition name="ifade">
         <input class="new-group" :ref="onNewGroupMount" v-if="isHoveringGroupSelect" placeholder="type the name of your new group then hit enter" @keypress.enter="groups.push($event.target.value); $event.target.value=''">
