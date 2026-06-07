@@ -1,6 +1,6 @@
 <script setup>
 import { ref, useTemplateRef, watch } from 'vue';
-import { groups, nouns, verbs, modifiers, pronouns, particles, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
+import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
@@ -10,8 +10,15 @@ import Search from './Search.vue';
 let timeout;
 let lastDeleted;
 const justDeleted = ref(false)
-const contextMenu = useTemplateRef('contextMenu')
+const wordContextMenu = useTemplateRef('wordContextMenu')
+const groupContextMenu = useTemplateRef('groupContextMenu')
 const wordList = useTemplateRef('word-list')
+
+
+const isHoveringGroupSelect = ref(false)
+const onNewGroupMount = (el) => {
+  if (el) el.focus()
+}
 
 watch(highlightedWord, (newVal) => {
   if (newVal != null) {
@@ -21,20 +28,7 @@ watch(highlightedWord, (newVal) => {
   }
 })
 
-const getWords = () => {
-  switch (currentView.value) {
-    case 'pronoun':
-      return pronouns();
-    case 'noun':
-      return nouns();
-    case 'verb':
-      return verbs();
-    case 'modifier':
-      return modifiers();
-    case 'particle':
-      return particles();
-  }
-}
+const getWords = () => wordsInGroup(currentView.value)
 
 const UNDO_WAIT_TIME = 5000;
 const deleteWord = (id, save = true) => {
@@ -118,15 +112,19 @@ const handleDrop = view => {
 </script>
 
 <template>
-  <div class="main-header-wrapper" @click="showSearch = false; contextMenu.hide()">
+  <div class="main-header-wrapper" @click="showSearch = false; wordContextMenu.hide()">
     <h1 class="header">Dictionary</h1>
     <p class="info">right click on a word to open its menu</p>
   </div> 
 
-  <ContextMenu ref="contextMenu">
-    <ContextMenuLink icon="fa-regular fa-star" :onClick="(data) => dictionary[data.id].favorite = !dictionary[data.id].favorite"></ContextMenuLink>
-    <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="(data) => editWord(data.id)"></ContextMenuLink>
-    <ContextMenuLink icon="fa-solid fa-trash" :onClick="(data) => deleteWord(data.id)"></ContextMenuLink>
+  <ContextMenu ref="wordContextMenu">
+    <ContextMenuLink icon="fa-regular fa-star" :onClick="({ id }) => dictionary[id].favorite = !dictionary[id].favorite"></ContextMenuLink>
+    <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="({ id }) => editWord(id)"></ContextMenuLink>
+    <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ id }) => deleteWord(id)"></ContextMenuLink>
+  </ContextMenu>
+
+  <ContextMenu ref="groupContextMenu">
+    <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ index }) => groups.splice(index, 1)"></ContextMenuLink>
   </ContextMenu>
 
   <transition name="fade">
@@ -139,15 +137,16 @@ const handleDrop = view => {
   <new-word-form ref="form" @close="handleClose()"  @submit.prevent="handleSubmit" /> 
 
 
-  <div class="dictionary" @click="showSearch = false; contextMenu.hide()">
+  <div class="dictionary" @click="showSearch = false; wordContextMenu.hide(); groupContextMenu.hide()">
 
-    <div class="group-select-wrapper">
-      <span class="group-select" v-for="(group, index) in groups" :key="index" @dragover.prevent @drop="handleDrop(group)" :class="{'selected': currentView == group}" @click="currentView = group; console.log(group)"> {{  group }}</span>
-      <!-- <span class="group-select" @dragover.prevent @drop="handleDrop('pronoun')" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>
-      <span class="group-select" @dragover.prevent @drop="handleDrop('noun')" :class="{'selected': currentView == 'noun' }" @click="currentView = 'noun'">nouns</span>
-      <span class="group-select" @dragover.prevent @drop="handleDrop('verb')" :class="{'selected': currentView == 'verb' }" @click="currentView = 'verb'">verbs</span>
-      <span class="group-select" @dragover.prevent @drop="handleDrop('modifier')" :class="{'selected': currentView == 'modifier' }" @click="currentView = 'modifier'">modifiers</span>
-      <span class="group-select" @dragover.prevent @drop="handleDrop('particle')" :class="{'selected': currentView == 'particle' }" @click="currentView = 'particle'">particles</span> -->
+    <div class="group-select-wrapper" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
+      <span class="group-select-title"> Groups: </span>
+      <span class="group-select" v-for="(group, index) in groups" :key="index" @dragover.prevent @drop="handleDrop(group)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index })"> {{ group }}</span>
+      
+      <transition name="ifade">
+        <input class="new-group" :ref="onNewGroupMount" v-if="isHoveringGroupSelect" placeholder="type the name of your new group then hit enter" @keypress.enter="groups.push($event.target.value); $event.target.value=''">
+      </transition>
+
     </div>
 
     <ul class="words">
@@ -156,7 +155,7 @@ const handleDrop = view => {
         </li>
 
         <transition-group name="fade">
-          <li class="word-container" ref="word-list" :id="word.id" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, {id: word.id})">
+          <li class="word-container" ref="word-list" :id="word.id" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="wordContextMenu.show($event.pageX, $event.pageY, {id: word.id})">
             <span class="word-spelling">
               {{ getSpellingWithDashes(word.id) }}
             </span>
@@ -267,10 +266,20 @@ li {
 
 .group-select {
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: border-color 0.3s ease;
   padding: 5px;
   margin-bottom: 0;
   font-size: 1.3rem;
+}
+
+.group-select-title {
+  padding: 5px;
+  margin-bottom: 0;
+  font-size: 1.3rem;
+}
+
+.new-group {
+  width: 300px;
 }
 
 .group-select:hover, .selected {
@@ -303,8 +312,13 @@ dialog {
   transition: all 0.3s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.ifade-enter-active,
+.ifade-leave-active {
+  transition: all 1s ease;
+}
+ 
+.fade-enter-from, .ifade-enter-from,
+.fade-leave-to, .ifade-leave-to {
   opacity: 0;
 }
 

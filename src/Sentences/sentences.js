@@ -79,6 +79,7 @@ const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]
 const removeSpecials = string => string.replace(/[^\p{L}0-9]/gu, "")
 const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase().trim()
 
+const SPLIT_CHAR = '/'
 export const wordsSimilarTo = (testString, amount) => {
     if (testString == '') {
         return Object.keys(dictionary.value).slice(0, amount)
@@ -86,7 +87,7 @@ export const wordsSimilarTo = (testString, amount) => {
 
     const values = Object.values(dictionary.value).map(entry => [entry.id, cleanString(entry.spelling)])
     for (const { id, definition } of Object.values(dictionary.value)) {
-        for (const def of definition.split('/')) {
+        for (const def of definition.split(SPLIT_CHAR)) {
             values.push([id, cleanString(def)])
         }
     }

@@ -19,7 +19,6 @@ export const dictionary = ref(
 
 /**
  * array of all the possible word groups
- * @type {ref<string[]>}
  */
 export const groups = ref([
     'pronoun', 'noun', 'verb', 'modifier', 'particle'
@@ -50,29 +49,13 @@ const favFirstSort = (a, b) => {
     return a.favorite ? -1 : 1
 }
 
-export const nouns = () => Object.values(dictionary.value)
-    .filter(entry => entry.group == 'noun')
-    .sort(favFirstSort)
-
-export const pronouns = () => Object.values(dictionary.value)
-    .filter(entry => entry.group == 'pronoun')
-    .sort(favFirstSort)
-
-export const verbs = () => Object.values(dictionary.value)
-    .filter(entry => entry.group == 'verb')
-    .sort(favFirstSort)
-
-export const particles = () => Object.values(dictionary.value)
-    .filter(entry => entry.group == 'particle')
-    .sort(favFirstSort)
-
-export const modifiers = () => Object.values(dictionary.value)
-    .filter(entry => entry.group == 'modifier')
+export const wordsInGroup = (group) => Object.values(dictionary.value)
+    .filter(entry => entry.group == group)
     .sort(favFirstSort)
 
 export const showSearch = ref(false)
 export const searchValue = ref('')
-export const currentView = ref('noun')
+export const currentView = ref(groups.value[0])
 export const highlightedWord = ref(null)
 watch(highlightedWord, (newVal) => {
   if (newVal != null) {
@@ -94,8 +77,8 @@ export const showWord = (router, id) => {
     }
     router.push('/dictionary')
 
-    const pof = dictionary.value[id].group
-    currentView.value = pof
+    const group = dictionary.value[id].group
+    currentView.value = group
     showSearch.value = false
     highlightedWord.value = id
 }

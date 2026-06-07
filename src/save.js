@@ -1,4 +1,4 @@
-import { dictionary, showSearch } from './Dictionary/dictionary';
+import { dictionary, groups, showSearch } from './Dictionary/dictionary';
 import { sentences } from './Sentences/sentences';
 import { keysOfUserSounds } from './Phonetics/sounds';
 import { watch, ref } from 'vue'
@@ -11,6 +11,10 @@ let lastWrite = Date.now();
 const languageDoc = async (find = false) => {
     if (find) {
         const snap = await getDocs(collection(db, currentUser.value.uid))
+        // new account
+        if (!snap.docs[0]) {
+            return undefined
+        }
         return doc(db, currentUser.value.uid, snap.docs[0].id)
     }
     return doc(db, currentUser.value.uid, languageId.toString())
@@ -20,7 +24,8 @@ const getLanguageData = () => {
         dictionary: dictionary.value, sentences: sentences.value,
         sounds: keysOfUserSounds.value,
         settings: settings.value,
-        id: languageId 
+        id: languageId,
+        groups: groups.value
     }
 }
 
@@ -53,10 +58,14 @@ export const load = async () => {
     watch(sentences, () => save(), { deep: true })
     watch(keysOfUserSounds, () => save(), { deep: true })
     watch(settings, () => save(), { deep: true })
+    watch(groups, () => save(), { deep: true })
 
     let parsed = null;
-    if (currentUser.value) {
-        const snapshot = await getDoc(await languageDoc(true))
+    findDoc: if (currentUser.value) {
+        const doc = await languageDoc(true)
+        if (!doc) break findDoc
+
+        const snapshot = await getDoc(doc)
         if (snapshot.exists()) {
             parsed = snapshot.data()
         }
@@ -79,6 +88,7 @@ export const load = async () => {
     sentences.value = parsed.sentences ?? parsed.phrases
     keysOfUserSounds.value = parsed.sounds ?? []
     languageId = parsed.id ?? makeLanguageId()
+    groups.value = parsed.groups
     loadSettings(parsed.settings)
 }
 
