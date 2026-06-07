@@ -13,7 +13,7 @@ const openForm = ({ group, spelling = '', definition = '', pronounciation = '', 
   newWordData.typeOfAffix = typeOfAffix
   newWordData.notes = notes
   newWordData.favorite = favorite
-  destination.value = group == 'modifier' ? 'adjective' : group
+  destination.value = group
 }
 
 const clearForm = () => {

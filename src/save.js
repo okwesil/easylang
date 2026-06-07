@@ -71,6 +71,9 @@ export const load = async () => {
     } 
 
     dictionary.value = parsed.dictionary
+    for (const key in dictionary.value) {
+        if (dictionary.value[key].group == 'adjective') dictionary.value[key].group = 'modifier'
+    }
     migratePartOfSpeechToGroup()
     fillNonExistentValues()
     sentences.value = parsed.sentences ?? parsed.phrases

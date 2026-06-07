@@ -1,6 +1,6 @@
 <script setup>
 import { ref, useTemplateRef, watch } from 'vue';
-import { nouns, verbs, adjectives, pronouns, particles, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
+import { groups, nouns, verbs, modifiers, pronouns, particles, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
@@ -30,7 +30,7 @@ const getWords = () => {
     case 'verb':
       return verbs();
     case 'modifier':
-      return adjectives();
+      return modifiers();
     case 'particle':
       return particles();
   }
@@ -113,7 +113,7 @@ const handleDragStart = id => {
 }
 
 const handleDrop = view => {
-  dictionary.value[dragging].group = view == 'modifier' ? 'adjective' : view
+  dictionary.value[dragging].group = view
 }
 </script>
 
@@ -141,12 +141,13 @@ const handleDrop = view => {
 
   <div class="dictionary" @click="showSearch = false; contextMenu.hide()">
 
-    <div class="list-select-wrapper">
-      <span class="list-select" @dragover.prevent @drop="handleDrop('pronoun')" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>
-      <span class="list-select" @dragover.prevent @drop="handleDrop('noun')" :class="{'selected': currentView == 'noun' }" @click="currentView = 'noun'">nouns</span>
-      <span class="list-select" @dragover.prevent @drop="handleDrop('verb')" :class="{'selected': currentView == 'verb' }" @click="currentView = 'verb'">verbs</span>
-      <span class="list-select" @dragover.prevent @drop="handleDrop('modifier')" :class="{'selected': currentView == 'modifier' }" @click="currentView = 'modifier'">modifiers</span>
-      <span class="list-select" @dragover.prevent @drop="handleDrop('particle')" :class="{'selected': currentView == 'particle' }" @click="currentView = 'particle'">particles</span>
+    <div class="group-select-wrapper">
+      <span class="group-select" v-for="(group, index) in groups" :key="index" @dragover.prevent @drop="handleDrop(group)" :class="{'selected': currentView == group}" @click="currentView = group; console.log(group)"> {{  group }}</span>
+      <!-- <span class="group-select" @dragover.prevent @drop="handleDrop('pronoun')" :class="{'selected': currentView == 'pronoun' }" @click="currentView = 'pronoun'">pronouns</span>
+      <span class="group-select" @dragover.prevent @drop="handleDrop('noun')" :class="{'selected': currentView == 'noun' }" @click="currentView = 'noun'">nouns</span>
+      <span class="group-select" @dragover.prevent @drop="handleDrop('verb')" :class="{'selected': currentView == 'verb' }" @click="currentView = 'verb'">verbs</span>
+      <span class="group-select" @dragover.prevent @drop="handleDrop('modifier')" :class="{'selected': currentView == 'modifier' }" @click="currentView = 'modifier'">modifiers</span>
+      <span class="group-select" @dragover.prevent @drop="handleDrop('particle')" :class="{'selected': currentView == 'particle' }" @click="currentView = 'particle'">particles</span> -->
     </div>
 
     <ul class="words">
@@ -258,13 +259,13 @@ li {
   align-items: center;
 }
 
-.list-select-wrapper {
+.group-select-wrapper {
   display: flex;
   gap: 10px;
   margin-bottom: 0;
 }
 
-.list-select {
+.group-select {
   cursor: pointer;
   transition: 0.3s ease;
   padding: 5px;
@@ -272,7 +273,7 @@ li {
   font-size: 1.3rem;
 }
 
-.list-select:hover, .selected {
+.group-select:hover, .selected {
   border-bottom: 3px solid var(--accent-color);
 }
 

@@ -17,6 +17,14 @@ export const dictionary = ref(
     {}
 )
 
+/**
+ * array of all the possible word groups
+ * @type {ref<string[]>}
+ */
+export const groups = ref([
+    'pronoun', 'noun', 'verb', 'modifier', 'particle'
+])
+
 export const getSpellingWithDashes = id => {
     const word = dictionary.value[id]
     return (word.typeOfAffix == 'suffix' ? '-' : '') + word.spelling + (word.typeOfAffix == 'prefix' ? '-' : '')
@@ -58,8 +66,8 @@ export const particles = () => Object.values(dictionary.value)
     .filter(entry => entry.group == 'particle')
     .sort(favFirstSort)
 
-export const adjectives = () => Object.values(dictionary.value)
-    .filter(entry => entry.group == 'adjective')
+export const modifiers = () => Object.values(dictionary.value)
+    .filter(entry => entry.group == 'modifier')
     .sort(favFirstSort)
 
 export const showSearch = ref(false)
@@ -87,7 +95,7 @@ export const showWord = (router, id) => {
     router.push('/dictionary')
 
     const pof = dictionary.value[id].group
-    currentView.value = pof == 'adjective' ? 'modifier' : pof
+    currentView.value = pof
     showSearch.value = false
     highlightedWord.value = id
 }
