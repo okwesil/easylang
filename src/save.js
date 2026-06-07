@@ -42,6 +42,7 @@ const saveToDb = async () => {
         notificationText.value = 'Saved'
         setTimeout(() => notificationText.value = '', 500)
     } catch (error) {
+        notificationText.value = 'Error while saving, try reloading'
         console.error('error while trying to save', error)
     }
 }
