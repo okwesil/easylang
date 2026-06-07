@@ -16,7 +16,7 @@ const wordList = useTemplateRef('word-list')
 watch(highlightedWord, (newVal) => {
   if (newVal != null) {
     setTimeout(() => {
-      wordList.value.find(element => element.id == highlightedWord.value).scrollIntoView({ behavior: 'smooth' })
+      wordList.value.find(element => element.id == newVal).scrollIntoView({ behavior: 'smooth' })
     }, 100)
   }
 })
@@ -65,12 +65,11 @@ const undoDelete = () => {
 setUndoFunction(undoDelete)
 
 const form = ref(null)
-const openNewWordForm = (destination, startSpelling = null, startDef, startPron, startTypeOfAffix, startNotes, startFavorite) => {
-  if (destination == 'modifier') destination = "adjective"
-  form.value.openForm(destination, startSpelling, startDef, startPron, startTypeOfAffix, startNotes, startFavorite)
+const openNewWordForm = (startingWord) => {
+  form.value.openForm(startingWord)
 }
 
-const addNewWord = (partOfSpeech, spelling, definition, pronounciation, _id, typeOfAffix, notes, favorite) => {
+const addNewWord = (_id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix, notes, favorite) => {
   let id;
   if (!_id) {
     id = generateID()
@@ -90,14 +89,14 @@ const editWord = id => {
   deleteWord(id)
   existingId.value = id
 
-  openNewWordForm(word.partOfSpeech, word.spelling, word.definition, word.pronounciation, word?.typeOfAffix, word?.notes, word.favorite)
+  openNewWordForm(word)
 }
 
 const handleSubmit = () => {
-  const { spelling, definition, pron, typeOfAffix, notes, favorite } = form.value.newWordData
+  const { spelling, definition, pronounciation, typeOfAffix, notes, favorite } = form.value.newWordData
   form.value.clearForm()
   form.value.modal.close()
-  highlightedWord.value = addNewWord(form.value.destination, spelling, definition, pron, existingId.value, typeOfAffix, notes, favorite)
+  highlightedWord.value = addNewWord(existingId.value, form.value.destination, spelling, definition, pronounciation, typeOfAffix, notes, favorite)
   existingId.value = null
 }
 
@@ -151,7 +150,7 @@ const handleDrop = view => {
     </div>
 
     <ul class="words">
-        <li class="add-word word-container" @click="openNewWordForm(currentView)">
+        <li class="add-word word-container" @click="openNewWordForm({partOfSpeech: currentView})">
           <span class="new-word-text"> + </span>
         </li>
 

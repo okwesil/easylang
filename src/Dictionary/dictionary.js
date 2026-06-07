@@ -29,7 +29,6 @@ export const sortedDictionary = computed(
 export const generateID = () => {
     let id = Math.round(Math.random() * 1000)
     const keys = Object.keys(dictionary.value)
-    console.log(keys)
     while (keys.includes(id.toString())) {
         id = Math.round(Math.random() * 1000)
     }

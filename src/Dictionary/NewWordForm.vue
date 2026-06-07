@@ -1,38 +1,30 @@
-<script>
-import { reactive, ref, useTemplateRef } from 'vue';
-export default {
-  setup() {
-    const newWordData = reactive({ spelling: '', definition: '', pron: '', typeOfAffix: 'standalone', notes: '', favorite: false})
-    const modal = useTemplateRef('modal')
+<script setup>
+import { reactive, ref, useTemplateRef, defineExpose } from 'vue';
+const newWordData = reactive({ spelling: '', definition: '', pronounciation: '', typeOfAffix: 'standalone', notes: '', favorite: false})
+const modal = useTemplateRef('modal')
 
-    const destination = ref('')
-    const openForm = (_destination, startSpelling, startDef, startPron, startTypeOfAffix, startNotes, startFavorite) => {
-      modal.value.showModal()
+const destination = ref('')
+const openForm = ({ partOfSpeech, spelling = '', definition = '', pronounciation = '', typeOfAffix = 'standalone', notes = '', favorite = false}) => {
+  modal.value.showModal()
 
-      newWordData.spelling = startSpelling
-      newWordData.definition = startDef
-      newWordData.pron = startPron
-      newWordData.typeOfAffix = startTypeOfAffix ?? 'standalone'
-      newWordData.notes = startNotes ?? ''
-      newWordData.favorite = startFavorite ?? false
-      destination.value = _destination
-    }
-
-    const clearForm = () => {
-      newWordData.spelling = ''
-      newWordData.definition = ''
-      newWordData.pron = ''
-      newWordData.typeOfAffix = 'standalone'
-      newWordData.notes = ''
-    }
-
-    return {
-      modal, newWordData, destination,
-      openForm, clearForm
-    }
-  }
+  newWordData.spelling = spelling
+  newWordData.definition = definition
+  newWordData.pronounciation = pronounciation
+  newWordData.typeOfAffix = typeOfAffix
+  newWordData.notes = notes
+  newWordData.favorite = favorite
+  destination.value = partOfSpeech == 'modifier' ? 'adjective' : partOfSpeech
 }
 
+const clearForm = () => {
+  newWordData.spelling = ''
+  newWordData.definition = ''
+  newWordData.pronounciation = ''
+  newWordData.typeOfAffix = 'standalone'
+  newWordData.notes = ''
+}
+
+defineExpose({ clearForm, openForm, newWordData, modal, destination })
 </script>
 
 <template>
@@ -55,7 +47,7 @@ export default {
         <input type="text" maxlength="90" required v-model="newWordData.definition">
   
         <label>Pronounciation:</label>
-        <input type="text" required v-model="newWordData.pron">
+        <input type="text" required v-model="newWordData.pronounciation">
   
         
         <label>Is this an affix?</label>
