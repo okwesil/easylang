@@ -4,7 +4,7 @@ const newWordData = reactive({ spelling: '', definition: '', pronounciation: '',
 const modal = useTemplateRef('modal')
 
 const destination = ref('')
-const openForm = ({ partOfSpeech, spelling = '', definition = '', pronounciation = '', typeOfAffix = 'standalone', notes = '', favorite = false}) => {
+const openForm = ({ group, spelling = '', definition = '', pronounciation = '', typeOfAffix = 'standalone', notes = '', favorite = false}) => {
   modal.value.showModal()
 
   newWordData.spelling = spelling
@@ -13,7 +13,7 @@ const openForm = ({ partOfSpeech, spelling = '', definition = '', pronounciation
   newWordData.typeOfAffix = typeOfAffix
   newWordData.notes = notes
   newWordData.favorite = favorite
-  destination.value = partOfSpeech == 'modifier' ? 'adjective' : partOfSpeech
+  destination.value = group == 'modifier' ? 'adjective' : group
 }
 
 const clearForm = () => {

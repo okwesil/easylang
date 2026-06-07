@@ -58,7 +58,7 @@ const undoDelete = () => {
   if (!lastDeleted) {
     return
   }
-  addNewWord(lastDeleted.partOfSpeech, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted.id, lastDeleted?.typeOfAffix ?? 'standalone', lastDeleted?.notes ?? '', lastDeleted?.favorite ?? false)
+  addNewWord(lastDeleted.id, lastDeleted.group, lastDeleted.spelling, lastDeleted.definition, lastDeleted.pronounciation, lastDeleted?.typeOfAffix ?? 'standalone', lastDeleted?.notes ?? '', lastDeleted?.favorite ?? false)
   justDeleted.value = false
   lastDeleted = null
 }
@@ -69,14 +69,14 @@ const openNewWordForm = (startingWord) => {
   form.value.openForm(startingWord)
 }
 
-const addNewWord = (_id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix, notes, favorite) => {
+const addNewWord = (_id, group, spelling, definition, pronounciation, typeOfAffix, notes, favorite) => {
   let id;
   if (!_id) {
     id = generateID()
   } else {
     id = _id
   }
-  dictionary.value[id] = {id, partOfSpeech, spelling, definition, pronounciation, typeOfAffix, notes, favorite}
+  dictionary.value[id] = {id, group, spelling, definition, pronounciation, typeOfAffix, notes, favorite}
   return id
 }
 
@@ -113,7 +113,7 @@ const handleDragStart = id => {
 }
 
 const handleDrop = view => {
-  dictionary.value[dragging].partOfSpeech = view == 'modifier' ? 'adjective' : view
+  dictionary.value[dragging].group = view == 'modifier' ? 'adjective' : view
 }
 </script>
 
@@ -150,7 +150,7 @@ const handleDrop = view => {
     </div>
 
     <ul class="words">
-        <li class="add-word word-container" @click="openNewWordForm({partOfSpeech: currentView})">
+        <li class="add-word word-container" @click="openNewWordForm({group: currentView})">
           <span class="new-word-text"> + </span>
         </li>
 

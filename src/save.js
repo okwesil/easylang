@@ -71,6 +71,7 @@ export const load = async () => {
     } 
 
     dictionary.value = parsed.dictionary
+    migratePartOfSpeechToGroup()
     fillNonExistentValues()
     sentences.value = parsed.sentences ?? parsed.phrases
     keysOfUserSounds.value = parsed.sounds ?? []
@@ -89,6 +90,15 @@ const fillNonExistentValues = () => {
             if (!Object.hasOwn(dictionary.value[key], field)) {
                 dictionary.value[key][field] = defaults[field]
             }
+        }
+    }
+}
+
+const migratePartOfSpeechToGroup = () => {
+    for (const key in dictionary.value) {
+        if (Object.hasOwn(dictionary.value[key], 'partOfSpeech')) {
+            dictionary.value[key].group = dictionary.value[key].partOfSpeech
+            delete dictionary.value[key].partOfSpeech
         }
     }
 }

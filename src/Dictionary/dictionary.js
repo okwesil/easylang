@@ -5,7 +5,7 @@ import { wordsSimilarTo } from '@/Sentences/sentences'
     an object where the key of each entry is the id of the word and the values are ...
      
     the id
-    partOfSpeech -> noun verb pronoun or particle
+    group -> noun verb pronoun or particle
     spelling
     definition
     pronounciation (yes i know I spelled it wrong)
@@ -43,23 +43,23 @@ const favFirstSort = (a, b) => {
 }
 
 export const nouns = () => Object.values(dictionary.value)
-    .filter(entry => entry.partOfSpeech == 'noun')
+    .filter(entry => entry.group == 'noun')
     .sort(favFirstSort)
 
 export const pronouns = () => Object.values(dictionary.value)
-    .filter(entry => entry.partOfSpeech == 'pronoun')
+    .filter(entry => entry.group == 'pronoun')
     .sort(favFirstSort)
 
 export const verbs = () => Object.values(dictionary.value)
-    .filter(entry => entry.partOfSpeech == 'verb')
+    .filter(entry => entry.group == 'verb')
     .sort(favFirstSort)
 
 export const particles = () => Object.values(dictionary.value)
-    .filter(entry => entry.partOfSpeech == 'particle')
+    .filter(entry => entry.group == 'particle')
     .sort(favFirstSort)
 
 export const adjectives = () => Object.values(dictionary.value)
-    .filter(entry => entry.partOfSpeech == 'adjective')
+    .filter(entry => entry.group == 'adjective')
     .sort(favFirstSort)
 
 export const showSearch = ref(false)
@@ -86,7 +86,7 @@ export const showWord = (router, id) => {
     }
     router.push('/dictionary')
 
-    const pof = dictionary.value[id].partOfSpeech
+    const pof = dictionary.value[id].group
     currentView.value = pof == 'adjective' ? 'modifier' : pof
     showSearch.value = false
     highlightedWord.value = id
