@@ -1,11 +1,12 @@
 <script setup>
 import { ref, useTemplateRef, watch } from 'vue';
-import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord } from './dictionary';
+import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, renameGroup } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
 import { setUndoFunction } from '@/save';
 import Search from './Search.vue';
+import AskForInput from '@/Components/AskForInput.vue';
 
 let timeout;
 let lastDeleted;
@@ -13,6 +14,7 @@ const justDeleted = ref(false)
 const wordContextMenu = useTemplateRef('wordContextMenu')
 const groupContextMenu = useTemplateRef('groupContextMenu')
 const wordList = useTemplateRef('word-list')
+const ask = useTemplateRef('askForInput')
 
 
 const isHoveringGroupSelect = ref(false)
@@ -124,8 +126,11 @@ const handleDrop = view => {
   </ContextMenu>
 
   <ContextMenu ref="groupContextMenu">
+    <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="({ x, y, index }) => {ask.show(x, y, groups[index], 'whats the new name?', (value, i) => renameGroup(i, value), index)}"></ContextMenuLink>
     <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ index }) => groups.splice(index, 1)"></ContextMenuLink>
   </ContextMenu>
+
+  <AskForInput ref="askForInput" />
 
   <transition name="fade">
     <h3 v-if="justDeleted" @click="undoDelete" class="undo active">Undo</h3>
@@ -137,10 +142,10 @@ const handleDrop = view => {
   <new-word-form ref="form" @close="handleClose()"  @submit.prevent="handleSubmit" /> 
 
 
-  <div class="dictionary" @click="showSearch = false; wordContextMenu.hide(); groupContextMenu.hide()">
+  <div class="dictionary" @click="showSearch = false; wordContextMenu.hide(); groupContextMenu.hide(); ask.hide()">
 
     <div class="group-select-wrapper" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
-      <span class="group-select" v-for="(group, index) in groups" :key="index" @dragover.prevent @drop="handleDrop(group)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index })"> {{ group }}</span>
+      <span class="group-select" v-for="(group, index) in groups" :key="index" @dragover.prevent @drop="handleDrop(group)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
       
       <transition name="ifade">
         <input class="new-group" :ref="onNewGroupMount" v-if="isHoveringGroupSelect" placeholder="type the name of your new group then hit enter" @keypress.enter="groups.push($event.target.value); $event.target.value=''">

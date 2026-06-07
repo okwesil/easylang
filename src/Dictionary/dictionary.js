@@ -21,6 +21,14 @@ export const dictionary = ref(
  * array of all the possible word groups
  */
 export const groups = ref([])
+export const renameGroup = (index, name) => {
+    const ids = wordsInGroup(groups.value[index]).map(entry => entry.id)
+    for (const id of ids) {
+        dictionary.value[id].group = name
+    }
+    if (currentView.value == groups.value[index]) currentView.value = name
+    groups.value.splice(index, 1, name)
+}
 
 export const getSpellingWithDashes = id => {
     const word = dictionary.value[id]
