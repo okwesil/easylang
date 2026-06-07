@@ -1,4 +1,4 @@
-import { dictionary, groups, showSearch } from './Dictionary/dictionary';
+import { currentView, dictionary, groups, showSearch } from './Dictionary/dictionary';
 import { sentences } from './Sentences/sentences';
 import { keysOfUserSounds } from './Phonetics/sounds';
 import { watch, ref } from 'vue'
@@ -21,7 +21,8 @@ const languageDoc = async (find = false) => {
 }
 const getLanguageData = () => {
     return {
-        dictionary: dictionary.value, sentences: sentences.value,
+        dictionary: dictionary.value,
+        sentences: sentences.value,
         sounds: keysOfUserSounds.value,
         settings: settings.value,
         id: languageId,
@@ -53,13 +54,6 @@ const saveToDb = async () => {
 }
 
 export const load = async () => {
-    // autosave
-    watch(dictionary, () => save(), { deep: true })
-    watch(sentences, () => save(), { deep: true })
-    watch(keysOfUserSounds, () => save(), { deep: true })
-    watch(settings, () => save(), { deep: true })
-    watch(groups, () => save(), { deep: true })
-
     let parsed = null;
     findDoc: if (currentUser.value) {
         const doc = await languageDoc(true)
@@ -84,17 +78,28 @@ export const load = async () => {
         if (dictionary.value[key].group == 'adjective') dictionary.value[key].group = 'modifier'
     }
     migratePartOfSpeechToGroup()
-    fillNonExistentValues()
     sentences.value = parsed.sentences ?? parsed.phrases
     keysOfUserSounds.value = parsed.sounds ?? []
-    languageId = parsed.id ?? makeLanguageId()
+    languageId = parsed.id
     groups.value = parsed.groups
+    currentView.value = groups.value[0]
+    fillNonExistentValues()
     loadSettings(parsed.settings)
+
+
+    // autosave
+    watch(dictionary, () => save(), { deep: true })
+    watch(sentences, () => save(), { deep: true })
+    watch(keysOfUserSounds, () => save(), { deep: true })
+    watch(settings, () => save(), { deep: true })
+    watch(groups, () => save(), { deep: true })
 }
 
 const defaults = {
     'favorite': false,
-    'notes': ''
+    'notes': '',
+    'groups': [ 'pronouns', 'nouns', 'verbs', 'modifiers', 'particles' ],
+    'id': makeLanguageId()
 }
 
 const fillNonExistentValues = () => {

@@ -9,26 +9,17 @@
 </template>
 
 
-<script>
-  import Sidebar from './Sidebar/Sidebar.vue';
-  import { sidebarWidth } from './Sidebar/state.js';
-  import { load, notificationText, onKeypress } from './save';
-  import { onMounted, onUnmounted, } from 'vue';
+<script setup>
+import Sidebar from './Sidebar/Sidebar.vue';
+import { sidebarWidth } from './Sidebar/state.js';
+import { load, notificationText, onKeypress } from './save';
+import { onMounted, onUnmounted, } from 'vue';
 
-  export default {
-    name: 'App',
-    components: {
-      Sidebar, 
-    },
-    setup() {
-      load()
-      onMounted(() => window.addEventListener('keydown', onKeypress));
-      onUnmounted(() => window.removeEventListener('keydown', onKeypress));
-      return { sidebarWidth, notificationText }
-    }
-  }
+load()
+onMounted(() => window.addEventListener('keydown', onKeypress));
+onUnmounted(() => window.removeEventListener('keydown', onKeypress));
 
-</script>
+</script setup>
 
 
 <style>

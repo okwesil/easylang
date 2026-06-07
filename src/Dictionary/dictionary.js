@@ -20,9 +20,7 @@ export const dictionary = ref(
 /**
  * array of all the possible word groups
  */
-export const groups = ref([
-    'pronoun', 'noun', 'verb', 'modifier', 'particle'
-])
+export const groups = ref([])
 
 export const getSpellingWithDashes = id => {
     const word = dictionary.value[id]
