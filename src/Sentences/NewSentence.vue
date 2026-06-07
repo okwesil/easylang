@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef } from 'vue';
 import { dictionary, sortedDictionary } from '@/Dictionary/dictionary';
 import { wordsSimilarTo } from './sentences.js';
 
@@ -10,6 +10,7 @@ const currentlyTyped = ref('')
 const meaning = ref('')
 const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
 const emit = defineEmits([ 'done' ])
+const wordsAddedElements = useTemplateRef('words-added-elements')
 
 const openForm = (startingWords = null, startingMeaning = null) => {
     if (startingWords != null) {
@@ -62,6 +63,15 @@ const handleDrop = index => {
     const id = wordsAdded.value.splice(dragging.value, 1)
     wordsAdded.value.splice(index, 0, id)
     dragging.value = null
+    dragLeave(index)
+}
+
+const dragEnter = index => {
+    wordsAddedElements.value[index].style.borderLeft = '2px solid white'
+}
+
+const dragLeave = index => {
+    wordsAddedElements.value[index].style.borderLeft = 'none'
 }
 
 defineExpose({ openForm, clearForm, wordsAdded, meaning })
@@ -76,7 +86,12 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
         <form @submit.prevent="handleSubmit">
             <h4>Make a new sentence</h4>
             <div class="words-added-container">
-                <h3 class="word" v-for="(id, index) in wordsAdded" :key="id" draggable="true" @dragstart="dragging = index" @dragover.prevent @drop="handleDrop(index)">{{ dictionary[id].spelling }}</h3>
+                <h3 class="word" ref="words-added-elements" 
+                    v-for="(id, index) in wordsAdded" :key="index" 
+                    draggable="true" @dragstart="dragging = index" @dragover.prevent @dragenter="dragEnter(index)" @dragleave="dragLeave(index)"
+                    @drop="handleDrop(index)">
+                        {{ dictionary[id].spelling }}
+                </h3>
                 <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
             </div>
 
