@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, useTemplateRef } from 'vue';
-import { dictionary, sortedDictionary } from '@/Dictionary/dictionary';
+import { dictionary } from '@/Dictionary/dictionary';
 import { wordsSimilarTo } from './sentences.js';
 
 
@@ -12,9 +12,9 @@ const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
 const emit = defineEmits([ 'done' ])
 const wordsAddedElements = useTemplateRef('words-added-elements')
 
-const openForm = (startingWords = null, startingMeaning = null) => {
-    if (startingWords != null) {
-        wordsAdded.value = startingWords.filter(id => id in dictionary.value)
+const openForm = (startingIds = null, startingMeaning = null) => {
+    if (startingIds != null) {
+        wordsAdded.value = startingIds.filter(id => id in dictionary.value)
     }
     if (startingMeaning != null) {
         meaning.value = startingMeaning

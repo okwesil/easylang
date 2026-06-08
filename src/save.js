@@ -1,7 +1,7 @@
 import { currentView, dictionary, groups, showSearch } from './Dictionary/dictionary';
 import { sentences } from './Sentences/sentences';
 import { keysOfUserSounds } from './Phonetics/sounds';
-import { watch, ref } from 'vue'
+import { watch, ref, toRaw } from 'vue'
 import { currentUser, db } from './firebase.js';
 import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
 
@@ -49,6 +49,7 @@ const saveToDb = async () => {
         setTimeout(() => notificationText.value = '', 500)
     } catch (error) {
         notificationText.value = 'Error while saving, try reloading'
+        console.error(getLanguageData())
         console.error('error while trying to save', error)
     }
 }
