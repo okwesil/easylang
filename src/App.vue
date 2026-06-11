@@ -19,7 +19,7 @@ load()
 onMounted(() => window.addEventListener('keydown', onKeypress));
 onUnmounted(() => window.removeEventListener('keydown', onKeypress));
 
-</script setup>
+</script>
 
 
 <style>
@@ -54,6 +54,7 @@ body {
   position: fixed;
   bottom: 10px;
   right: 10px;
+  z-index: 20;
 }
 
 .screen {

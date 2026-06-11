@@ -160,7 +160,7 @@ const handleDrop = dropIndex => {
       
       <transition name="ifade">
         <input class="new-group" :ref="onNewGroupMount" v-if="isHoveringGroupSelect" placeholder="type the name of your new group then hit enter" @keypress.enter="groups.push($event.target.value); $event.target.value=''">
-      </transition>
+      </transition> 
 
     </div>
 
@@ -285,6 +285,7 @@ li {
   padding: 5px;
   margin-bottom: 0;
   font-size: 1.3rem;
+  flex-shrink: 0; 
 }
 
 .group-select-title {

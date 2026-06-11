@@ -179,7 +179,7 @@ const handleSubmit = () => {
   bottom: 10px;
   right: 10px;
   margin: 0;
-  z-index: 2;
+  z-index: 1;
   
   display: flex;
   justify-content: center;
