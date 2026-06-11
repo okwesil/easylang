@@ -16,7 +16,6 @@ import { wordsSimilarTo } from '@/Sentences/sentences'
 export const dictionary = ref(
     {}
 )
-
 /**
  * array of all the possible word groups
  */
@@ -35,10 +34,6 @@ export const getSpellingWithDashes = id => {
     return (word.typeOfAffix == 'suffix' ? '-' : '') + word.spelling + (word.typeOfAffix == 'prefix' ? '-' : '')
 }
 
-export const sortedDictionary = computed(
-    () => Object.values(dictionary.value).sort((a, b) => a.spelling.localeCompare(b.spelling))
-)
-
 export const generateID = () => {
     let id = Math.round(Math.random() * 1000)
     const keys = Object.keys(dictionary.value)
@@ -48,7 +43,7 @@ export const generateID = () => {
     return id
 }
 
-const favFirstSort = (a, b) => {
+export const favFirstSort = (a, b) => {
     if (a.favorite === b.favorite) {
         return a.spelling.localeCompare(b.spelling)
     }
@@ -57,7 +52,6 @@ const favFirstSort = (a, b) => {
 
 export const wordsInGroup = (group) => Object.values(dictionary.value)
     .filter(entry => entry.group == group)
-    .sort(favFirstSort)
 
 export const showSearch = ref(false)
 export const searchValue = ref('')

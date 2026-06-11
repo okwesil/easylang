@@ -8,6 +8,9 @@ const props = defineProps({
     onClick: {
         type: Function,
         required: true,
+    },
+    desc: {
+        type: String
     }
 })
 const data = inject('data')
@@ -21,7 +24,7 @@ const _onClick = () => {
 </script>
 
 <template>
-    <i :class="icon" @click="_onClick()"></i>
+    <i :class="icon" @click="_onClick()" :title="desc"></i>
 </template>
 
 <style scoped>

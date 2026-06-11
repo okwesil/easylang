@@ -1,5 +1,5 @@
 <script setup>
-import { sentences, generateMeaning, spellingOf, meaningOf, sentenceFrom } from './sentences.js';
+import { sentences, generateMeaning, spellingWithAffixes, meaningWithAffixes, sentenceFrom } from './sentences.js';
 import { showWord } from '@/Dictionary/dictionary';
 import { ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
@@ -21,7 +21,7 @@ const handleMouseMove = e => {
   wordDef.value.style.left = `${x + 20}px`
   wordDef.value.style.top = `${y}px`
   if (wordHovering.value != null) {
-    wordDef.value.innerHTML = meaningOf(wordHovering.value)
+    wordDef.value.innerHTML = meaningWithAffixes(wordHovering.value)
   }
 }
 
@@ -93,7 +93,7 @@ const handleSubmit = () => {
       <div v-for="(sentence, sentenceIndex) in sentences" :key="sentenceIndex" class="sentence" @mouseenter="sentenceHovering = sentenceIndex" @mouseleave="sentenceHovering = null" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, { index: sentenceIndex })">
         <div class="words">
           <span class="word" v-for="(word, wordIndex) in sentenceFrom(sentence.ids)" :key="wordIndex" @mouseenter="wordHovering = word" @mouseleave="wordHovering = null" @click="findWordWithRouter(word.id)">
-            {{ spellingOf(word) }}
+            {{ spellingWithAffixes(word) }}
           </span>
         </div>
         <span class="sentence-meaning literal-meaning">

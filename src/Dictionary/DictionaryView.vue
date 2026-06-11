@@ -1,6 +1,6 @@
 <script setup>
-import { ref, useTemplateRef, watch } from 'vue';
-import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, highlightWord, renameGroup } from './dictionary';
+import { ref, useTemplateRef } from 'vue';
+import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, highlightWord, renameGroup, favFirstSort } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
@@ -15,6 +15,35 @@ const wordContextMenu = useTemplateRef('wordContextMenu')
 const groupContextMenu = useTemplateRef('groupContextMenu')
 const wordList = useTemplateRef('word-list')
 const ask = useTemplateRef('askForInput')
+
+// sorting logic
+const sortBy = ref('definition')
+const descending = ref(true)
+const SORTING_OPTIONS = {
+  spelling: (...a_b) => {
+    if (a_b[0].favorite === a_b[1].favorite) {
+        return a_b[0].spelling.localeCompare(a_b[1].spelling)
+    }
+    const value = a_b[0].favorite ? -1 : 1
+    // reverse if ascending that way favorited words still end up at the top of the page
+    return descending.value ? value : value * -1
+  },
+   definition: (...a_b) => {
+    if (a_b[0].favorite === a_b[1].favorite) {
+        return a_b[0].definition.localeCompare(a_b[1].definition)
+    }
+    const value = a_b[0].favorite ? -1 : 1
+    return descending.value ? value : value * -1
+  }
+}
+const sortWords = (a, b) => {
+  if (!descending.value) {
+    return SORTING_OPTIONS[sortBy.value](b, a)
+  }
+  return SORTING_OPTIONS[sortBy.value](a, b)
+}
+
+
 setInterval(() => {
   const element = wordList.value.find(element => element.id == highlightedWord.value)
   if (element) {
@@ -27,7 +56,7 @@ const onNewGroupMount = (el) => {
   if (el) el.focus()
 }
 
-const getWords = () => wordsInGroup(currentView.value)
+const getWords = () => wordsInGroup(currentView.value).sort(sortWords)
 
 const UNDO_WAIT_TIME = 5000;
 const deleteWord = (id, save = true) => {
@@ -112,7 +141,6 @@ const handleDrop = dropIndex => {
     dictionary.value[dragging].group = groups.value[dropIndex]
     return
   }
-  console.log(dropIndex)
   // treat 'dragging' like the name of a group
   const draggingIndex = groups.value.indexOf(dragging)
   const groupBeingDragged = groups.value.splice(draggingIndex, 1)[0]
@@ -124,18 +152,42 @@ const handleDrop = dropIndex => {
 <template>
   <div class="main-header-wrapper" @click="showSearch = false; wordContextMenu.hide()">
     <h1 class="header">Dictionary</h1>
-    <p class="info">right click on a word to open its menu</p>
+    <div class="info sort-by-options">
+      <span class="sort-by"><i class="fa-solid fa-arrow-up" :class="{'down ': descending }" @click="descending = !descending"></i></span>
+      <span class="sort-by" :class="{'selected': sortBy == 'spelling'}" @click="sortBy = 'spelling'">spelling</span>
+      <span class="sort-by" :class="{'selected': sortBy == 'definition'}" @click="sortBy = 'definition'">definition</span>
+    </div>
   </div> 
 
   <ContextMenu ref="wordContextMenu">
-    <ContextMenuLink icon="fa-regular fa-star" :onClick="({ id }) => dictionary[id].favorite = !dictionary[id].favorite"></ContextMenuLink>
-    <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="({ id }) => editWord(id)"></ContextMenuLink>
-    <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ id }) => deleteWord(id)"></ContextMenuLink>
+    <ContextMenuLink 
+      icon="fa-regular fa-star" 
+      :onClick="({ id }) => dictionary[id].favorite = !dictionary[id].favorite"
+      desc="Favorite this word"
+    />
+    <ContextMenuLink 
+      icon="fa-regular fa-pen-to-square" 
+      :onClick="({ id }) => editWord(id)" 
+      desc="Edit this word"
+    />
+    <ContextMenuLink 
+      icon="fa-solid fa-trash" 
+      :onClick="({ id }) => deleteWord(id)" 
+      desc="Delete this word"
+    />
   </ContextMenu>
 
   <ContextMenu ref="groupContextMenu">
-    <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="({ x, y, index }) => {ask.show(x, y, groups[index], 'whats the new name?', (value, i) => renameGroup(i, value), index)}"></ContextMenuLink>
-    <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ index }) => groups.splice(index, 1)"></ContextMenuLink>
+    <ContextMenuLink 
+      icon="fa-regular fa-pen-to-square" 
+      :onClick="({ x, y, index }) => {ask.show(x, y, groups[index], 'whats the new name?', (value, i) => renameGroup(i, value), index)}" 
+      desc="Rename this group"
+    />
+    <ContextMenuLink 
+      icon="fa-solid fa-trash" 
+      :onClick="({ index }) => groups.splice(index, 1)" 
+      desc="Delete this group, its words will still exist through the search bar"
+    />
   </ContextMenu>
 
   <AskForInput ref="askForInput" />
@@ -208,6 +260,25 @@ const handleDrop = dropIndex => {
   margin-bottom: 10px;
 }
 
+.sort-by-wrapper {
+  display: flex;
+  padding: 0;
+}
+
+.sort-by {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.sort-by > .fa-arrow-up {
+  transition: all 0.3s ease;
+}
+
+.down {
+  transition: all 0.3s ease;
+  transform: rotateZ(181deg);
+}
+
 .words {
   list-style-type: none;
   display: flex;
@@ -276,6 +347,7 @@ li {
   gap: 10px;
   margin-bottom: 0;
   overflow-anchor: none;
+  /* min-width: 0; */
   /* scrollbar-width: 0px; */
 }
 
@@ -296,6 +368,10 @@ li {
 
 .new-group {
   width: 300px;
+  flex: 0 1 300px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .group-select:hover, .selected {

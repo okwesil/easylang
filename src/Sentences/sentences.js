@@ -58,14 +58,14 @@ export const sentenceFrom = (ids) => {
 }
 
 // this is only called using a word from 'sentenceFrom' ^^^
-export const spellingOf = word => {
+export const spellingWithAffixes = word => {
     const prefixString = word.prefixes.map(id => dictionary.value[id].spelling).join('')
     const suffixString = word.suffixes.map(id => dictionary.value[id].spelling).join('')
     const spelling = dictionary.value[word.id]?.spelling ?? '#'
     return prefixString + spelling + suffixString
 }
 
-export const meaningOf = word => {
+export const meaningWithAffixes = word => {
     const prefixString = word.prefixes.map(id => dictionary.value[id].definition).join(' ')
     const suffixString = word.suffixes.map(id => dictionary.value[id].definition).join(' ')
     const definition = dictionary.value[word.id]?.definition ?? '[deleted]'
@@ -73,11 +73,11 @@ export const meaningOf = word => {
 }
 
 // this is only called using the sentence from 'sentenceFrom' ^^^
-export const generateMeaning = sentence => sentence.map(word => meaningOf(word)).join(' . ')
+export const generateMeaning = sentence => sentence.map(word => meaningWithAffixes(word)).join(' . ')
 
 const removeAccents = string => string.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 const removeSpecials = string => string.replace(/[^\p{L}0-9]/gu, "")
-const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase().trim()
+export const cleanString = string => removeAccents(removeSpecials(string)).toLowerCase().trim()
 
 const SPLIT_CHAR = '/'
 export const wordsSimilarTo = (testString, amount) => {

@@ -18,6 +18,7 @@ const show = (x, y, defaultValue, placeholder, done, ..._args) => {
 }
 
 const onDone = () => {
+    console.log(response.value)
     if (response.value == '') return
     doneCallback(response.value, ...args)
     hide()
