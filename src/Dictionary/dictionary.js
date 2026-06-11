@@ -51,7 +51,7 @@ export const favFirstSort = (a, b) => {
 }
 
 export const wordsInGroup = (group) => Object.values(dictionary.value)
-    .filter(entry => entry.group == group)
+    .filter(entry => group == '*' || entry.group == group)
 
 export const showSearch = ref(false)
 export const searchValue = ref('')

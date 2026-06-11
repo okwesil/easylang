@@ -1,4 +1,5 @@
 <script setup>
+import { cleanString } from '@/Sentences/sentences';
 import { ref, defineExpose, useTemplateRef } from 'vue';
 const response = ref('')
 const element = useTemplateRef('inputElement')
@@ -35,7 +36,7 @@ defineExpose({ show, hide })
 </script>
 
 <template>
-    <input ref="inputElement" v-model="response" @keydown.enter="onDone" @keydown.esc="hide">
+    <input ref="inputElement" v-model="response" @change="() => response = cleanString(response)" @keydown.enter="onDone" @keydown.esc="hide">
 </template>
 
 <style scoped>

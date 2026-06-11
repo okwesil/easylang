@@ -205,7 +205,7 @@ const handleDrop = dropIndex => {
   <div class="dictionary" @click="showSearch = false; wordContextMenu.hide(); groupContextMenu.hide(); ask.hide()">
 
     <div class="group-select-wrapper no-scrollbar" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
-
+      <span class="group-select all" :class="{'selected': currentView == '*'}" @click="currentView = '*'"> all </span>
       <span class="group-select" v-for="(group, index) in groups" :key="index" draggable="true" @dragstart="dragging = group" @dragover.prevent @drop="handleDrop(index)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
       
       <transition name="ifade">
@@ -360,10 +360,8 @@ li {
   flex-shrink: 0; 
 }
 
-.group-select-title {
-  padding: 5px;
-  margin-bottom: 0;
-  font-size: 1.3rem;
+.all-groups  {
+
 }
 
 .new-group {
