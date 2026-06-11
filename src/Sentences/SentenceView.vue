@@ -65,7 +65,7 @@ const router = useRouter()
 const findWordWithRouter = id => showWord(router, id)
 
 const handleSubmit = () => {
-  sentences.value.unshift({ids: structuredClone(form.value.wordsAdded.flat(2)), meaning: form.value.meaning})
+  sentences.value.unshift({ids: structuredClone(form.value.wordsAdded), meaning: form.value.meaning})
   form.value.clearForm()
 }
 </script>

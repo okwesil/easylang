@@ -60,7 +60,7 @@ const clearForm = () => {
 
 const dragging = ref(null)
 const handleDrop = index => {
-    const id = wordsAdded.value.splice(dragging.value, 1)
+    const id = wordsAdded.value.splice(dragging.value, 1)[0]
     wordsAdded.value.splice(index, 0, id)
     dragging.value = null
     dragLeave(index)

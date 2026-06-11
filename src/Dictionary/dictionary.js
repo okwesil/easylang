@@ -63,11 +63,19 @@ export const showSearch = ref(false)
 export const searchValue = ref('')
 export const currentView = ref(groups.value[0])
 export const highlightedWord = ref(null)
-watch(highlightedWord, (newVal) => {
-  if (newVal != null) {
-       setTimeout(() => highlightedWord.value = null, 800)
-  }
-})
+const HIGHLIGHT_DURATION_MS = 800
+let highlightedWordResetTimeout = null
+
+export const highlightWord = (id) => {
+    highlightedWord.value = id
+    if (highlightedWordResetTimeout) {
+        clearTimeout(highlightedWordResetTimeout)
+    }
+    highlightedWordResetTimeout = setTimeout(() => {
+        highlightedWord.value = null
+        highlightedWordResetTimeout = null
+    }, HIGHLIGHT_DURATION_MS)
+}
 
 export const showWord = (router, id) => {
     if (typeof id === 'undefined') {
@@ -86,5 +94,5 @@ export const showWord = (router, id) => {
     const group = dictionary.value[id].group
     currentView.value = group
     showSearch.value = false
-    highlightedWord.value = id
+    highlightWord(id)
 }

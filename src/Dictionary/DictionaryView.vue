@@ -1,6 +1,6 @@
 <script setup>
 import { ref, useTemplateRef, watch } from 'vue';
-import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, renameGroup } from './dictionary';
+import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, highlightWord, renameGroup } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
@@ -15,20 +15,17 @@ const wordContextMenu = useTemplateRef('wordContextMenu')
 const groupContextMenu = useTemplateRef('groupContextMenu')
 const wordList = useTemplateRef('word-list')
 const ask = useTemplateRef('askForInput')
-
+setInterval(() => {
+  const element = wordList.value.find(element => element.id == highlightedWord.value)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}, 100)
 
 const isHoveringGroupSelect = ref(false)
 const onNewGroupMount = (el) => {
   if (el) el.focus()
 }
-
-watch(highlightedWord, (newVal) => {
-  if (newVal != null) {
-    setTimeout(() => {
-      wordList.value.find(element => element.id == newVal).scrollIntoView({ behavior: 'smooth' })
-    }, 100)
-  }
-})
 
 const getWords = () => wordsInGroup(currentView.value)
 
@@ -73,6 +70,7 @@ const addNewWord = (_id, group, spelling, definition, pronounciation, typeOfAffi
     id = _id
   }
   dictionary.value[id] = {id, group, spelling, definition, pronounciation, typeOfAffix, notes, favorite}
+  highlightWord(id)
   return id
 }
 
@@ -92,7 +90,7 @@ const handleSubmit = () => {
   const { spelling, definition, pronounciation, typeOfAffix, notes, favorite } = form.value.newWordData
   form.value.clearForm()
   form.value.modal.close()
-  highlightedWord.value = addNewWord(existingId.value, form.value.destination, spelling, definition, pronounciation, typeOfAffix, notes, favorite)
+  addNewWord(existingId.value, form.value.destination, spelling, definition, pronounciation, typeOfAffix, notes, favorite)
   existingId.value = null
 }
 
@@ -154,7 +152,7 @@ const handleDrop = dropIndex => {
 
   <div class="dictionary" @click="showSearch = false; wordContextMenu.hide(); groupContextMenu.hide(); ask.hide()">
 
-    <div class="group-select-wrapper" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
+    <div class="group-select-wrapper no-scrollbar" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
 
       <span class="group-select" v-for="(group, index) in groups" :key="index" draggable="true" @dragstart="dragging = group" @dragover.prevent @drop="handleDrop(index)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
       
@@ -277,6 +275,8 @@ li {
   display: flex;
   gap: 10px;
   margin-bottom: 0;
+  overflow-anchor: none;
+  /* scrollbar-width: 0px; */
 }
 
 .group-select {

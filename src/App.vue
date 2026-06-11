@@ -95,6 +95,20 @@ input:focus {
   box-shadow: none;
 }
 
+.no-scrollbar {
+  /* 1. Enable scrolling */
+  overflow: auto;
+  /* 3. Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* 4. Hide scrollbar for older Internet Explorer/Edge */
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  /* 2. Hide scrollbar for Chrome, Safari, and newer Edge */
+  display: none;
+}
+
 .fade-enter-active, 
 .fade-leave-active {
   transition: opacity 0.3s ease;
