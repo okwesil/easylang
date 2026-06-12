@@ -1,15 +1,15 @@
 import { currentView, dictionary, groups, showSearch } from './Dictionary/dictionary';
 import { sentences } from './Sentences/sentences';
 import { keysOfUserSounds } from './Phonetics/sounds';
-import { watch, ref, toRaw } from 'vue'
+import { watch, ref, reactive } from 'vue'
 import { currentUser, db } from './firebase.js';
 import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
 
 export const makeLanguageId = () => Math.floor(Math.random() * 1000);
 let languageId;
 let lastWrite = Date.now();
-const languageDoc = async (find = false) => {
-    if (find) {
+const languageDoc = async (findLanguageDoc = false) => {
+    if (findLanguageDoc) {
         const snap = await getDocs(collection(db, currentUser.value.uid))
         // new account
         if (!snap.docs[0]) {
@@ -85,15 +85,23 @@ export const load = async () => {
     groups.value = parsed.groups
     currentView.value = groups.value[0]
     fillNonExistentValues()
-    loadSettings(parsed.settings)
-
 
     // autosave
     watch(dictionary, () => save(), { deep: true })
     watch(sentences, () => save(), { deep: true })
     watch(keysOfUserSounds, () => save(), { deep: true })
-    watch(settings, () => save(), { deep: true })
     watch(groups, () => save(), { deep: true })
+    watch(settings, () => {
+        // hue
+        const hueString = `hsl(${settings.value.hue}, 65%, 25%)`
+        document.documentElement.style.setProperty('--accent-color', hueString)
+        // name
+        document.title = settings.value.name == '' ? 'easyLang' : settings.value.name 
+        // font
+        document.documentElement.style.setProperty('--font', settings.value.font)
+        save()
+    }, { deep: true })
+    settings.value = parsed.settings
 }
 
 const defaults = {
@@ -127,7 +135,6 @@ export const clearSave = () => {
     dictionary.value = {}
     sentences.value = []
     settings.value.hue = 0
-    updateHue()
     settings.value.name = 'easyLang'
     keysOfUserSounds.value = []
 }
@@ -150,29 +157,9 @@ export const onKeypress = (e) => {
     }
 };
 
-export const updateHue = () => {
-    const hueString = `hsl(${settings.value.hue}, 65%, 26%)`
-    document.documentElement.style.setProperty('--accent-color', hueString)
-}
-
-export const updateName = () => {
-    document.title = settings.value.name == '' ? 'easyLang' : settings.value.name 
-}
-
 //default values
 export const settings = ref({
     hue: 0,
-    name: 'easyLang'
+    name: 'easyLang',
+    font: 'Merriweather'
 })
-
-const loadSettings = newSettings => {
-    if (newSettings.hue) {
-        settings.value.hue = newSettings.hue
-        updateHue(settings.value.hue)
-    }
-    if (newSettings.name) {
-        settings.value.name = newSettings.name
-        updateName()
-    }
-}
-

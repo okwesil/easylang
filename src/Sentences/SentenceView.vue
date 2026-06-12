@@ -71,12 +71,12 @@ const handleSubmit = () => {
 </script>
 
 <template>
+  <div class="main-header-wrapper">
+    <h1 class="header">Sentences</h1>
+  </div>
   <div class="sentences" @click="() => { if (contextMenu) contextMenu.hide() }">
     <h1 class="new-sentence" @click="createNewSentence">+</h1>
 
-    <div class="main-header-wrapper">
-      <h1 class="header">Sentences</h1>
-    </div>
     <transition name="fade">
       <h3 v-if="justDeleted" @click="undoDelete" class="undo">Undo</h3>
     </transition>
@@ -97,7 +97,7 @@ const handleSubmit = () => {
           </span>
         </div>
         <span class="sentence-meaning literal-meaning">
-        LITERAL -> {{ generateMeaning(sentenceFrom(sentence.ids)) }}
+          {{ generateMeaning(sentenceFrom(sentence.ids)) }}
         </span>
         <span class="sentence-meaning">
           {{ sentence.meaning }}
@@ -111,6 +111,9 @@ const handleSubmit = () => {
 </template>
 
 <style scoped>
+*:not(.header) {
+  font-weight: 100;
+}
 
 .sentence-list {
   display: flex;
@@ -122,7 +125,9 @@ const handleSubmit = () => {
 
 .sentence {
   text-align: left;
+  box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.3);
   border: 3px solid var(--accent-color);
+
   border-radius: .5rem;
   padding: 5px;
   display: flex;
@@ -133,6 +138,7 @@ const handleSubmit = () => {
 .sentence-meaning {
   color: hsla(0, 0%, 100%, 0.685);
   font-size: 0.9rem;
+  margin-top: 2px;
 }
 
 .words {

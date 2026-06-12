@@ -39,8 +39,9 @@
 
 <style>
 .sidebar {
+    --light-accent: hsl(from var(--accent-color) h calc(s + 10) calc(l + 3));
     color: white;
-    background-color: var(--accent-color);
+    background-image: linear-gradient(var(--light-accent), var(--accent-color));;
     
     float: left;
     position: fixed;

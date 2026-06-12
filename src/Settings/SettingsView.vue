@@ -3,7 +3,7 @@
         <h1>Settings</h1>
         <div class="line">
           <span class="label">Hue</span>
-          <input type="range" min="0" max="360" v-model="settings.hue" @change="updateHue">
+          <input type="range" min="0" max="360" v-model="settings.hue">
         </div>
 
         <div class="line">
@@ -15,6 +15,15 @@
           <span class="Word Count">Word Count</span>
           <span>{{ Object.keys(dictionary).length }}</span>
         </div>
+        
+        <div class="line">
+          <span class="label">Font</span>
+          <select v-model="settings.font">
+            <option value="Lora">Lora</option>
+            <option value="Arial">Arial</option>
+            <option value="Merriweather">Merriweather</option>
+          </select>
+        </div>
 
         <form v-if="currentUser == null" class="signin">
 
@@ -23,10 +32,12 @@
             <input type="email" v-model="email" required>
           </div>
 
+
           <div class="line password">
             <span class="label">Password</span>
             <input type="password" minlength="6" v-model="password" required>
           </div>
+        
 
           <button class="signin-btn" @click.prevent="signin">Sign In</button>
           <button class="signup-btn" @click.prevent="signup">Sign Up</button>
@@ -42,74 +53,64 @@
   </div> 
 </template>
 
-<script>
-import { settings, updateHue, updateName, clearSave } from '../save.js'
+<script setup>
+import { settings, updateName, clearSave } from '../save.js'
 import { ref } from 'vue';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { auth, currentUser } from '@/firebase.js';
 import { dictionary } from '@/Dictionary/dictionary.js';
 
+const email = ref('')
+const password = ref('')
 
-  export default {
-    setup() {      
-      const email = ref('')
-      const password = ref('')
 
-      const signout = () => {
-        signOut(auth)
-        .then(() => {
-          currentUser.value = null
-          clearSave()
-        })
-        .catch(error => {
-          alert('There was an error while signing out')
-          console.error(error.code)
-        })
-      }
+const signout = () => {
+  signOut(auth)
+  .then(() => {
+    currentUser.value = null
+    clearSave()
+  })
+  .catch(error => {
+    alert('There was an error while signing out')
+    console.error(error.code)
+  })
+}
 
-      const signup = () => {
+const signup = () => {
 
-        createUserWithEmailAndPassword(auth, email.value.trim(), password.value.trim())
-        .then(() => {
-          currentUser.value = auth.currentUser
-        })
-        .catch(error => {
-          console.error(error)
-          let message = ''
-          switch (error.code) {
-            case 'auth/email-already-in-use':
-              message = 'That email is already being used'
-              break
-            default:
-              message = 'An error occured'
-              break
-          } 
-          alert(message)
-        })
+  createUserWithEmailAndPassword(auth, email.value.trim(), password.value.trim())
+  .then(() => {
+    currentUser.value = auth.currentUser
+  })
+  .catch(error => {
+    console.error(error)
+    let message = ''
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        message = 'That email is already being used'
+        break
+      default:
+        message = 'An error occured'
+        break
+    } 
+    alert(message)
+  })
 
-        email.value = ''
-        password.value = ''
-      }
+  email.value = ''
+  password.value = ''
+}
 
-      const signin = async () => {
-        try {
-          currentUser.value = (await signInWithEmailAndPassword(auth, email.value.trim(), password.value.trim())).user
-        } catch (error) {
-          if (error.code == 'auth/invalid-credential') {
-            alert('Wrong email or password')
-          }
-        }
-        email.value = ''
-        password.value = ''
-      }
-
-      return {
-        settings, email, password, currentUser, dictionary,
-        updateHue, updateName, signup, signin, signout
-      }
+const signin = async () => {
+  try {
+    currentUser.value = (await signInWithEmailAndPassword(auth, email.value.trim(), password.value.trim())).user
+  } catch (error) {
+    if (error.code == 'auth/invalid-credential') {
+      alert('Wrong email or password')
     }
   }
-
+  email.value = ''
+  password.value = ''
+}
 </script>
 
 <style scoped>

@@ -17,7 +17,7 @@ const wordList = useTemplateRef('word-list')
 const ask = useTemplateRef('askForInput')
 
 // sorting logic
-const sortBy = ref('definition')
+const sortBy = ref('spelling')
 const descending = ref(true)
 const SORTING_OPTIONS = {
   spelling: (...a_b) => {
@@ -153,7 +153,7 @@ const handleDrop = dropIndex => {
   <div class="main-header-wrapper" @click="showSearch = false; wordContextMenu.hide()">
     <h1 class="header">Dictionary</h1>
     <div class="info sort-by-options">
-      <span class="sort-by"><i class="fa-solid fa-arrow-up" :class="{'down ': descending }" @click="descending = !descending"></i></span>
+      <span class="sort-by" :title="descending ? 'descending' : 'ascending'"><i class="fa-solid fa-arrow-up" :class="{'down ': descending }" @click="descending = !descending"></i></span>
       <span class="sort-by" :class="{'selected': sortBy == 'spelling'}" @click="sortBy = 'spelling'">spelling</span>
       <span class="sort-by" :class="{'selected': sortBy == 'definition'}" @click="sortBy = 'definition'">definition</span>
     </div>
@@ -236,6 +236,9 @@ const handleDrop = dropIndex => {
 </template>
 
 <style scoped>
+*:not(.header):not(i) {
+  font-weight: 100;
+}
 
 .dictionary {
   padding-left: 2rem;
@@ -358,10 +361,6 @@ li {
   margin-bottom: 0;
   font-size: 1.3rem;
   flex-shrink: 0; 
-}
-
-.all-groups  {
-
 }
 
 .new-group {

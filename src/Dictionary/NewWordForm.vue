@@ -60,7 +60,7 @@ defineExpose({ clearForm, openForm, newWordData, modal, destination })
       </div>
       <div class="right-side">
         <label>Notes</label>
-        <textarea v-model="newWordData.notes" placeholder="How is this word used? What does it derive from?"></textarea>
+        <textarea class="no-scrollbar" v-model="newWordData.notes" placeholder="How is this word used? What does it derive from?"></textarea>
       </div>
       <button class="submit" type="submit">Create!</button>
     </form>
@@ -117,7 +117,7 @@ label {
 }
 
 input:focus {
-    outline: none;
+  outline: none;
 }
 
 button {
@@ -125,13 +125,6 @@ button {
   border: 3px solid var(--accent-color);
   padding-top: 10px;
   padding-bottom: 10px;
-  color: white;
-}
-
-select {
-  background-color: var(--bg-color);
-  border: none;
-  border-bottom: 2px solid var(--accent-color);
   color: white;
 }
 

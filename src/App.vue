@@ -23,17 +23,55 @@ onUnmounted(() => window.removeEventListener('keydown', onKeypress));
 
 
 <style>
+@font-face {
+  font-family: "Lora";
+  src: url("../public/assets/fonts/Lora-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("../public/assets/fonts/Fraunces-VariableFont_SOFT,WONK,opsz,wght.ttf")
+    format("truetype");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Merriweather";
+  src: url("../public/assets/fonts/Merriweather-VariableFont_opsz,wdth,wght.ttf")
+    format("truetype");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --bg-color: hsl(180, 5%, 9%);
   --darker-bg: hsl(from var(--bg-color) h calc(s + 1) calc(l - 3));
   --accent-color: hsl(0, 65%, 20%);
-  --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 7));
-  --sidebar-hover: hsl(from var(--accent-color) h calc(s + 20) calc(l - 5));
+  --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 3));
+  --sidebar-hover: hsl(from var(--accent-color) h calc(s + 20) calc(l - 2));
+  --font: "Merriweather"
+}
+
+select {
+  background-color: var(--bg-color);
+  border: none;
+  border-bottom: 2px solid var(--accent-color);
+  color: white;
+}
+
+select:hover {
+  border-bottom: 2px solid var(--accent-color);
 }
 
 button, input {
-  font-family: "Lora", Arial;
+  font-family: var(--font), Arial;
 }
 
 body {
@@ -42,7 +80,7 @@ body {
 }
 
 #app {
-  font-family: "Lora", Arial;
+  font-family: var(--font), Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: white;
@@ -73,6 +111,7 @@ body {
 
 .header {
   margin-left: 2rem;
+  font-weight: bold;
 }
 
 .info {
