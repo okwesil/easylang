@@ -4,6 +4,7 @@ import SentenceView from '../Sentences/SentenceView.vue'
 import PhoneticsView from '../Phonetics/PhoneticsView.vue'
 import SettingsView from '../Settings/SettingsView.vue'
 import GrammarView from '../Grammar/GrammarView.vue'
+import ScriptView from '../Script/ScriptView.vue'
 
 const routes = [
    { 
@@ -34,7 +35,12 @@ const routes = [
     path: '/grammar',
     name: 'grammar',
     component: GrammarView
-  }
+  },
+  {
+    path: '/script',
+    name: 'script',
+    component: ScriptView
+  },
 ]
 
 const router = createRouter({

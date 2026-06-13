@@ -10,7 +10,8 @@
         <sidebar-link to="/dictionary" icon="fa-solid fa-book">Dictionary</sidebar-link>
         <sidebar-link to="/sentences" icon="fa-solid fa-pen">Sentences</sidebar-link>
         <sidebar-link to="/phonetics" icon="fa-solid fa-volume">Phonetics</sidebar-link>
-        <sidebar-link to="/grammar" icon="fa-solid fa-brain">Grammar</sidebar-link>
+        <sidebar-link to="/script" icon="fa-solid fa-language">Script</sidebar-link>
+        <!-- <sidebar-link to="/grammar" icon="fa-solid fa-brain">Grammar</sidebar-link> -->
         <sidebar-link class="bottom" icon="fa-solid fa-user" to="/settings">{{ currentUser ? currentUser.email.substring(0, 10) + '...' : 'Settings' }}</sidebar-link>
   </div>
 </template>

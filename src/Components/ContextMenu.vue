@@ -1,22 +1,40 @@
 <script setup>
-import { ref, provide } from 'vue'
+import { useTemplateRef, ref, provide, watch, nextTick } from 'vue'
 const x = ref(-100)
 const y = ref(-100)
 const data = ref({})
-const menu = ref(null)
+const menu = useTemplateRef('menu')
 provide('data', data)
 provide('menu', menu)
-const show = (newX, newY, newData) => {
+
+const show = async (newX, newY, newData) => {
     x.value = newX
     y.value = newY
     data.value = newData
-    menu.value.style.opacity = "1"
+    await nextTick()
+    if (menu.value) {
+        menu.value.style.opacity = "1"
+    }
 }
 const hide = () => {
     x.value = -100
     y.value = -100
-    menu.value.style.opacity = "0"
+    if (menu.value) {
+        menu.value.style.opacity = "0"
+    }
 }
+
+watch([x, y], async () => {
+    if (!menu.value) return
+
+    await nextTick()
+    const rect = menu.value.getBoundingClientRect()
+    if (rect.bottom > window.innerHeight) {
+        y.value = Math.max(0, window.innerHeight - rect.height)
+    } else if (rect.top < 0) {
+        y.value = 0
+    }
+}, { flush: 'post' })
 
 
 defineExpose({ show, hide })

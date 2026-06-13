@@ -219,7 +219,7 @@ const handleDrop = dropIndex => {
           <span class="new-word-text"> + </span>
         </li>
 
-        <transition-group name="fade">
+        <!-- <transition-group name="fade"> -->
           <li class="word-container" ref="word-list" :id="word.id" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="wordContextMenu.show($event.pageX, $event.pageY, {id: word.id})">
             <span class="word-spelling">
               {{ getSpellingWithDashes(word.id) }}
@@ -229,7 +229,7 @@ const handleDrop = dropIndex => {
             </span>
             <i v-if="word.favorite" class="star fa-solid fa-star"></i>
           </li>
-        </transition-group>
+        <!-- </transition-group> -->
       
     </ul>
   </div>

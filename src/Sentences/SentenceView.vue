@@ -111,7 +111,7 @@ const handleSubmit = () => {
 </template>
 
 <style scoped>
-*:not(.header) {
+*:not(.header):not(i) {
   font-weight: 100;
 }
 
