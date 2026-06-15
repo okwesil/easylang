@@ -102,7 +102,7 @@ h2 {
 }
 
 textarea {
-  background-color: var(--bg-color);
+  background-color: var(--darker-bg);
   border: 3px solid var(--accent-color);
   height: auto;
   color: white;
@@ -111,30 +111,9 @@ textarea {
   border-radius: 0.5rem;
 }
 
-label {
-  display: inline-block;
-  font-size: 0.7rem;
-}
-
 input:focus {
   outline: none;
 }
 
-button {
-  background-color: var(--bg-color);
-  border: 3px solid var(--accent-color);
-  padding-top: 10px;
-  padding-bottom: 10px;
-  color: white;
-}
 
-.exit {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: fit-content;
-  height: fit-content;
-  color: white;
-  cursor: pointer;
-}
 </style>

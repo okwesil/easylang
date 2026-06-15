@@ -73,6 +73,7 @@ const handleSubmit = () => {
 <template>
   <div class="main-header-wrapper">
     <h1 class="header">Sentences</h1>
+    <p class="page-description">Craft some sentences in your conlang to visualize your grammar</p>
   </div>
   <div class="sentences" @click="() => { if (contextMenu) contextMenu.hide() }">
     <h1 class="new-sentence" @click="createNewSentence">+</h1>
@@ -126,6 +127,7 @@ const handleSubmit = () => {
 .sentence {
   text-align: left;
   box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.3);
+  background-color: var(--darker-bg);
   border: 3px solid var(--accent-color);
 
   border-radius: .5rem;

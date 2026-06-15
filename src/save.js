@@ -93,7 +93,7 @@ export const load = async () => {
     watch(groups, () => save(), { deep: true })
     watch(settings, () => {
         // hue
-        const hueString = `hsl(${settings.value.hue}, 65%, 25%)`
+        const hueString = `hsl(${settings.value.hue}, 65%, 29%)`
         document.documentElement.style.setProperty('--accent-color', hueString)
         // name
         document.title = settings.value.name == '' ? 'easyLang' : settings.value.name 

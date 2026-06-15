@@ -67,11 +67,15 @@ const handleDrop = index => {
 }
 
 const dragEnter = index => {
-    wordsAddedElements.value[index].style.borderLeft = '2px solid white'
+    if (dragging.value > index) {
+        wordsAddedElements.value[index].style.borderLeft = '2px solid var(--accent-color)'
+    } else {
+        wordsAddedElements.value[index].style.borderRight = '2px solid var(--accent-color)'
+    }
 }
 
 const dragLeave = index => {
-    wordsAddedElements.value[index].style.borderLeft = 'none'
+    wordsAddedElements.value[index].style.border = 'none'
 }
 
 defineExpose({ openForm, clearForm, wordsAdded, meaning })
@@ -116,13 +120,6 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
 </template>
 
 <style scoped>
-dialog {
-    background-color: var(--bg-color);
-    color: white;
-    border: 5px solid var(--accent-color);
-    border-radius: 1rem;
-    min-width: 20rem;
-}
 
 .words-added-container {
     display: flex;

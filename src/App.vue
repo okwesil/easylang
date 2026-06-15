@@ -51,9 +51,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKeypress));
 }
 
 :root {
-  --bg-color: hsl(180, 4%, 9%);
-  --darker-bg: hsl(from var(--bg-color) h calc(s + 1) calc(l - 3));
+  --bg-color: hsl(0, 0%, 9%);
+  --darker-bg: hsl(from var(--bg-color) h s calc(l - 1));
   --accent-color: hsl(0, 65%, 20%);
+  --light-accent: hsl(from var(--accent-color) h calc(s + 10) calc(l + 3));
   --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 3));
   --sidebar-hover: hsl(from var(--accent-color) h calc(s + 20) calc(l - 2));
   --font: "Merriweather"
@@ -68,6 +69,15 @@ select {
 
 select:hover {
   border-bottom: 2px solid var(--accent-color);
+}
+
+button {
+  background-color: var(--darker-bg);
+  border: 3px solid var(--accent-color);
+  border-radius: 0.5rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: white;
 }
 
 button, input {
@@ -101,13 +111,21 @@ body {
 
 .main-header-wrapper {
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.page-description {
+  margin-left: 20px;
+  color: rgb(188, 188, 188)
 }
 
 .main-header-wrapper > * {
   margin-bottom: 0;
   text-align: left;
 }
+
 
 .header {
   margin-top: 1rem;
@@ -133,6 +151,11 @@ input {
 input:focus {
   outline: none;
   box-shadow: none;
+}
+
+label {
+  display: inline-block;
+  font-size: 0.7rem;
 }
 
 .no-scrollbar {
@@ -171,6 +194,21 @@ input:focus {
 
 dialog {
   box-shadow: 10px 10px 10px hsla(0, 0%, 0%, 0.502);
+  background-color: var(--bg-color);
+  color: white;
+  border: 5px solid var(--accent-color);
+  border-radius: 1rem;
+  min-width: 20rem; 
+}
+
+.exit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: fit-content;
+  height: fit-content;
+  color: white;
+  cursor: pointer;
 }
 
 body::-webkit-scrollbar {

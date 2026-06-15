@@ -4,7 +4,7 @@ import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, sh
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
-import { setUndoFunction } from '@/save';
+import { settings, setUndoFunction } from '@/save';
 import Search from './Search.vue';
 import AskForInput from '@/Components/AskForInput.vue';
 
@@ -152,6 +152,7 @@ const handleDrop = dropIndex => {
 <template>
   <div class="main-header-wrapper" @click="showSearch = false; wordContextMenu.hide()">
     <h1 class="header">Dictionary</h1>
+    <p class="page-description">Catalogue the words of {{ settings.name }}</p>
     <div class="info sort-by-options">
       <span class="sort-by" :title="descending ? 'descending' : 'ascending'"><i class="fa-solid fa-arrow-up" :class="{'down ': descending }" @click="descending = !descending"></i></span>
       <span class="sort-by" :class="{'selected': sortBy == 'spelling'}" @click="sortBy = 'spelling'">spelling</span>
@@ -386,13 +387,6 @@ li {
 
 .add-word:hover {
   background-color: var(--accent-color);
-}
-
-dialog {
-  background-color: var(--bg-color);
-  color: white;
-  border: 5px solid var(--accent-color);
-  border-radius: 1rem;
 }
 
 .fade-move,

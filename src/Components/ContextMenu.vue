@@ -26,13 +26,10 @@ const hide = () => {
 
 watch([x, y], async () => {
     if (!menu.value) return
-
     await nextTick()
     const rect = menu.value.getBoundingClientRect()
     if (rect.bottom > window.innerHeight) {
         y.value = Math.max(0, window.innerHeight - rect.height)
-    } else if (rect.top < 0) {
-        y.value = 0
     }
 }, { flush: 'post' })
 
