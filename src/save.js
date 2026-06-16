@@ -4,6 +4,7 @@ import { keysOfUserSounds } from './Phonetics/sounds';
 import { watch, ref, reactive } from 'vue'
 import { currentUser, db } from './firebase.js';
 import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
+import { alphabet } from './Script/script';
 
 export const makeLanguageId = () => Math.floor(Math.random() * 1000);
 let languageId;
@@ -26,7 +27,8 @@ const getLanguageData = () => {
         sounds: keysOfUserSounds.value,
         settings: settings.value,
         id: languageId,
-        groups: groups.value
+        groups: groups.value,
+        alphabet: alphabet.value
     }
 }
 
@@ -91,6 +93,7 @@ export const load = async () => {
     watch(sentences, () => save(), { deep: true })
     watch(keysOfUserSounds, () => save(), { deep: true })
     watch(groups, () => save(), { deep: true })
+    watch(alphabet, () => save(), { deep: true })
     watch(settings, () => {
         // hue
         const hueString = `hsl(${settings.value.hue}, 65%, 29%)`

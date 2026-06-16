@@ -1,40 +1,41 @@
 <script setup>
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
-import { symbols } from './script';
+import { alphabet } from './script';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import { ref, useTemplateRef } from 'vue';
 import NewSymbol from './NewSymbol.vue';
 import { settings } from '@/save';
+import IPAKeyboard from '@/Components/IPAKeyboard.vue';
 const cmenu = useTemplateRef('characterContextMenu')
 const form = useTemplateRef('form')
 
 const dragging = ref(null)
 const dragEnd = (destIndex) => {
     console.log(dragging.value, destIndex)
-    const symbol = symbols.value.splice(dragging.value, 1)[0]
-    symbols.value.splice(destIndex, 0, symbol)
+    const symbol = alphabet.value.splice(dragging.value, 1)[0]
+    alphabet.value.splice(destIndex, 0, symbol)
 }
 </script>
 
 <template>
-    <NewSymbol ref="form" @done="({chars, ipa, roman}) => symbols.push({ chars, ipa, roman }) " />
+    <NewSymbol ref="form" @done="({chars, ipa, roman}) => alphabet.push({ chars, ipa, roman }) " />
     <ContextMenu ref="characterContextMenu">
-        <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="({ index, chars, ipa, roman }) => { form.openForm(chars, ipa, roman); symbols.splice(index, 1) }" desc="Edit this symbol"/>
-        <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ index }) => symbols.splice(index, 1)" desc="Delete this symbol"/>
+        <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="({ index, chars, ipa, roman }) => { form.openForm(chars, ipa, roman); alphabet.splice(index, 1) }" desc="Edit this symbol"/>
+        <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ index }) => alphabet.splice(index, 1)" desc="Delete this symbol"/>
     </ContextMenu>
 
-    <div class="main-header-wrapper">
+    <div class="main-header-wrapper" @click="cmenu.hide()">
         <h1 class="header">Script</h1>
         <p class="page-description">Designate the sound of symbols in {{ settings.name }} </p>
     </div>
 
-    <div class="cards">
+    <div class="cards" @click="cmenu.hide()">
         <div class="card add-symbol" @click="form.openForm()">
             <span class="character">+</span>
         </div>
 
         
-        <div class="card" v-for="(symbol, index) in symbols" :key="index"
+        <div class="card" v-for="(symbol, index) in alphabet" :key="index"
          @contextmenu.prevent="cmenu.show($event.pageX, $event.pageY, { index, chars: symbol.chars, ipa: symbol.ipa, roman: symbol.roman })"
          draggable="true" 
          @dragover.prevent
@@ -67,6 +68,7 @@ const dragEnd = (destIndex) => {
 
     align-items: center;
     justify-content: space-evenly;
+    box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.502);
 }
 
 .invisible-card {

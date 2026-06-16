@@ -1,7 +1,7 @@
 <script>
 
 import { ref } from 'vue';
-import { sounds, availableSounds, keysOfUserSounds, vowelsFrom, consonantsFrom, userSounds } from './sounds';
+import { sounds, availableSounds, keysOfUserSounds, vowelsFrom, consonantsFrom, userSounds } from './sounds.js';
 export default {
   name: 'PhoneticsView',
   setup() {

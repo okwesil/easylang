@@ -33,6 +33,9 @@ i {
     border-radius: 0.5rem;
     transition: all 0.3s ease;
 }
+i:active {
+    transform: scale(0.95);
+}
 i:hover {
     background-color: var(--sidebar-active);    
 }

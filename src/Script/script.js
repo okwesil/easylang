@@ -6,4 +6,4 @@ import { ref } from "vue";
  *  { chars: 'ṣ', ipa: 'ʃ', roman: 'sh' }
  * ]
  */
-export const symbols = ref([])
+export const alphabet = ref([])
