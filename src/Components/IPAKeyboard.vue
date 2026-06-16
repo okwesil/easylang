@@ -1,6 +1,6 @@
 <script setup>
 import { defineExpose, useTemplateRef } from 'vue';
-import { consonantsFrom, sounds, vowelsFrom } from '@/Phonetics/sounds';
+import { consonantsFrom, sounds, vowelsFrom } from '@/Script/sounds.js';
 const emit = defineEmits([ 'symbolClicked' ])
 const modal = useTemplateRef('modal')
 const openKeyboard = () => {

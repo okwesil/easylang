@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DictionaryView from '../Dictionary/DictionaryView.vue'
 import SentenceView from '../Sentences/SentenceView.vue'
-import PhoneticsView from '../Phonetics/PhoneticsView.vue'
 import SettingsView from '../Settings/SettingsView.vue'
 import GrammarView from '../Grammar/GrammarView.vue'
 import ScriptView from '../Script/ScriptView.vue'
@@ -25,11 +24,6 @@ const routes = [
     path: '/sentences',
     name: 'sentences',
     component: SentenceView
-  },
-  {
-    path: '/phonetics',
-    name: 'phonetics',
-    component: PhoneticsView
   },
   {
     path: '/grammar',

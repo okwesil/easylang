@@ -1,4 +1,5 @@
 <script setup>
+import { IPAfromSpelling } from '@/Script/script';
 import { reactive, ref, useTemplateRef, defineExpose } from 'vue';
 const newWordData = reactive({ spelling: '', definition: '', pronounciation: '', typeOfAffix: 'standalone', notes: '', favorite: false})
 const modal = useTemplateRef('modal')
@@ -47,7 +48,10 @@ defineExpose({ clearForm, openForm, newWordData, modal, destination })
         <input type="text" maxlength="90" required v-model="newWordData.definition">
   
         <label>Pronounciation:</label>
-        <input type="text" required v-model="newWordData.pronounciation">
+        <div class="row">
+          <input type="text" required v-model="newWordData.pronounciation">
+          <i class="fa-solid fa-wand-magic-sparkles" title="Generate IPA from spelling" @click="newWordData.pronounciation = IPAfromSpelling(newWordData.spelling)"></i>
+        </div>
   
         
         <label>Is this an affix?</label>
@@ -101,6 +105,17 @@ h2 {
   gap: 5px;
 }
 
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.row i {
+ cursor: pointer;
+}
+
+
 textarea {
   background-color: var(--darker-bg);
   border: 3px solid var(--accent-color);
@@ -114,6 +129,7 @@ textarea {
 input:focus {
   outline: none;
 }
+
 
 
 </style>

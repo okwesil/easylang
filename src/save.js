@@ -1,6 +1,6 @@
 import { currentView, dictionary, groups, showSearch } from './Dictionary/dictionary';
 import { sentences } from './Sentences/sentences';
-import { keysOfUserSounds } from './Phonetics/sounds';
+import { keysOfUserSounds } from './Script/sounds';
 import { watch, ref, reactive } from 'vue'
 import { currentUser, db } from './firebase.js';
 import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
@@ -24,7 +24,6 @@ const getLanguageData = () => {
     return {
         dictionary: dictionary.value,
         sentences: sentences.value,
-        sounds: keysOfUserSounds.value,
         settings: settings.value,
         id: languageId,
         groups: groups.value,
@@ -82,16 +81,15 @@ export const load = async () => {
     }
     migratePartOfSpeechToGroup()
     sentences.value = parsed.sentences ?? parsed.phrases
-    keysOfUserSounds.value = parsed.sounds ?? []
     languageId = parsed.id
     groups.value = parsed.groups
     currentView.value = groups.value[0]
+    alphabet.value = parsed.alphabet
     fillNonExistentValues()
 
     // autosave
     watch(dictionary, () => save(), { deep: true })
     watch(sentences, () => save(), { deep: true })
-    watch(keysOfUserSounds, () => save(), { deep: true })
     watch(groups, () => save(), { deep: true })
     watch(alphabet, () => save(), { deep: true })
     watch(settings, () => {
@@ -139,7 +137,6 @@ export const clearSave = () => {
     sentences.value = []
     settings.value.hue = 0
     settings.value.name = 'easyLang'
-    keysOfUserSounds.value = []
 }
 
 const undo = ref(() => null)

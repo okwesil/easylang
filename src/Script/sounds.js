@@ -67,15 +67,6 @@ export const sounds = ref({
     'ä': { vowel: true, name:'Open central unrounded vowel', audio: new Audio('./assets/sounds/vowels/Open_central_unrounded_vowel.ogg')},
 })
 
-export const keysOfUserSounds = ref([])
-
-export const availableSounds = computed(
-    () => {
-        const keys = Object.keys(sounds.value).filter(key => !keysOfUserSounds.value.includes(key));
-        return Object.fromEntries(keys.map(key => [key, sounds.value[key]]))
-    }
-)
-
 export const vowelsFrom = (sounds) => {
     const keysOfVowels = Object.keys(sounds).filter(key => sounds[key].vowel)
     return Object.fromEntries(keysOfVowels.map(key => [key, sounds[key]]))
@@ -85,14 +76,3 @@ export const consonantsFrom = (sounds) => {
     const keysOfCons = Object.keys(sounds).filter(key => !sounds[key].vowel)
     return Object.fromEntries(keysOfCons.map(key => [key, sounds[key]]))
 }
-
-export const userSounds = computed(
-    () => {
-        if (!keysOfUserSounds.value) {
-            keysOfUserSounds.value = []
-        }
-        const keys = Object.keys(sounds.value).filter(key => keysOfUserSounds.value.includes(key));
-        return Object.fromEntries(keys.map(key => [key, sounds.value[key]]))
-    }
-)
-

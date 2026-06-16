@@ -1,6 +1,6 @@
 <script setup>
 import { ref, useTemplateRef } from 'vue';
-import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, highlightWord, renameGroup, favFirstSort } from './dictionary';
+import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, highlightWord, renameGroup, sortBy, descending, sortWords } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
@@ -16,32 +16,6 @@ const groupContextMenu = useTemplateRef('groupContextMenu')
 const wordList = useTemplateRef('word-list')
 const ask = useTemplateRef('askForInput')
 
-// sorting logic
-const sortBy = ref('spelling')
-const descending = ref(true)
-const SORTING_OPTIONS = {
-  spelling: (...a_b) => {
-    if (a_b[0].favorite === a_b[1].favorite) {
-        return a_b[0].spelling.localeCompare(a_b[1].spelling)
-    }
-    const value = a_b[0].favorite ? -1 : 1
-    // reverse if ascending that way favorited words still end up at the top of the page
-    return descending.value ? value : value * -1
-  },
-   definition: (...a_b) => {
-    if (a_b[0].favorite === a_b[1].favorite) {
-        return a_b[0].definition.localeCompare(a_b[1].definition)
-    }
-    const value = a_b[0].favorite ? -1 : 1
-    return descending.value ? value : value * -1
-  }
-}
-const sortWords = (a, b) => {
-  if (!descending.value) {
-    return SORTING_OPTIONS[sortBy.value](b, a)
-  }
-  return SORTING_OPTIONS[sortBy.value](a, b)
-}
 
 
 setInterval(() => {
@@ -153,11 +127,14 @@ const handleDrop = dropIndex => {
   <div class="main-header-wrapper" @click="showSearch = false; wordContextMenu.hide()">
     <h1 class="header">Dictionary</h1>
     <p class="page-description">Catalogue the words of {{ settings.name }}</p>
-    <div class="info sort-by-options">
+    
+    <div class="sort-by-options">
       <span class="sort-by" :title="descending ? 'descending' : 'ascending'"><i class="fa-solid fa-arrow-up" :class="{'down ': descending }" @click="descending = !descending"></i></span>
       <span class="sort-by" :class="{'selected': sortBy == 'spelling'}" @click="sortBy = 'spelling'">spelling</span>
       <span class="sort-by" :class="{'selected': sortBy == 'definition'}" @click="sortBy = 'definition'">definition</span>
     </div>
+
+
   </div> 
 
   <ContextMenu ref="wordContextMenu">
@@ -220,7 +197,7 @@ const handleDrop = dropIndex => {
           <span class="new-word-text"> + </span>
         </li>
 
-        <!-- <transition-group name="fade"> -->
+        <transition-group name="fade">
           <li class="word-container" ref="word-list" :id="word.id" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="wordContextMenu.show($event.pageX, $event.pageY, {id: word.id})">
             <span class="word-spelling">
               {{ getSpellingWithDashes(word.id) }}
@@ -230,7 +207,7 @@ const handleDrop = dropIndex => {
             </span>
             <i v-if="word.favorite" class="star fa-solid fa-star"></i>
           </li>
-        <!-- </transition-group> -->
+        </transition-group>
       
     </ul>
   </div>

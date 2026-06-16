@@ -50,6 +50,34 @@ export const favFirstSort = (a, b) => {
     return a.favorite ? -1 : 1
 }
 
+// sorting logic
+export const sortBy = ref('spelling')
+export const descending = ref(true)
+const SORTING_OPTIONS = {
+  spelling: (...a_b) => {
+    if (a_b[0].favorite === a_b[1].favorite) {
+        return a_b[0].spelling.localeCompare(a_b[1].spelling)
+    }
+    const value = a_b[0].favorite ? -1 : 1
+    // reverse if ascending that way favorited words still end up at the top of the page
+    return descending.value ? value : value * -1
+  },
+   definition: (...a_b) => {
+    if (a_b[0].favorite === a_b[1].favorite) {
+        return a_b[0].definition.localeCompare(a_b[1].definition)
+    }
+    const value = a_b[0].favorite ? -1 : 1
+    return descending.value ? value : value * -1
+  }
+}
+export const sortWords = (a, b) => {
+  if (!descending.value) {
+    return SORTING_OPTIONS[sortBy.value](b, a)
+  }
+  return SORTING_OPTIONS[sortBy.value](a, b)
+}
+
+
 export const wordsInGroup = (group) => Object.values(dictionary.value)
     .filter(entry => group == '*' || entry.group == group)
 
