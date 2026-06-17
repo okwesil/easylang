@@ -11,6 +11,7 @@ const meaning = ref('')
 const topWords = computed(() => wordsSimilarTo(currentlyTyped.value,  8))
 const emit = defineEmits([ 'done' ])
 const wordsAddedElements = useTemplateRef('words-added-elements')
+const deleteMode = ref(false)
 
 const openForm = (startingIds = null, startingMeaning = null) => {
     if (startingIds != null) {
@@ -83,20 +84,20 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
 
 <template>
     <dialog ref="modal">
-        <div class="exit">
+        <div class="exit clickable">
             <i class="fa-solid fa-x" @click="modal.close()"></i>
         </div>
 
         <form @submit.prevent="handleSubmit" v-if="!noWords()">
             <h4>Make a new sentence</h4>
             <div class="words-added-container">
-                <h3 class="word" ref="words-added-elements" 
+                <h3 class="word " ref="words-added-elements" 
                     v-for="(id, index) in wordsAdded" :key="index" 
                     draggable="true" @dragstart="dragging = index" @dragover.prevent @dragenter="dragEnter(index)" @dragleave="dragLeave(index)"
                     @drop="handleDrop(index)">
                         {{ dictionary[id].spelling }}
                 </h3>
-                <h3 class="backspace" @click="wordsAdded.pop()"><i class="fa-solid fa-delete-left"></i></h3>
+                <h3 class="backspace" @click="deleteMode = !deleteMode" title="Toggle Delete Mode"><i class="fa-solid fa-delete-left"></i></h3>
             </div>
 
             <!-- word autocomplete -->

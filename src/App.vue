@@ -3,7 +3,7 @@
   <div class="screen" :style="{marginLeft: sidebarWidth}">
     <router-view />
     <transition name="fade">
-      <span v-if="notificationText.length != 0" class="notification">{{ notificationText }}</span>
+      <span v-if="notification.text.length != 0" class="notification" :class="{'warning': notification.warning }">{{ notification.text }}</span>
     </transition>
   </div>
 </template>
@@ -12,7 +12,7 @@
 <script setup>
 import Sidebar from './Sidebar/Sidebar.vue';
 import { sidebarWidth } from './Sidebar/state.js';
-import { load, notificationText, onKeypress } from './save';
+import { load, notification, onKeypress } from './save';
 import { onMounted, onUnmounted, } from 'vue';
 
 load()
@@ -109,6 +109,16 @@ body {
   bottom: 10px;
   right: 10px;
   z-index: 20;
+  font-size: 1.5w;
+  font-weight: bold;
+  box-shadow: 10px 10px 10px hsla(0, 0%, 0%, 0.502);
+  padding: 5px;
+  background-color: var(--accent-color);
+  border-radius: .5rem;
+}
+
+.warning {
+  color: hsl(0, 100%, 40%);
 }
 
 .screen {
@@ -122,8 +132,23 @@ body {
   margin-bottom: 10px;
 }
 
+.clickable {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.clickable:hover {
+  transform: scale(1.1);
+}
+
+.header-break {
+  margin-right: 20px;
+  height: 10px;
+}
+
 .page-description {
-  margin-left: 20px;
+  margin-left: 10px;
   color: rgb(188, 188, 188)
 }
 
@@ -205,7 +230,21 @@ dialog {
   border: 5px solid var(--accent-color);
   border-radius: 1rem;
   min-width: 20rem; 
+  opacity: 0;
 }
+
+dialog[open] {
+  transition: all 0.3s ease-out;
+  opacity: 1
+}
+
+@starting-style {
+  dialog[open] {
+    /* Starting state before it opens */
+    transform: scale(0.95);
+  }
+}
+
 
 .exit {
   position: absolute;

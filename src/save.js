@@ -31,7 +31,17 @@ const getLanguageData = () => {
     }
 }
 
-export const notificationText = ref('')
+export const notification = ref({
+    text: '',
+    persist: false,
+    warning: false,
+})
+
+watch(notification, (val) => {
+    if (val.text != '') {
+        setTimeout(() => notification.value.text = '', 500)
+    }
+}, { deep: true })
 export const save = () => {   
     fillNonExistentValues()
     const languageString = JSON.stringify(getLanguageData())
@@ -46,10 +56,10 @@ export const save = () => {
 const saveToDb = async () => {
     try {
         await setDoc(await languageDoc(), getLanguageData())
-        notificationText.value = 'Saved'
-        setTimeout(() => notificationText.value = '', 500)
+        notification.value.text = 'Saved'
     } catch (error) {
-        notificationText.value = 'Error while saving, try reloading'
+        notification.value.text = 'Error while saving, try reloading'
+        notification.value.warning = true
         console.error(getLanguageData())
         console.error('error while trying to save', error)
     }
@@ -144,6 +154,15 @@ export const setUndoFunction = func => {
     undo.value = func
 }
 
+export const copyToClipboard = text => {
+    try {
+        navigator.clipboard.writeText(text)
+        notification.value.text = `Copied  '${text}'`
+    }  catch (err) {
+        console.error('Error while printing', err)
+    }
+}
+
 export const onKeypress = (e) => {
     if (e.ctrlKey || e.metaKey) {
         if (e.key == 'z') {
@@ -155,7 +174,7 @@ export const onKeypress = (e) => {
         }
         if (e.key == 's') {
             e.preventDefault()
-            navigator.clipboard.writeText(JSON.stringify(getLanguageData()))
+            copyToClipboard(JSON.stringify(getLanguageData()))
         }
         if (e.key == 'l') {
             e.preventDefault()

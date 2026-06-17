@@ -24,7 +24,7 @@ const _onClick = () => {
 </script>
 
 <template>
-    <i :class="icon" @click="_onClick()" :title="desc"></i>
+    <i class="clickable" :class="icon" @click="_onClick()" :title="desc"></i>
 </template>
 
 <style scoped>

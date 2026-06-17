@@ -76,13 +76,15 @@ const handleSubmit = () => {
     <p class="page-description">Craft some sentences that visualize your grammar</p>
   </div>
   <div class="sentences" @click="() => { if (contextMenu) contextMenu.hide() }">
-    <h1 class="new-sentence" @click="createNewSentence">+</h1>
+    <h1 class="new-sentence clickable" @click="createNewSentence">+</h1>
 
     <transition name="fade">
       <h3 v-if="justDeleted" @click="undoDelete" class="undo">Undo</h3>
     </transition>
 
-    <div ref="word-definition" class="word-def" v-show="wordHovering">hovering</div>
+    <transition name="fade">
+      <div ref="word-definition" class="word-def" v-show="wordHovering">hovering</div>
+    </transition>
 
     <ContextMenu ref="contextMenu">
       <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="(data) => editSentence(data.index)"></ContextMenuLink>
@@ -93,7 +95,11 @@ const handleSubmit = () => {
 
       <div v-for="(sentence, sentenceIndex) in sentences" :key="sentenceIndex" class="sentence" @mouseenter="sentenceHovering = sentenceIndex" @mouseleave="sentenceHovering = null" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, { index: sentenceIndex })">
         <div class="words">
-          <span class="word" v-for="(word, wordIndex) in sentenceFrom(sentence.ids)" :key="wordIndex" @mouseenter="wordHovering = word" @mouseleave="wordHovering = null" @click="findWordWithRouter(word.id)">
+          <span class="word" v-for="(word, wordIndex) in sentenceFrom(sentence.ids)" :key="wordIndex" 
+          @mouseenter="wordHovering = word" 
+          @mouseleave="wordHovering = null" 
+          @click="findWordWithRouter(word.id)"
+          >
             {{ spellingWithAffixes(word) }}
           </span>
         </div>

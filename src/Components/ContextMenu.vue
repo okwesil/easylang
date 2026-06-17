@@ -27,9 +27,11 @@ const hide = () => {
 watch([x, y], async () => {
     if (!menu.value) return
     await nextTick()
+    const bottomOfScreen = window.scrollY + window.innerHeight
     const rect = menu.value.getBoundingClientRect()
-    if (rect.bottom > window.innerHeight) {
-        y.value = Math.max(0, window.innerHeight - rect.height)
+    if (rect.bottom > bottomOfScreen) {
+        console.log(rect)
+        y.value = Math.max(0, bottomOfScreen - rect.height)
     }
 }, { flush: 'post' })
 

@@ -33,7 +33,7 @@ defineExpose({ openForm, close })
     <IPAKeyboard ref="keyboard" @symbol-clicked="(symbol) => symbolData.ipa += symbol" />
 
 
-    <div class="exit">
+    <div class="exit clickable">
       <i class="fa-solid fa-x" @click="modal.close()"></i>
     </div>
 
@@ -52,7 +52,7 @@ defineExpose({ openForm, close })
 
                 <div class="row">
                     <input type="text" required v-model="symbolData.ipa">
-                    <i class="fa-solid fa-magnifying-glass" @click="keyboard.openKeyboard()"></i>
+                    <i class="fa-solid fa-magnifying-glass clickable" @click="keyboard.openKeyboard()"></i>
                 </div>
             </div>
 

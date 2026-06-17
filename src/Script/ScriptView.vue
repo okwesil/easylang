@@ -4,7 +4,7 @@ import { alphabet, symbolUsage } from './script';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import { ref, useTemplateRef } from 'vue';
 import NewSymbol from './NewSymbol.vue';
-import { settings } from '@/save';
+import { copyToClipboard, settings } from '@/save';
 import { noWords } from '@/Dictionary/dictionary';
 const cmenu = useTemplateRef('characterContextMenu')
 const form = useTemplateRef('form')
@@ -15,17 +15,26 @@ const dragEnd = (destIndex) => {
     alphabet.value.splice(destIndex, 0, symbol)
 }
 
-let editIndex
+let editIndex = null
+let editing = null
 const editSymbol = (index, chars, ipa, roman) => {
     form.value.openForm(chars, ipa, roman)
     alphabet.value.splice(index, 1)
     editIndex = index
+    editing = { chars, ipa, roman }
+}
+
+const onModalClose = () => {
+    if (editIndex != null) {
+        alphabet.value.splice(editIndex, 0, structuredClone(editing))
+    }
 }
 
 const addSymbol = (chars, ipa, roman) => {
     if (editIndex) {
         alphabet.value.splice(editIndex, 0, { chars, ipa, roman})
         editIndex = null
+        editing = null
     } else {
         alphabet.value.push({ chars, ipa, roman})
     }
@@ -35,14 +44,13 @@ const largestFrequency = ref(symbolUsage()[0]?.[1])
 
 const getWidth = (freq) => {
     const value = `${freq / largestFrequency.value * 100}%`
-    console.log(value)
     return value
 }
 
 </script>
 
 <template>
-    <NewSymbol ref="form" @done="({chars, ipa, roman}) => addSymbol(chars, ipa, roman)" />
+    <NewSymbol ref="form" @done="({chars, ipa, roman}) => addSymbol(chars, ipa, roman)" @close="onModalClose()" />
     <ContextMenu ref="characterContextMenu">
         <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="({ index, chars, ipa, roman }) => editSymbol(index, chars, ipa, roman)" desc="Edit this symbol"/>
         <ContextMenuLink icon="fa-solid fa-trash" :onClick="({ index }) => alphabet.splice(index, 1)" desc="Delete this symbol"/>
@@ -51,6 +59,8 @@ const getWidth = (freq) => {
     <div class="main-header-wrapper" @click="cmenu.hide()">
         <h1 class="header">Script</h1>
         <p class="page-description">Designate the sound of symbols in {{ settings.name }} </p>
+        <div class="header-break" />
+        <h3 class="symbol-count">{{ alphabet.length }} Symbols </h3>
     </div>
 
     <div class="cards" @click="cmenu.hide()">
@@ -60,12 +70,13 @@ const getWidth = (freq) => {
 
         <transition-group name="fade">
             <div class="card" v-for="(symbol, index) in alphabet" :key="index"
-             @contextmenu.prevent="cmenu.show($event.pageX, $event.pageY, { index, chars: symbol.chars, ipa: symbol.ipa, roman: symbol.roman })"
-             draggable="true" 
-             @dragover.prevent
-             @dragstart="dragging = index"
-             @drop="dragEnd(index)"
-             >
+            @click="copyToClipboard(symbol.chars)"
+            @contextmenu.prevent="cmenu.show($event.pageX, $event.pageY, { index, chars: symbol.chars, ipa: symbol.ipa, roman: symbol.roman })"
+            draggable="true" 
+            @dragover.prevent
+            @dragstart="dragging = index"
+            @drop="dragEnd(index)"
+            >
                 <span class="character">{{ symbol.chars }}</span>
                 <span class="ipa">/{{ symbol.ipa }}/</span>
             </div>
@@ -75,13 +86,14 @@ const getWidth = (freq) => {
     <div class="symbol-usage" v-if="!noWords()">
         <h2>Symbol Usage</h2>
         <div class="row" v-for="(frequency, index) in symbolUsage()" :key="index">
-            <div class="bar" :style="{width: getWidth(frequency[1])}">{{ frequency[0] }}</div>
-            <div class="percentage">{{ Math.round(frequency[1] * 100) }}%</div>
+            <div class="bar" :style="{width: getWidth(frequency[1])}">{{ alphabet[frequency[0]].chars }}</div>
+            <div class="percentage">{{ Math.round(frequency[1] * 100) }}% ({{ frequency[2] }})</div>
         </div>
     </div>
 </template>
 
 <style scoped>
+
 .cards {
     margin-left: 2rem;
     margin-top: 1rem;
@@ -103,6 +115,7 @@ const getWidth = (freq) => {
     align-items: center;
     justify-content: space-evenly;
     box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.502);
+    cursor: grab;
 }
 
 .symbol-usage {
@@ -124,7 +137,7 @@ const getWidth = (freq) => {
 }
 
 .percentage {
-    width: 50px;
+    width: 80px;
     text-align: right;
 }
 

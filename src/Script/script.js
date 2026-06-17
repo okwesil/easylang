@@ -58,10 +58,9 @@ export const symbolUsage = () => {
     if (allIndeces.length == 0) return []
 
     for (let i = 0; i < alphabet.value.length; i++) {
-        const chars = alphabet.value[i].chars
-        frequencies[chars] = count(allIndeces, (index) => i == index) / allIndeces.length
+        frequencies[i] = count(allIndeces, (index) => i == index) / allIndeces.length
     }
-    return Object.entries(frequencies).sort((a, b) => b[1] - a[1])
+    return Object.entries(frequencies).map(entry => [...entry, count(allIndeces, (index) => entry[0] == index) ]).sort((a, b) => b[1] - a[1])
 }
 
 

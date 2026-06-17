@@ -7,6 +7,7 @@ import ContextMenuLink from '@/Components/ContextMenuLink.vue';
 import { settings, setUndoFunction } from '@/save';
 import Search from './Search.vue';
 import AskForInput from '@/Components/AskForInput.vue';
+import { IPAfromSpelling } from '@/Script/script';
 
 let timeout;
 let lastDeleted;
@@ -121,20 +122,28 @@ const handleDrop = dropIndex => {
   groups.value.splice(dropIndex, 0, groupBeingDragged)
 
 }
+
+const generateIPAforAllWords = () => {
+  for (const id in dictionary.value) {
+    dictionary.value[id].pronounciation = IPAfromSpelling(dictionary.value[id].spelling)
+  }
+}
 </script>
 
 <template>
   <div class="main-header-wrapper" @click="showSearch = false; wordContextMenu.hide()">
     <h1 class="header">Dictionary</h1>
     <p class="page-description">Catalogue the words of {{ settings.name }}</p>
+    <div class="header-break" />
     
     <div class="sort-by-options">
-      <span class="sort-by" :title="descending ? 'descending' : 'ascending'"><i class="fa-solid fa-arrow-up" :class="{'down ': descending }" @click="descending = !descending"></i></span>
-      <span class="sort-by" :class="{'selected': sortBy == 'spelling'}" @click="sortBy = 'spelling'">spelling</span>
-      <span class="sort-by" :class="{'selected': sortBy == 'definition'}" @click="sortBy = 'definition'">definition</span>
+      <span class="sort-by clickable" :title="descending ? 'descending' : 'ascending'"><i class="fa-solid fa-arrow-up" :class="{'down ': descending }" @click="descending = !descending"></i></span>
+      <span class="sort-by clickable" :class="{'selected': sortBy == 'spelling'}" @click="sortBy = 'spelling'">spelling</span>
+      <span class="sort-by clickable" :class="{'selected': sortBy == 'definition'}" @click="sortBy = 'definition'">definition</span>
     </div>
 
-
+    <div class="header-break" />
+    <i class="fa-solid fa-wand-magic-sparkles clickable" title="Generate IPA from spelling for all words in the dictionary" @click="generateIPAforAllWords()"></i> 
   </div> 
 
   <ContextMenu ref="wordContextMenu">
@@ -184,7 +193,7 @@ const handleDrop = dropIndex => {
 
     <div class="group-select-wrapper no-scrollbar" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
       <span class="group-select all" :class="{'selected': currentView == '*'}" @click="currentView = '*'"> all </span>
-      <span class="group-select" v-for="(group, index) in groups" :key="index" draggable="true" @dragstart="dragging = group" @dragover.prevent @drop="handleDrop(index)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
+      <span class="group-select clickable" v-for="(group, index) in groups" :key="index" draggable="true" @dragstart="dragging = group" @dragover.prevent @drop="handleDrop(index)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
       
       <transition name="ifade">
         <input class="new-group" :ref="onNewGroupMount" v-if="isHoveringGroupSelect" placeholder="type the name of your new group then hit enter" @keypress.enter="groups.push($event.target.value); $event.target.value=''">
@@ -193,7 +202,7 @@ const handleDrop = dropIndex => {
     </div>
 
     <ul class="words">
-      <li class="add-word word-container" @click="openNewWordForm({group: currentView})">
+      <li class="add-word clickable word-container" @click="openNewWordForm({group: currentView})">
         <span class="new-word-text"> + </span>
       </li>
       <h2 v-if="noWords()"> Make some words!</h2>
@@ -249,7 +258,6 @@ const handleDrop = dropIndex => {
 
 .sort-by {
   margin-left: 10px;
-  cursor: pointer;
 }
 
 .sort-by > .fa-arrow-up {
@@ -334,8 +342,6 @@ li {
 }
 
 .group-select {
-  cursor: pointer;
-  transition: border-color 0.3s ease;
   padding: 5px;
   margin-bottom: 0;
   font-size: 1.3rem;
@@ -350,7 +356,7 @@ li {
   box-sizing: border-box;
 }
 
-.group-select:hover, .selected {
+.selected {
   border-bottom: 3px solid var(--accent-color);
 }
 

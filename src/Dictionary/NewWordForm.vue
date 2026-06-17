@@ -30,7 +30,7 @@ defineExpose({ clearForm, openForm, newWordData, modal, destination })
 
 <template>
   <dialog ref="modal">
-    <div class="exit">
+    <div class="exit clickable">
       <i class="fa-solid fa-x" @click="modal.close()"></i>
     </div>
     
