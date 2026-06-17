@@ -1,9 +1,11 @@
 <script setup>
 import { useTemplateRef, ref, provide, watch, nextTick } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 const x = ref(-100)
 const y = ref(-100)
 const data = ref({})
 const menu = useTemplateRef('menu')
+onClickOutside(menu, () => hide())
 provide('data', data)
 provide('menu', menu)
 

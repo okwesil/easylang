@@ -91,13 +91,16 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
         <form @submit.prevent="handleSubmit" v-if="!noWords()">
             <h4>Make a new sentence</h4>
             <div class="words-added-container">
-                <h3 class="word " ref="words-added-elements" 
+                <h3 class="word" ref="words-added-elements" 
+                    :class="{'delete': deleteMode}"
                     v-for="(id, index) in wordsAdded" :key="index" 
-                    draggable="true" @dragstart="dragging = index" @dragover.prevent @dragenter="dragEnter(index)" @dragleave="dragLeave(index)"
-                    @drop="handleDrop(index)">
+                    :draggable="!deleteMode" @dragstart="dragging = index" @dragover.prevent @dragenter="dragEnter(index)" @dragleave="dragLeave(index)"
+                    @drop="handleDrop(index)"
+                    @click="() => { if (deleteMode) wordsAdded.splice(index, 1) }"
+                >
                         {{ dictionary[id].spelling }}
                 </h3>
-                <h3 class="backspace" @click="deleteMode = !deleteMode" title="Toggle Delete Mode"><i class="fa-solid fa-delete-left"></i></h3>
+                <div class="backspace clickable" :class="{'delete': deleteMode}" @click="deleteMode = !deleteMode" title="Toggle Delete Mode"><i class="fa-solid fa-delete-left"></i></div>
             </div>
 
             <!-- word autocomplete -->
@@ -112,10 +115,11 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
             <p>hit <b>ENTER</b> to add the underlined word to your sentence</p>
 
             <div class="top-word">
-                <div v-for="(id, index) in topWords" class="autocomplete-word" :class="{'best-word': index === 0}" :key="index" @click="wordsAdded.push(id)">{{ dictionary[id].spelling }} <b>{{ dictionary[id].definition }}</b></div>
+                <div v-for="(id, index) in topWords" class="autocomplete-word clickable" :class="{'best-word': index === 0}" :key="index" @click="wordsAdded.push(id)">{{ dictionary[id].spelling }} <b>{{ dictionary[id].definition }}</b></div>
             </div>
             
-            <input type="text" v-model="meaning" @keypress.enter="handleSubmit" required placeholder="what is the meaning of this sentence?">
+            <span>Sentence Meaning</span>
+            <input type="text" v-model="meaning" @keypress.enter="handleSubmit" required placeholder="hit ENTER to create this sentence">
         </form>
         <h3 v-else>Create some words first :)</h3>
     </dialog>
@@ -130,7 +134,15 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
 
 .backspace {
     margin-left: auto;
-    cursor: pointer;
+    transition: all 0.3s ease;
+    align-items: center;
+    padding: 0 0.3rem;
+    color: white;
+}
+
+.backspace.delete {
+    animation: flashing 1s infinite;
+    color: red;
 }
 
 .word {
@@ -141,6 +153,11 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
     width: fit-content;
     height: fit-content;
     cursor: grab;
+}
+
+.word.delete:hover {
+    cursor: pointer;
+    color: hsl(0, 100%, 40%);
 }
 
 .exit {

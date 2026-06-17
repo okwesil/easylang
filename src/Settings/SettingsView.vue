@@ -65,6 +65,7 @@ const signin = async () => {
         <div class="line">
           <span class="label">Hue</span>
           <input type="range" min="0" max="360" v-model="settings.hue">
+          <div class="help">?</div>
         </div>
 
         <div class="line">

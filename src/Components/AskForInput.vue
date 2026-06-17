@@ -1,8 +1,11 @@
 <script setup>
 import { cleanString } from '@/Sentences/sentences';
 import { ref, defineExpose, useTemplateRef } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 const response = ref('')
 const element = useTemplateRef('inputElement')
+onClickOutside(element, () => hide())
+
 let doneCallback = () => {}
 let args = []
 

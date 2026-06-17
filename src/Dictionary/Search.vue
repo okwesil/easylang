@@ -1,37 +1,33 @@
-<script>
+<script setup>
 import { wordsSimilarTo } from '@/Sentences/sentences.js';
-import { dictionary, showWord, searchValue  } from './dictionary';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { dictionary, showWord, searchValue, showSearch  } from './dictionary';
+import { ref, useTemplateRef, onMounted, onUnmounted } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 
-export default {
-    setup() {
-        const searchInput = ref(null)
-        const router = useRouter()
+const wrapper = useTemplateRef('wrapper')
+onClickOutside(wrapper, () => showSearch.value = false)
+const searchInput = ref(null)
+const router = useRouter()
 
-        onMounted(() => {
-            searchInput.value.focus()
-        })
-        onUnmounted(() => {
-            searchValue.value = ''
-        })
+onMounted(() => {
+    searchInput.value.focus()
+})
+onUnmounted(() => {
+    searchValue.value = ''
+})
 
-        const findWordWithRouter = id => showWord(router, id)
+const findWord = id => showWord(router, id)
 
-        return {
-            searchValue, dictionary, searchInput,
-            wordsSimilarTo, findWord: findWordWithRouter
-        }
-    }
-}
+
 </script>
 
 <template>
-    <div class="search-box-wrapper">
+    <div ref="wrapper" class="search-box-wrapper">
         <form @submit.prevent="findWord()">
             <input ref="searchInput" type="text" placeholder="find..." v-model="searchValue">
             <div class="results">
-                <div class="result" v-for="(id, index) in wordsSimilarTo(searchValue, 3)" :key="index" @click="findWord(id)" >
+                <div class="result clickable" v-for="(id, index) in wordsSimilarTo(searchValue, 3)" :key="index" @click="findWord(id)" :title="`Click to '${dictionary[id].spelling}' in your dictionary`">
                     {{ dictionary[id].spelling }} -> {{ dictionary[id].definition }}
                 </div>
             </div>
@@ -75,7 +71,6 @@ input {
     overflow: hidden;
     white-space: nowrap;
     box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.3);
-    transition: background-color 0.3s ease;
 }
 
 .result:hover {

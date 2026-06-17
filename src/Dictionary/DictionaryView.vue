@@ -131,7 +131,7 @@ const generateIPAforAllWords = () => {
 </script>
 
 <template>
-  <div class="main-header-wrapper" @click="showSearch = false; wordContextMenu.hide()">
+  <div class="main-header-wrapper" @click="showSearch = false">
     <h1 class="header">Dictionary</h1>
     <p class="page-description">Catalogue the words of {{ settings.name }}</p>
     <div class="header-break" />
@@ -189,7 +189,7 @@ const generateIPAforAllWords = () => {
   <new-word-form ref="form" @close="handleClose()"  @submit.prevent="handleSubmit" /> 
 
 
-  <div class="dictionary" @click="showSearch = false; wordContextMenu.hide(); groupContextMenu.hide(); ask.hide()">
+  <div class="dictionary">
 
     <div class="group-select-wrapper no-scrollbar" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
       <span class="group-select all" :class="{'selected': currentView == '*'}" @click="currentView = '*'"> all </span>
