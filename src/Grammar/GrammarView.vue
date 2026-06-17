@@ -1,29 +1,23 @@
-<script>
-import OrderSelect from '@/Components/OrderSelect.vue';
+<script setup>
+import { settings } from '@/save';
+import { grammarJSON } from './grammar';
+import TextEditor from "@/Components/TextEditor.vue";
 
-export default {
-    name: 'GrammarView',
-    components: { OrderSelect },
-}
 </script>
 
 <template>
     <div class="main-header-wrapper">
       <h1 class="header">Grammar</h1>
+      <p class="page-description">Explain the interesting grammar of {{ settings.name }}, (yes its just a big textbox)</p>
     </div>
-    <div class="grammar">
-        
-        <h3>Word Order</h3>
-        <OrderSelect @new-order="(order) => console.log(order)" options="S O V" />
+    
+    <div class="editor-wrapper">
+        <TextEditor :json="grammarJSON" @update-json="(json) => {grammarJSON = json; console.log(grammarJSON)}"/>
     </div>
 </template>
 
 <style scoped>
-.grammar {
+.editor-wrapper {
     margin-left: 2rem;
 }
-h3 {
-    margin-bottom: 10px;
-}
-
 </style>

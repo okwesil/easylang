@@ -7,6 +7,7 @@ import NewSentence from './NewSentence.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
 import { setUndoFunction } from '@/save';
+import GrammarView from '@/Grammar/GrammarView.vue';
 
 const wordHovering = ref(null);
 const sentenceHovering = ref(null);
@@ -71,49 +72,49 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="main-header-wrapper">
-    <h1 class="header">Sentences</h1>
-    <p class="page-description">Craft some sentences that visualize your grammar</p>
-  </div>
-  <div class="sentences" @click="() => { if (contextMenu) contextMenu.hide() }">
-    <h1 class="new-sentence clickable" @click="createNewSentence">+</h1>
-
-    <transition name="fade">
-      <h3 v-if="justDeleted" @click="undoDelete" class="undo">Undo</h3>
-    </transition>
-
-    <transition name="fade">
-      <div ref="word-definition" class="word-def" v-show="wordHovering">hovering</div>
-    </transition>
-
-    <ContextMenu ref="contextMenu">
-      <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="(data) => editSentence(data.index)"></ContextMenuLink>
-      <ContextMenuLink icon="fa-solid fa-trash" :onClick="(data) => deleteSentence(data.index)"></ContextMenuLink>
-    </ContextMenu>
-    <div class="sentence-list" @mousemove="handleMouseMove">
-
-
-      <div v-for="(sentence, sentenceIndex) in sentences" :key="sentenceIndex" class="sentence" @mouseenter="sentenceHovering = sentenceIndex" @mouseleave="sentenceHovering = null" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, { index: sentenceIndex })">
-        <div class="words">
-          <span class="word" v-for="(word, wordIndex) in sentenceFrom(sentence.ids)" :key="wordIndex" 
-          @mouseenter="wordHovering = word" 
-          @mouseleave="wordHovering = null" 
-          @click="findWordWithRouter(word.id)"
-          >
-            {{ spellingWithAffixes(word) }}
+    <div class="main-header-wrapper">
+      <h1 class="header">Sentences</h1>
+      <p class="page-description">Craft some sentences that visualize your grammar</p>
+    </div>
+    <div class="sentences" @click="() => { if (contextMenu) contextMenu.hide() }">
+      <h1 class="new-sentence clickable" @click="createNewSentence">+</h1>
+  
+      <transition name="fade">
+        <h3 v-if="justDeleted" @click="undoDelete" class="undo">Undo</h3>
+      </transition>
+  
+      <transition name="fade">
+        <div ref="word-definition" class="word-def" v-show="wordHovering">hovering</div>
+      </transition>
+  
+      <ContextMenu ref="contextMenu">
+        <ContextMenuLink icon="fa-regular fa-pen-to-square" :onClick="(data) => editSentence(data.index)"></ContextMenuLink>
+        <ContextMenuLink icon="fa-solid fa-trash" :onClick="(data) => deleteSentence(data.index)"></ContextMenuLink>
+      </ContextMenu>
+      <div class="sentence-list" @mousemove="handleMouseMove">
+  
+  
+        <div v-for="(sentence, sentenceIndex) in sentences" :key="sentenceIndex" class="sentence" @mouseenter="sentenceHovering = sentenceIndex" @mouseleave="sentenceHovering = null" @contextmenu.prevent="contextMenu.show($event.pageX, $event.pageY, { index: sentenceIndex })">
+          <div class="words">
+            <span class="word" v-for="(word, wordIndex) in sentenceFrom(sentence.ids)" :key="wordIndex" 
+            @mouseenter="wordHovering = word" 
+            @mouseleave="wordHovering = null" 
+            @click="findWordWithRouter(word.id)"
+            >
+              {{ spellingWithAffixes(word) }}
+            </span>
+          </div>
+          <span class="sentence-meaning literal-meaning">
+            {{ generateMeaning(sentenceFrom(sentence.ids)) }}
+          </span>
+          <span class="sentence-meaning">
+            {{ sentence.meaning }}
           </span>
         </div>
-        <span class="sentence-meaning literal-meaning">
-          {{ generateMeaning(sentenceFrom(sentence.ids)) }}
-        </span>
-        <span class="sentence-meaning">
-          {{ sentence.meaning }}
-        </span>
+  
+  
       </div>
-
-
-    </div>
-    <NewSentence ref="form" @done="handleSubmit"></NewSentence>
+      <NewSentence ref="form" @done="handleSubmit"></NewSentence>
   </div>
 </template>
 

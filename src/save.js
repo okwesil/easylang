@@ -5,6 +5,7 @@ import { watch, ref, reactive } from 'vue'
 import { currentUser, db } from './firebase.js';
 import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
 import { alphabet } from './Script/script';
+import { grammarJSON } from './Grammar/grammar';
 
 export const makeLanguageId = () => Math.floor(Math.random() * 1000);
 let languageId;
@@ -27,7 +28,8 @@ const getLanguageData = () => {
         settings: settings.value,
         id: languageId,
         groups: groups.value,
-        alphabet: alphabet.value
+        alphabet: alphabet.value,
+        grammar: grammarJSON.value,
     }
 }
 
@@ -47,7 +49,7 @@ export const save = () => {
     const languageString = JSON.stringify(getLanguageData())
     localStorage.setItem('language', languageString)    
     // only save to Firestore when there is a signed-in user and enough time has passed
-    if (currentUser.value && Date.now() - lastWrite > 1000) {
+    if (currentUser.value && (Date.now() - lastWrite) > 5000) {
         lastWrite = Date.now()
         saveToDb()
     }
@@ -95,6 +97,7 @@ export const load = async (useDb = true) => {
     groups.value = parsed.groups
     currentView.value = groups.value[0]
     alphabet.value = parsed.alphabet ?? []
+    grammarJSON.value = parsed.grammar ?? {}
     fillNonExistentValues()
 
     // autosave
@@ -102,6 +105,7 @@ export const load = async (useDb = true) => {
     watch(sentences, () => save(), { deep: true })
     watch(groups, () => save(), { deep: true })
     watch(alphabet, () => save(), { deep: true })
+    watch(grammarJSON, () => save(), { deep: true })
     watch(settings, () => {
         // hue
         const hueString = `hsl(${settings.value.hue}, 65%, 29%)`
@@ -146,6 +150,7 @@ export const clearSave = () => {
     settings.value = { hue: 0, name: 'easyLang', font: 'Merriweather' }
     groups.value = []
     alphabet.value = []
+    grammarJSON.value = {}
 }
 
 const undo = ref(() => null)
