@@ -1,16 +1,16 @@
 <script setup>
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
-import { alphabet } from './script';
+import { alphabet, symbolUsage } from './script';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import { ref, useTemplateRef } from 'vue';
 import NewSymbol from './NewSymbol.vue';
 import { settings } from '@/save';
+import { noWords } from '@/Dictionary/dictionary';
 const cmenu = useTemplateRef('characterContextMenu')
 const form = useTemplateRef('form')
 
 const dragging = ref(null)
 const dragEnd = (destIndex) => {
-    console.log(dragging.value, destIndex)
     const symbol = alphabet.value.splice(dragging.value, 1)[0]
     alphabet.value.splice(destIndex, 0, symbol)
 }
@@ -29,6 +29,14 @@ const addSymbol = (chars, ipa, roman) => {
     } else {
         alphabet.value.push({ chars, ipa, roman})
     }
+}
+
+const largestFrequency = ref(symbolUsage()[0]?.[1])
+
+const getWidth = (freq) => {
+    const value = `${freq / largestFrequency.value * 100}%`
+    console.log(value)
+    return value
 }
 
 </script>
@@ -62,7 +70,14 @@ const addSymbol = (chars, ipa, roman) => {
                 <span class="ipa">/{{ symbol.ipa }}/</span>
             </div>
         </transition-group>
+    </div>
 
+    <div class="symbol-usage" v-if="!noWords()">
+        <h2>Symbol Usage</h2>
+        <div class="row" v-for="(frequency, index) in symbolUsage()" :key="index">
+            <div class="bar" :style="{width: getWidth(frequency[1])}">{{ frequency[0] }}</div>
+            <div class="percentage">{{ Math.round(frequency[1] * 100) }}%</div>
+        </div>
     </div>
 </template>
 
@@ -88,6 +103,42 @@ const addSymbol = (chars, ipa, roman) => {
     align-items: center;
     justify-content: space-evenly;
     box-shadow: 10px 10px 5px hsla(0, 0%, 0%, 0.502);
+}
+
+.symbol-usage {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    margin-left: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 20px;
+    padding-right: 10px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    background-color: var(--lighter-bg);
+}
+
+.percentage {
+    width: 50px;
+    text-align: right;
+}
+
+.bar {
+    background-color: var(--light-accent);
+    width: 100%;
+    padding-left: 10px;
+    font-size: 1.3rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.bar:hover {
+    background-color: var(--accent-color);
 }
 
 .invisible-card {

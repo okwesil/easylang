@@ -55,9 +55,9 @@ const saveToDb = async () => {
     }
 }
 
-export const load = async () => {
+export const load = async (useDb = true) => {
     let parsed = null;
-    findDoc: if (currentUser.value) {
+    findDoc: if (currentUser.value && useDb) {
         const doc = await languageDoc(true)
         if (!doc) break findDoc
 
@@ -77,14 +77,14 @@ export const load = async () => {
 
     dictionary.value = parsed.dictionary
     for (const key in dictionary.value) {
-        if (dictionary.value[key].group == 'adjective') dictionary.value[key].group = 'modifier'
+        delete dictionary.value[key].groups
     }
     migratePartOfSpeechToGroup()
     sentences.value = parsed.sentences ?? parsed.phrases
     languageId = parsed.id
     groups.value = parsed.groups
     currentView.value = groups.value[0]
-    alphabet.value = parsed.alphabet
+    alphabet.value = parsed.alphabet ?? []
     fillNonExistentValues()
 
     // autosave
@@ -108,8 +108,6 @@ export const load = async () => {
 const defaults = {
     'favorite': false,
     'notes': '',
-    'groups': [ 'pronouns', 'nouns', 'verbs', 'modifiers', 'particles' ],
-    'id': makeLanguageId()
 }
 
 const fillNonExistentValues = () => {
@@ -135,8 +133,9 @@ export const clearSave = () => {
     localStorage.removeItem('language')
     dictionary.value = {}
     sentences.value = []
-    settings.value.hue = 0
-    settings.value.name = 'easyLang'
+    settings.value = { hue: 0, name: 'easyLang', font: 'Merriweather' }
+    groups.value = []
+    alphabet.value = []
 }
 
 const undo = ref(() => null)
@@ -153,6 +152,14 @@ export const onKeypress = (e) => {
         if (e.key == 'f') {
             e.preventDefault()
             showSearch.value = !showSearch.value
+        }
+        if (e.key == 's') {
+            e.preventDefault()
+            navigator.clipboard.writeText(JSON.stringify(getLanguageData()))
+        }
+        if (e.key == 'l') {
+            e.preventDefault()
+            load(false)
         }
     }
 };

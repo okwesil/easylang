@@ -16,10 +16,13 @@ import { wordsSimilarTo } from '@/Sentences/sentences'
 export const dictionary = ref(
     {}
 )
+
+export const noWords = () => Object.keys(dictionary.value).length == 0
+
 /**
  * array of all the possible word groups
  */
-export const groups = ref([])
+export const groups = ref([ 'pronouns', 'nouns', 'verbs', 'describers', 'articles' ])
 export const renameGroup = (index, name) => {
     const ids = wordsInGroup(groups.value[index]).map(entry => entry.id)
     for (const id of ids) {
@@ -70,6 +73,7 @@ const SORTING_OPTIONS = {
     return descending.value ? value : value * -1
   }
 }
+
 export const sortWords = (a, b) => {
   if (!descending.value) {
     return SORTING_OPTIONS[sortBy.value](b, a)

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, useTemplateRef } from 'vue';
-import { dictionary } from '@/Dictionary/dictionary';
+import { dictionary, noWords } from '@/Dictionary/dictionary';
 import { wordsSimilarTo } from './sentences.js';
 
 
@@ -87,7 +87,7 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
             <i class="fa-solid fa-x" @click="modal.close()"></i>
         </div>
 
-        <form @submit.prevent="handleSubmit">
+        <form @submit.prevent="handleSubmit" v-if="!noWords()">
             <h4>Make a new sentence</h4>
             <div class="words-added-container">
                 <h3 class="word" ref="words-added-elements" 
@@ -116,6 +116,7 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
             
             <input type="text" v-model="meaning" @keypress.enter="handleSubmit" required placeholder="what is the meaning of this sentence?">
         </form>
+        <h3 v-else>Create some words first :)</h3>
     </dialog>
 </template>
 

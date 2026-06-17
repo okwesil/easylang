@@ -1,6 +1,6 @@
 <script setup>
 import { ref, useTemplateRef } from 'vue';
-import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, highlightWord, renameGroup, sortBy, descending, sortWords } from './dictionary';
+import { groups, wordsInGroup, generateID, dictionary, getSpellingWithDashes, showSearch, currentView, highlightedWord, highlightWord, renameGroup, sortBy, descending, sortWords, noWords } from './dictionary';
 import NewWordForm from '@/Dictionary/NewWordForm.vue';
 import ContextMenu from '@/Components/ContextMenu.vue';
 import ContextMenuLink from '@/Components/ContextMenuLink.vue';
@@ -19,7 +19,7 @@ const ask = useTemplateRef('askForInput')
 
 
 setInterval(() => {
-  const element = wordList.value.find(element => element.id == highlightedWord.value)
+  const element = wordList.value?.find(element => element.id == highlightedWord.value)
   if (element) {
     element.scrollIntoView({ behavior: 'smooth' })
   }
@@ -193,9 +193,10 @@ const handleDrop = dropIndex => {
     </div>
 
     <ul class="words">
-        <li class="add-word word-container" @click="openNewWordForm({group: currentView})">
-          <span class="new-word-text"> + </span>
-        </li>
+      <li class="add-word word-container" @click="openNewWordForm({group: currentView})">
+        <span class="new-word-text"> + </span>
+      </li>
+      <h2 v-if="noWords()"> Make some words!</h2>
 
         <transition-group name="fade">
           <li class="word-container" ref="word-list" :id="word.id" :class="{'highlight': highlightedWord == word.id}" v-for="word in getWords()" :key="word.id" draggable="true" @dragstart="handleDragStart(word.id)" @contextmenu.prevent="wordContextMenu.show($event.pageX, $event.pageY, {id: word.id})">

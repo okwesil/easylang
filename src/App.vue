@@ -51,8 +51,9 @@ onUnmounted(() => window.removeEventListener('keydown', onKeypress));
 }
 
 :root {
-  --bg-color: hsl(0, 0%, 9%);
-  --darker-bg: hsl(from var(--bg-color) h s calc(l - 1));
+  --bg-color: hsl(0, 0%, 13%);
+  --lighter-bg: hsl(from var(--bg-color) h s calc(l + 4));
+  --darker-bg: hsl(from var(--bg-color) h s calc(l - 2));
   --accent-color: hsl(0, 65%, 20%);
   --light-accent: hsl(from var(--accent-color) h calc(s + 10) calc(l + 3));
   --sidebar-active: hsl(from var(--accent-color) h calc(s + 20) calc(l - 3));
