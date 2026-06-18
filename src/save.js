@@ -162,7 +162,7 @@ export const setUndoFunction = func => {
 export const copyToClipboard = text => {
     try {
         navigator.clipboard.writeText(text)
-        notification.value.text = `Copied  '${text}'`
+        notification.value.text = `Copied  '${text.slice(0, 10)}...'`
     }  catch (err) {
         console.error('Error while printing', err)
     }
