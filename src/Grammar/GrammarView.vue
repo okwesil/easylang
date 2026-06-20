@@ -12,7 +12,7 @@ import TextEditor from "@/Components/TextEditor.vue";
     </div>
     
     <div class="editor-wrapper">
-        <TextEditor :json="grammarJSON" @update-json="(json) => {grammarJSON = json; console.log(grammarJSON)}"/>
+        <TextEditor :json="grammarJSON" @update-json="(json) => {grammarJSON = json}"/>
     </div>
 </template>
 

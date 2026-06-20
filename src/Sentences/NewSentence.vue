@@ -83,12 +83,14 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
 </script>
 
 <template>
-    <dialog ref="modal">
+    <dialog ref="modal" @keydown.shift="deleteMode = true" @keyup="deleteMode = false">
         <div class="exit clickable">
             <i class="fa-solid fa-x" @click="modal.close()"></i>
         </div>
 
-        <form @submit.prevent="handleSubmit" v-if="!noWords()">
+        <form @submit.prevent="handleSubmit" v-if="!noWords()" 
+
+        >
             <h4>Make a new sentence</h4>
             <div class="words-added-container">
                 <h3 class="word" ref="words-added-elements" 
@@ -100,7 +102,7 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
                 >
                         {{ dictionary[id].spelling }}
                 </h3>
-                <div class="backspace clickable" :class="{'delete': deleteMode}" @click="deleteMode = !deleteMode" title="Toggle Delete Mode"><i class="fa-solid fa-delete-left"></i></div>
+                <div class="backspace clickable" :class="{'delete': deleteMode}" @click="deleteMode = !deleteMode" title="Toggle Delete Mode (Shift)"><i class="fa-solid fa-delete-left"></i></div>
             </div>
 
             <!-- word autocomplete -->

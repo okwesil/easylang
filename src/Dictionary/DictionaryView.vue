@@ -26,7 +26,6 @@ setInterval(() => {
   }
 }, 100)
 
-const isHoveringGroupSelect = ref(false)
 const onNewGroupMount = (el) => {
   if (el) el.focus()
 }
@@ -167,7 +166,7 @@ const generateIPAforAllWords = () => {
   <ContextMenu ref="groupContextMenu">
     <ContextMenuLink 
       icon="fa-regular fa-pen-to-square" 
-      :onClick="({ x, y, index }) => {ask.show(x, y, groups[index], 'whats the new name?', (value, i) => renameGroup(i, value), index)}" 
+      :onClick="({ x, y, index }) => {ask.show(x, y, groups[index], 'What\'s the new name?', (value, i) => renameGroup(i, value), index)}" 
       desc="Rename this group"
     />
     <ContextMenuLink 
@@ -191,14 +190,16 @@ const generateIPAforAllWords = () => {
 
   <div class="dictionary">
 
-    <div class="group-select-wrapper no-scrollbar" @mouseenter="isHoveringGroupSelect = true"  @mouseleave="isHoveringGroupSelect = false" >
-      <span class="group-select all" :class="{'selected': currentView == '*'}" @click="currentView = '*'"> all </span>
-      <span class="group-select clickable" v-for="(group, index) in groups" :key="index" draggable="true" @dragstart="dragging = group" @dragover.prevent @drop="handleDrop(index)" :class="{'selected': currentView == group}" @click="currentView = group" @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}</span>
-      
-      <transition name="ifade">
-        <input class="new-group" :ref="onNewGroupMount" v-if="isHoveringGroupSelect" placeholder="type the name of your new group then hit enter" @keypress.enter="groups.push($event.target.value); $event.target.value=''">
-      </transition> 
-
+    <div class="group-select-wrapper no-scrollbar">
+      <span class="group-select new-group clickable" title="Create a new group of words / part of speech" @click="ask.show($event.pageX, $event.pageY, '', 'Name your new group', (value) => groups.push(value))">+</span>
+      <span class="group-select all clickable" :class="{'selected': currentView == '*'}" @click="currentView = '*'"> all </span>
+      <span class="group-select clickable" v-for="(group, index) in groups" :key="index" 
+        draggable="true" @dragstart="dragging = group" @dragover.prevent 
+        @drop="handleDrop(index)" 
+        :class="{'selected': currentView == group}" 
+        @click="currentView = group" 
+        @contextmenu.prevent="groupContextMenu.show($event.pageX, $event.pageY, { index, x: $event.pageX, y: $event.pageY })"> {{ group }}
+      </span>
     </div>
 
     <ul class="words">
@@ -334,8 +335,10 @@ li {
 
 .group-select-wrapper {
   display: flex;
+  padding: 5px;
   gap: 10px;
   margin-bottom: 0;
+  margin-left: 10px;
   overflow-anchor: none;
   /* min-width: 0; */
   /* scrollbar-width: 0px; */
@@ -349,11 +352,15 @@ li {
 }
 
 .new-group {
-  width: 300px;
-  flex: 0 1 300px;
-  min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
+  border: 2px solid var(--accent-color);
+  border-radius: .5rem;
+  aspect-ratio: 1 / 1;
+  text-align: center;
+  width: 20px;
+}
+
+.new-group:hover {
+  background-color: var(--accent-color);
 }
 
 .selected {
@@ -379,13 +386,8 @@ li {
   transition: all 0.3s ease;
 }
 
-.ifade-enter-active,
-.ifade-leave-active {
-  transition: all 1s ease;
-}
- 
-.fade-enter-from, .ifade-enter-from,
-.fade-leave-to, .ifade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 

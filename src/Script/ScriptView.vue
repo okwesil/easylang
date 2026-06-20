@@ -98,13 +98,13 @@ const getWidth = (freq) => {
     margin-left: 2rem;
     margin-top: 1rem;
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     gap: 10px;
-    justify-items: start;
+    justify-items: stretch;
 }
 
 .card {
-    aspect-ratio: 1/1;
+    aspect-ratio: 1 / 1;
     padding: 5px;
     border: 3px solid var(--accent-color);
     background-color: var(--darker-bg);
@@ -159,11 +159,11 @@ const getWidth = (freq) => {
 }
 
 .character {
-    font-size: 3rem;
+    font-size: 5cqw;
 }
 
 .ipa {
-    font-size: 1rem;
+    font-size: 2cqw;
 }
 
 .add-symbol {
