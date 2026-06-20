@@ -88,9 +88,7 @@ defineExpose({ openForm, clearForm, wordsAdded, meaning })
             <i class="fa-solid fa-x" @click="modal.close()"></i>
         </div>
 
-        <form @submit.prevent="handleSubmit" v-if="!noWords()" 
-
-        >
+        <form @submit.prevent="handleSubmit" v-if="!noWords()">
             <h4>Make a new sentence</h4>
             <div class="words-added-container">
                 <h3 class="word" ref="words-added-elements" 
